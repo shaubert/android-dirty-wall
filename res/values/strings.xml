@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Dirty Wall</string>
+    
+    <string name="post_summary_format" formatted="false">Написал %s, %s, %s, %s</string>
+    <string name="comment_summary_format" formatted="false">Написал %s, %s, %s</string>
+    <string name="creation_date_format" formatted="false">%s\u00A0в\u00A0%s</string>
+    <string name="today">Сегодня</string>
+    <string name="yesterday">Вчера</string>
+    <string name="post_date_format">d.M.yyyy</string>
+    <string name="post_time_format">H.mm</string>
+    <string name="post_list_header_date_format">d MMMM yyyy</string>
+    
+    <string name="one_comment">%d\u00A0комментарий</string>
+    <string name="few_comments">%d\u00A0комментария</string>
+    <string name="many_comments">%d\u00A0комментариев</string>
+
+    <string name="one_vote">%d\u00A0голос</string>
+    <string name="few_votes">%d\u00A0голоса</string>
+    <string name="many_votes">%d\u00A0голосов</string>
+    
+    <string name="one_new_post">%d\u00A0новый пост</string>
+    <string name="few_new_posts">%d\u00A0новых поста</string>
+    <string name="many_new_posts">%d\u00A0новых постов</string>
+    
+    <string name="post_title_format" formatted="false">Пост %d из %d</string>
+    
+    <string name="favorites_export_zero">Так нет у тебя отмеченных постов. Сперва звезды кнопкой расставь</string>
+    <string name="favorites_export_format">Ищи посты на флешке в папке <b>«Dirty»</b></string>
+    <string name="export_favorites">Звездные — в файл</string>
+    
+    <string name="share">Поделиться</string>
+    <string name="move_to_first">В начало</string>
+    <string name="copy">Скопировать</string>
+    <string name="load_comments">Загрузить комментарии</string>
+    <string name="refresh_comments">Обновить комментарии</string>
+    <string name="refresh">Обновить</string>
+    <string name="open_in_browser">Открыть в браузере</string>
+    <string name="refresh_posts">Обновить посты</string>
+    <string name="only_favorites">Только со звездой</string>
+    <string name="show_all">Показывать все</string>
+    <string name="petr_turned_on">Петр уезжает из рашки</string>
+    <string name="petr_turned_off">Петр остается в рашке навсегда</string>
+    <string name="petr_pref_key">petr_pref</string>
+    <string name="petr_pref_title">Поросенок</string>
+    <string name="font_size_dialog_title">Какой размер?</string>
+    <string name="font_size_pref_key">font_size_pref</string>
+    <string name="font_size_pref_title">Размер шрифта</string>
+    <string name="setting_menu_item_title">Настройки</string>
+    
+    <string name="main_setting_header_title">Основные настройки</string>
+    <string name="favorites_setting_header_title">Отмеченные посты</string>
+    <string name="background_sync_setting_header_title">Фоновая загрузка</string>
+    
+    <string name="export_favorites_pref_key">export_favorites_pref</string>
+    <string name="export_favorites_summary">Экспортировать отмеченные звездой посты в файл</string>
+    
+    <string name="copy_text_menu_label">Текст</string>
+    <string name="copy_url_menu_label">Ссылку</string>
+    
+    <string name="list_menu_item">Вертикальный список</string>
+    <string name="pager_menu_item">Горизонтальный список</string>
+    
+    <string name="load_images_only_with_wifi_key">load_images_only_with_wifi_pref</string>
+    <string name="load_images_only_with_wifi_on_summary">Всегда, при любой сети</string>
+    <string name="load_images_only_with_wifi_off_summary">Только через Wi-Fi</string>
+    <string name="load_images_only_with_wifi_title">Загрузка картинок</string>
+    
+    <string name="posts_background_sync_key">posts_background_sync_pref</string>
+    <string name="posts_background_sync_title">Загружать посты в фоне</string>
+    <string name="background_sync_period_key">background_sync_period_pref</string>
+    <string name="background_sync_period_dialog_title">Проверять новые посты</string>
+    <string name="background_sync_period_title">Частота проверки новых постов</string>
+    <string name="new_posts_notification_title">Новые посты</string>
+</resources>

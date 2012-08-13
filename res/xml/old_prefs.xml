@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="@string/main_setting_header_title" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/petr_pref_key"
+            android:summaryOff="@string/petr_turned_off"
+            android:summaryOn="@string/petr_turned_on"
+            android:title="@string/petr_pref_title" />
+
+        <com.shaubert.util.ListPreferenceWithAutoSummary
+            android:defaultValue="14"
+            android:dialogTitle="@string/font_size_dialog_title"
+            android:entries="@array/font_size_labes"
+            android:entryValues="@array/font_size_values"
+            android:key="@string/font_size_pref_key"
+            android:summary="%s"
+            android:title="@string/font_size_pref_title" />
+        
+	    <CheckBoxPreference
+	        android:defaultValue="true"
+	        android:key="@string/load_images_only_with_wifi_key"
+	        android:summaryOff="@string/load_images_only_with_wifi_off_summary"
+	        android:summaryOn="@string/load_images_only_with_wifi_on_summary"
+	        android:title="@string/load_images_only_with_wifi_title" />
+    </PreferenceCategory>
+    
+    <PreferenceCategory android:title="@string/background_sync_setting_header_title">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="@string/posts_background_sync_key"
+            android:title="@string/posts_background_sync_title" />
+
+        <com.shaubert.util.ListPreferenceWithAutoSummary
+            android:defaultValue="86400000"
+            android:dependency="@string/posts_background_sync_key"
+            android:dialogTitle="@string/background_sync_period_dialog_title"
+            android:entries="@array/sync_time_labes"
+            android:entryValues="@array/sync_time_values"
+            android:key="@string/background_sync_period_key"
+            android:summary="%s"
+            android:title="@string/background_sync_period_title" />
+    </PreferenceCategory>
+    
+    <PreferenceCategory android:title="@string/favorites_setting_header_title" >
+        <Preference
+            android:key="@string/export_favorites_pref_key"
+            android:summary="@string/export_favorites_summary"
+            android:title="@string/export_favorites" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

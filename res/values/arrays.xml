@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="new_post_formats">
+        <item>У нас %s</item>
+        <item>Ого, %s</item>
+        <item>Кто-то припер еще %s</item>
+        <item>Ну сколько можно, опять %s</item>
+        <item>Прочитай еще %s, да выпей чаю</item>
+        <item>Только между нам, там %s</item>
+        <item>Там %s. Мне это понравилось</item>
+        <item>От чего коровы с ума сходят? Кстати, там %s</item>
+        <item>Ну вы послушайте! По-моему, у вас высшее образование. Там %s</item>
+        <item>Я посмотрел информацию: %s</item>
+        <item>Сейчас нужно смотреть в будущее, там %s</item>
+        <item>Должна же быть дурь в голове. И она периодически появляется. Там %s</item>
+        <item>Ну что, показать вам еще эксклюзив? Там %s</item>        
+    </string-array>
+    
+    <string-array name="error_messages">
+    	<item>Не кричите, не надо... Да, что-то пошло не так</item>
+		<item>У нас проблемы. Валерьяночки, может, вам?</item>
+		<item>Тут проблемы, но если это кого-то и трогает, то нам на это наплевать</item>
+		<item>Только что произошло вопиющее нарушение норм международного права</item>
+		<item>Обманули самым примитивным образом</item>
+		<item>Давайте будем вежливы, всегда бывают проблемы</item>
+		<item>Скажу честно, в том, что сейчас произошло, виноваты вы</item>
+		<item>Раздался бульк и пошли волны</item>
+		<item>У бизнеса нет оправдания тому, что сейчас случилось</item>
+		<item>У нас проблемы. Вижу, как борьба света и тьмы проходит по вам</item>
+	</string-array>
+
+    <string-array name="font_size_labes">
+    	<item>Маленький</item>
+		<item>Небольшой</item>
+		<item>Средний</item>
+		<item>Крупный</item>
+		<item>Здоровый</item>
+		<item>Громадный</item>
+	</string-array>
+    
+    <string-array name="font_size_values">
+    	<item>10</item>
+		<item>12</item>
+		<item>14</item>
+		<item>16</item>
+		<item>18</item>
+		<item>20</item>
+	</string-array>
+	
+    <string-array name="sync_time_labes">
+    	<item>Каждые полчаса</item>
+		<item>Раз в час</item>
+		<item>Раз в два часа</item>
+		<item>Раз в четыре часа</item>
+		<item>Два раза в день</item>
+		<item>Раз в день</item>
+	</string-array>
+    
+    <string-array name="sync_time_values">
+    	<item>1800000</item>
+		<item>3600000</item>
+		<item>7200000</item>
+		<item>14400000</item>
+		<item>43200000</item>
+		<item>86400000</item>
+	</string-array>
+    
+</resources>

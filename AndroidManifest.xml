@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.shaubert.dirty"
+    android:installLocation="preferExternal"
+    android:versionCode="3"
+    android:versionName="1.1" >
+
+    <uses-sdk
+        android:minSdkVersion="7"
+        android:targetSdkVersion="16" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <application
+        android:name=".DirtyApp"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/DirtyTheme" >
+        <activity
+            android:name=".PostsListActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTop" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".PostsPagerActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/setting_menu_item_title" />
+
+        <receiver
+            android:name=".BackgroundPostLoaderReceiver"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.shaubert.dirty.BackgroundPostLoaderReceiver.SYNC_ACTION" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".BootCompletedReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name=".net.RequestService" />
+
+        <provider
+            android:name=".db.DirtyContentProvider"
+            android:authorities="com.shaubert.dirty"
+            android:exported="false" />
+        <provider
+            android:name=".net.RequestContentProvider"
+            android:authorities="com.shaubert.dirty.net"
+            android:exported="false" />
+    </application>
+
+</manifest>

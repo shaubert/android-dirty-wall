@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <Preference
+        android:key="@string/export_favorites_pref_key"
+        android:summary="@string/export_favorites_summary"
+        android:title="@string/export_favorites" />
+
+</PreferenceScreen>

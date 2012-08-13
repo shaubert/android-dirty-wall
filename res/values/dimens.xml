@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Size of the fastscroll hint -->
+    <dimen name="fastscroll_overlay_width">280dp</dimen>
+    <dimen name="fastscroll_overlay_height">80dp</dimen>
+    <!-- Overlay font size -->
+    <dimen name="fastscroll_overlay_font_size">20sp</dimen>
+    <!-- Width of the fastscroll thumb -->
+    <dimen name="fastscroll_thumb_width">64dp</dimen>
+    <!-- Height of the fastscroll thumb -->
+    <dimen name="fastscroll_thumb_height">52dp</dimen>
+
+</resources>
