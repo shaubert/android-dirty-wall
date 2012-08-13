@@ -129,17 +129,11 @@ public class PostsListActivity extends DirtyBaseActivity {
     		if (data != null) {
     			final long postId = data.getLongExtra(PostsPagerActivity.EXTRA_POST_ID, -1);
     			if (postId >= 0) {
-    				int pos = postCompactAdapter.getPostPosition(postId);
-    				if (pos >= 0) {
-    					postsCompactList.setSelection(pos + 1);
-    				} else {
+    				if (!moveTo(postId)) {
     					postCompactAdapter.setLoadCompleteListener(new OnLoadCompleteListener() {
 							@Override
 							public void onLoadComplete(DirtyPostCompactAdapter adapter) {
-								int pos = postCompactAdapter.getPostPosition(postId);
-								if (pos >= 0) {
-									postsCompactList.setSelection(pos + 1);
-								}
+								moveTo(postId);
 			    				postCompactAdapter.setLoadCompleteListener(null);
 							}
 						});
@@ -148,6 +142,20 @@ public class PostsListActivity extends DirtyBaseActivity {
     		}
     	}
     	super.onActivityResult(requestCode, resultCode, data);
+    }
+    
+	private boolean moveTo(final long postId) {
+    	final int pos = postCompactAdapter.getPostPosition(postId);
+    	if (pos >= 0) {
+    		postsCompactList.post(new Runnable() {
+				public void run() {
+					postsCompactList.setSelection(pos + 1);
+				}
+    		}); 
+    		return true;
+    	} else {
+    		return false;
+    	}
     }
     
     @Override

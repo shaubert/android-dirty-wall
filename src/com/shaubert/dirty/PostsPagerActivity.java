@@ -65,6 +65,7 @@ public class PostsPagerActivity extends DirtyBaseActivity {
         postFragmentsAdapter = new DirtyPostFragmentsAdapter(this);
         postPager.setAdapter(postFragmentsAdapter);
         postFragmentsAdapter.setShowOnlyFavorites(dirtyPreferences.isShowingOnlyFavorites());
+        postFragmentsAdapter.setEmptyView(dirtyTv);
         
         getSupportLoaderManager().initLoader(Loaders.DIRTY_POST_IDS_LOADER, null, postFragmentsAdapter);
     }
