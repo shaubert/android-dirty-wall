@@ -1,18 +1,6 @@
 package com.shaubert.dirty;
 
-import com.shaubert.dirty.client.DirtyRecord.Image;
-import com.shaubert.dirty.db.CommentsCursor;
-import com.shaubert.dirty.db.DirtyContract.DirtyCommentEntity;
-import com.shaubert.dirty.net.DataLoadRequest;
-import com.shaubert.util.Bitmaps;
-import com.shaubert.util.Bitmaps.Size;
-import com.shaubert.util.Files;
-import com.shaubert.util.FixedSizeImageView;
-import com.shaubert.util.Networks;
-import com.shaubert.util.SelectableLinkMovementMethod;
-import com.shaubert.util.Shlog;
-import com.shaubert.util.Sizes;
-import com.shaubert.util.Spannables;
+import java.io.File;
 
 import android.content.ContentUris;
 import android.content.Context;
@@ -40,7 +28,18 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.io.File;
+import com.shaubert.dirty.client.DirtyRecord.Image;
+import com.shaubert.dirty.db.CommentsCursor;
+import com.shaubert.dirty.db.DirtyContract.DirtyCommentEntity;
+import com.shaubert.dirty.net.DataLoadRequest;
+import com.shaubert.util.Bitmaps;
+import com.shaubert.util.Bitmaps.Size;
+import com.shaubert.util.Files;
+import com.shaubert.util.FixedSizeImageView;
+import com.shaubert.util.Networks;
+import com.shaubert.util.SelectableLinkMovementMethod;
+import com.shaubert.util.Shlog;
+import com.shaubert.util.Sizes;
 
 public class DirtyCommentView extends LinearLayout implements Checkable {
 
@@ -164,8 +163,6 @@ public class DirtyCommentView extends LinearLayout implements Checkable {
             messageText = Html.fromHtml(cursor.getFormattedMessage());
             spanCache.put(commentServerId, messageText);
         }
-        Spannables.clearMetrictAffectingSpansIfJB(messageText);
-             
         if (!TextUtils.isEmpty(messageText)) {
             message.setText(messageText);
             message.setVisibility(View.VISIBLE);

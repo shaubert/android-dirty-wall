@@ -23,6 +23,8 @@ import android.text.style.TypefaceSpan;
 import android.text.style.URLSpan;
 import android.text.style.UnderlineSpan;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 
 public class HtmlHelper {
@@ -80,7 +82,7 @@ public class HtmlHelper {
                 }
             }
         }
-        if (spans != null) {
+        if (spans != null && !TextUtils.isEmpty(result)) {
             for (Object span : spans) {
                 result.setSpan(span, 0, result.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
@@ -127,7 +129,7 @@ public class HtmlHelper {
         } else if (tag.equalsIgnoreCase("a")) {
             String url = node.getAttributes().getValue("", "href");
             if (url.startsWith("/")) {
-                url = "http://www.dirty.ru" + url;
+                url = "http://www.d3.ru" + url;
             } else if (!url.startsWith("http")) {
                 url = "http://" + url;
             }
@@ -353,6 +355,29 @@ public class HtmlHelper {
         }
     }
 
+    private static void moveDownUrlSpans(CharacterStyle[] styles) {
+    	Arrays.sort(styles, new Comparator<CharacterStyle>() {
+			@Override
+			public int compare(CharacterStyle lhs, CharacterStyle rhs) {
+				boolean lhsIsUrl = lhs instanceof URLSpan;
+				boolean rhsIsUrl = rhs instanceof URLSpan;
+				if (lhsIsUrl) {
+					if (rhsIsUrl) {
+						return 0;
+					} else {
+						return 1;
+					}
+				} else {
+					if (rhsIsUrl) {
+						return -1;
+					} else {
+						return 0;
+					}
+				}
+			}
+		});
+    }
+    
     private static void withinParagraph(StringBuilder out, Spanned text,
                                         int start, int end, int nl,
                                         boolean last) {
@@ -362,7 +387,8 @@ public class HtmlHelper {
             next = text.nextSpanTransition(i, end, CharacterStyle.class);
             CharacterStyle[] style = text.getSpans(i, next,
                                                    CharacterStyle.class);
-
+            moveDownUrlSpans(style);
+            
             for (int j = 0; j < style.length; j++) {
                 if (style[j] instanceof RelativeSizeSpan) {
                     hasHSpan = true;

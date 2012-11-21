@@ -13,19 +13,10 @@
         android:visibility="gone" >
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/img_above_gertruda" />
-
-        <ImageView
             android:id="@+id/gertruda"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/img_under_gertruda" />
     </LinearLayout>
 
     <TextView

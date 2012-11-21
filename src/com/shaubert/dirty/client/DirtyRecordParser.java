@@ -3,6 +3,7 @@ package com.shaubert.dirty.client;
 import com.shaubert.util.Dates;
 import com.shaubert.util.Shlog;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -12,13 +13,15 @@ public class DirtyRecordParser {
     private static final Shlog SHLOG = new Shlog(DirtyRecordParser.class.getSimpleName());
     
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-    private final SimpleDateFormat dateWithTimeFormat = new SimpleDateFormat("dd.MM.yyyy hh.mm");
+    private final SimpleDateFormat dateWithTimeFormat1 = new SimpleDateFormat("dd MMMM yyyy hh.mm");
+    private final SimpleDateFormat dateWithTimeFormat2 = new SimpleDateFormat("dd.MM.yyyy hh.mm");
     
     private static final String YOUTUBE_VIDEO_PATH = "http://img.youtube.com/vi/";
     
     public DirtyRecordParser() {
         dateFormat.setTimeZone(Dates.GMT);
-        dateWithTimeFormat.setTimeZone(Dates.GMT);
+        dateWithTimeFormat1.setTimeZone(Dates.GMT);
+        dateWithTimeFormat2.setTimeZone(Dates.GMT);
     }
 
     public Date parseDate(String recordDate) {
@@ -38,11 +41,26 @@ public class DirtyRecordParser {
             } else {
                 dateWithTime = date + " " + dateTime[1];
             }
-            return dateWithTimeFormat.parse(dateWithTime);
+            Date res = parseDateStr(dateWithTime, dateWithTimeFormat1);
+            if (res == null) {
+            	res = parseDateStr(dateWithTime, dateWithTimeFormat2);
+            }
+            
+            if (res != null) {
+            	return res;
+            }
         } catch (Exception ex) {
             SHLOG.w(ex);
         }
         return new Date(0);
+    }
+    
+    private Date parseDateStr(String str, DateFormat format) {
+    	try {
+    		return format.parse(str);
+    	} catch (Exception ex) {
+    		return null;
+    	}
     }
     
     public String tryToConvertToVideoUrl(String imageUrl) {

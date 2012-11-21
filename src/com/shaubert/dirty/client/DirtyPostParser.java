@@ -6,6 +6,7 @@ import com.shaubert.blogadapter.client.PagerDataParserResult;
 import com.shaubert.blogadapter.client.Parser;
 import com.shaubert.blogadapter.client.ParserResultList;
 import com.shaubert.dirty.client.DirtyRecord.Image;
+import com.shaubert.dirty.client.HtmlTagFinder.AttributeWithValue.Constraint;
 import com.shaubert.dirty.client.HtmlTagFinder.Callback;
 import com.shaubert.dirty.client.HtmlTagFinder.Rule;
 import com.shaubert.util.HtmlHelper;
@@ -24,9 +25,9 @@ public class DirtyPostParser extends HtmlParser implements Parser {
     
     private static final String POST_HTML_PARSING_TIMER = "posts receiving and html parsing time";
     
-    private static final String POST_GOLDEN_DIV_CLASS = "post golden ord";
-    private static final String POST_DIV_CLASS = "post ord";
-    private static final String GERTRUDA_DIV_CLASS = "gertruda";
+    private static final String POST_GOLDEN_DIV_CLASS_PART = "golden";
+    private static final String POST_DIV_CLASS = "post";
+    private static final String GERTRUDA_DIV_CLASS = "b-gertruda";
     private static final String TOTAL_PAGES_DIV_ID = "total_pages";    
     
     private static String gertrudaUrl = null;
@@ -52,8 +53,7 @@ public class DirtyPostParser extends HtmlParser implements Parser {
         this.result = new PagerDataParserResult<DirtyPost>();
         this.result.setResult(new ArrayList<DirtyPost>());
         
-        addTagFinder(new HtmlTagFinder(new Rule("div").withAttributeWithValue("class", POST_DIV_CLASS), postCallback));
-        addTagFinder(new HtmlTagFinder(new Rule("div").withAttributeWithValue("class", POST_GOLDEN_DIV_CLASS), postCallback));
+        addTagFinder(new HtmlTagFinder(new Rule("div").withAttributeWithValue("class", POST_DIV_CLASS, Constraint.STARTS_WITH), postCallback));
         addTagFinder(new HtmlTagFinder(new Rule("div").withAttributeWithValue("class", GERTRUDA_DIV_CLASS), gertrudaCallback));
         addTagFinder(new HtmlTagFinder(new Rule("div").withAttributeWithValue("id", TOTAL_PAGES_DIV_ID), totalPagesCallback));
         
@@ -100,7 +100,8 @@ public class DirtyPostParser extends HtmlParser implements Parser {
         DirtyPost dirtyPost = new DirtyPost();
         dirtyPost.setServerId(Long.parseLong(post.getAttributes().getValue("", "id").substring(1)));
         SHLOG.d("parsing post " + dirtyPost.getServerId());
-        dirtyPost.setGolden(POST_GOLDEN_DIV_CLASS.equalsIgnoreCase(post.getAttributes().getValue("", "class")));
+        boolean isGolden = post.getAttributes().getValue("", "class").contains(POST_GOLDEN_DIV_CLASS_PART);
+		dirtyPost.setGolden(isGolden);
         
         List<HtmlTagFinder.TagNode> childTags = post.getNotContentChilds();
         HtmlTagFinder.TagNode body = childTags.get(0);
@@ -108,12 +109,12 @@ public class DirtyPostParser extends HtmlParser implements Parser {
         
         HtmlTagFinder.TagNode info = childTags.get(1);
         List<HtmlTagFinder.TagNode> infoTags = info.getNotContentChilds();
-        dirtyPost.setAuthor(infoTags.get(1).getChilds().get(0).getText());
-        dirtyPost.setAuthorLink("http://dirty.ru" + infoTags.get(1).getAttributes().getValue("", "href"));
-        String postDate = info.getChilds().get(3).getText().substring(2);
+        dirtyPost.setAuthor(infoTags.get(0).getChilds().get(0).getText());
+        dirtyPost.setAuthorLink("http://d3.ru" + infoTags.get(0).getAttributes().getValue("", "href"));
+        String postDate = info.getChilds().get(2).getText().substring(2);
         dirtyPost.setCreationDate(helperParser.parseDate(postDate));
         dirtyPost.setCommentsCount(0);
-        String commentsString = infoTags.get(2).getNotContentChilds().get(0).getChilds().get(0).getText();
+        String commentsString = infoTags.get(1).getNotContentChilds().get(0).getChilds().get(0).getText();
         if (commentsString.split(" ").length == 2) {
             try {
                 dirtyPost.setCommentsCount(Integer.parseInt(commentsString.split(" ")[0]));
@@ -121,7 +122,7 @@ public class DirtyPostParser extends HtmlParser implements Parser {
                 SHLOG.w(ex);
             }
         }
-        dirtyPost.setVotesCount(Integer.parseInt(infoTags.get(4).getNotContentChilds().get(0).getChilds().get(0).getText()));
+    	dirtyPost.setVotesCount(Integer.parseInt(infoTags.get(isGolden ? 3 : 2).getNotContentChilds().get(0).getChilds().get(0).getText()));
         this.result.getResult().add(dirtyPost);
     }
     

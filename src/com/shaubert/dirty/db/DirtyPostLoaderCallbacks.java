@@ -13,9 +13,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.MetricAffectingSpan;
 
 import com.shaubert.dirty.Loaders;
 import com.shaubert.dirty.client.DirtyPost;
@@ -23,8 +20,6 @@ import com.shaubert.dirty.client.DirtyRecord.Image;
 import com.shaubert.dirty.db.DirtyContract.DirtyPostEntity;
 import com.shaubert.util.Files;
 import com.shaubert.util.Shlog;
-import com.shaubert.util.Spannables;
-import com.shaubert.util.Versions;
 
 public abstract class DirtyPostLoaderCallbacks implements LoaderCallbacks<Cursor> {
     
@@ -96,8 +91,7 @@ public abstract class DirtyPostLoaderCallbacks implements LoaderCallbacks<Cursor
                 DirtyPost post = params[0];
                 
                 SHLOG.resetTimer(REFRESING_SPANNED_TEXT_TIMER + postId);
-                Spanned text = post.getSpannedText();
-                Spannables.clearMetrictAffectingSpansIfJB(text);
+                post.getSpannedText();
                 SHLOG.logTimer(REFRESING_SPANNED_TEXT_TIMER + postId);
                 
                 Image[] images = dirtyPost.getImages();

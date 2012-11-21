@@ -96,7 +96,7 @@ public class DirtyCommentParser extends HtmlParser implements Parser {
         
         List<TagNode> infoTags = info.getNotContentChilds();
         comment.setAuthor(infoTags.get(1).getChilds().get(0).getText());
-        comment.setAuthorLink("http://dirty.ru" + infoTags.get(1).getAttributes().getValue("", "href"));
+        comment.setAuthorLink("http://www.d3.ru" + infoTags.get(1).getAttributes().getValue("", "href"));
         String commentDate = info.getChilds().get(3).getText().substring(2);
         comment.setCreationDate(helperParser.parseDate(commentDate));
         comment.setVotesCount(Integer.parseInt(info.findAll(new Rule("div").withAttributeWithValue("class", "vote c_vote"))

@@ -20,7 +20,7 @@
             android:background="@drawable/frame_background"
             android:orientation="vertical" >
 
-            <TextView
+            <com.shaubert.widget.PatchedTextView
                 android:id="@+id/message"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
 
             </LinearLayout>
             
-            <TextView
+            <com.shaubert.widget.PatchedTextView
                 android:id="@+id/summary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

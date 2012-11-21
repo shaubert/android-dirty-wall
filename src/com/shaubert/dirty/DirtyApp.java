@@ -1,9 +1,9 @@
 package com.shaubert.dirty;
 
-import com.shaubert.util.Shlog;
-
 import android.app.Application;
 import android.preference.PreferenceManager;
+
+import com.shaubert.util.Shlog;
 
 public class DirtyApp extends Application {
 
