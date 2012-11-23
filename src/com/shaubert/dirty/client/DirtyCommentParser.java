@@ -95,13 +95,18 @@ public class DirtyCommentParser extends HtmlParser implements Parser {
         comment.setImages(images.toArray(new Image[images.size()]));
         
         List<TagNode> infoTags = info.getNotContentChilds();
-        comment.setAuthor(infoTags.get(1).getChilds().get(0).getText());
-        comment.setAuthorLink("http://www.d3.ru" + infoTags.get(1).getAttributes().getValue("", "href"));
-        String commentDate = info.getChilds().get(3).getText().substring(2);
+        int authorChildIndex = infoTags.size() == 1 ? 0 : 1;
+        TagNode authorTag = infoTags.get(authorChildIndex);
+		comment.setAuthor(authorTag.getChilds().get(0).getText());
+        comment.setAuthorLink("http://www.d3.ru" + authorTag.getAttributes().getValue("", "href"));
+        String commentDate = info.getChilds().get(infoTags.size() == 1 ? 2 : 3).getText().substring(2);
         comment.setCreationDate(helperParser.parseDate(commentDate));
-        comment.setVotesCount(Integer.parseInt(info.findAll(new Rule("div").withAttributeWithValue("class", "vote c_vote"))
-                .get(0).getNotContentChilds().get(0).getChilds().get(0).getText()));
-        
+        List<TagNode> voteTags = info.findAll(new Rule("div").withAttributeWithValue("class", "vote c_vote"));
+        if (!voteTags.isEmpty()) {
+			comment.setVotesCount(Integer.parseInt(voteTags.get(0).getNotContentChilds().get(0).getChilds().get(0).getText()));
+        } else {
+        	comment.setVotesCount(0);
+        }
         comment.setOrder(result.getResult().size());
         result.getResult().add(comment);
     } 
