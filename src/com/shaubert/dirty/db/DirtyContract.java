@@ -2,6 +2,7 @@ package com.shaubert.dirty.db;
 
 import static androidx.persistence.CascadeType.REMOVE;
 
+import org.ecype.diego.Update;
 import org.ecype.diego.Uris;
 
 import android.content.ContentUris;
@@ -16,7 +17,7 @@ import androidx.persistence.Id;
 import androidx.persistence.ManyToOne;
 import androidx.persistence.OneToMany;
 
-@Contract(authority = DirtyContract.AUTHORITY, dbFileName = "dirty.db", version = 16)
+@Contract(authority = DirtyContract.AUTHORITY, dbFileName = "dirty.db", version = 18)
 public class DirtyContract {
     
     public static final String AUTHORITY = "com.shaubert.dirty";
@@ -59,11 +60,11 @@ public class DirtyContract {
         public static final String FORMATTED_MESSAGE = "formatted_message";
         
         @Column(type = ColumnType.LONG)
-        public static final String INSERT_TIME = "insert_time";
-        
+        public static final String INSERT_TIME = "insert_time";        
     }
     
     @Entity
+    @Update(callback = DirtyPostTableUpdater.class)
     public static class DirtyPostEntity extends DirtyRecordColums {
         
         @OneToMany(targetEntity = DirtyCommentEntity.class)
@@ -77,7 +78,13 @@ public class DirtyContract {
         
         @Column(type = ColumnType.INT)
         public static final String FAVORITE = "favorite";
+        
+        @Column(type = ColumnType.INT)
+        public static final String UNREAD = "unread";
                 
+        @Column(type = ColumnType.STRING)
+        public static final String SUB_BLOG_NAME = "sub_blog_name";
+        
         public static final Uri URI = Uri.parse("content://" + AUTHORITY + "/dirtypostentity");
         
         public static Uri getCommentsUri(long postId) {
@@ -88,6 +95,7 @@ public class DirtyContract {
     }
     
     @Entity
+    @Update(callback = DirtyCommentTableUpdater.class)
     public static class DirtyCommentEntity extends DirtyRecordColums {
        
         @ManyToOne(targetEntity = DirtyPostEntity.class, cascade = REMOVE)

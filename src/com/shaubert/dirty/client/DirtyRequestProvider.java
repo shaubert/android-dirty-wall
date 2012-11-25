@@ -10,7 +10,7 @@ public class DirtyRequestProvider implements RequestProvider {
     @Override
     public DataLoaderRequest createRequestForPosts() {
         HttpDataLoaderRequest request = new HttpDataLoaderRequest();
-        request.setUrl("http://www.d3.ru");
+        request.setUrl("http://www.d3.ru/new");
         return request;
     }
 
@@ -18,13 +18,22 @@ public class DirtyRequestProvider implements RequestProvider {
     public DataLoaderRequest createRequestForComments(Post post) {
         DirtyPost dirtyPost = (DirtyPost)post;
         HttpDataLoaderRequest request = new HttpDataLoaderRequest();
-        request.setUrl("http://www.d3.ru/comments/" + dirtyPost.getServerId());
+        String subBlogUrl = getSubBlogUrl(dirtyPost);
+        request.setUrl("http://" + subBlogUrl + "/comments/" + dirtyPost.getServerId());
         return request;
     }
 
+	private String getSubBlogUrl(DirtyPost dirtyPost) {
+		String subBlogUrl = dirtyPost.getSubBlogName();
+        if (subBlogUrl == null) {
+        	subBlogUrl = "d3.ru";
+        }
+		return subBlogUrl;
+	}
+
     public DataLoaderRequest createRequestForComment(DirtyPost post, long commentServerId) {
         HttpDataLoaderRequest request = new HttpDataLoaderRequest();
-        request.setUrl("http://www.dirty.ru/comments/" + post.getServerId() + "/#" + commentServerId);
+        request.setUrl("http://" + getSubBlogUrl(post) + "/comments/" + post.getServerId() + "/#" + commentServerId);
         return request;
     }
 

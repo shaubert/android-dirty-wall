@@ -81,6 +81,15 @@ public class DirtyPostFragmentsAdapter extends FragmentStatePagerAdapterWithData
         }
     }
     
+    public boolean isUnread(int position) {
+        if (postIds != null && postIds.getCount() > 0) {
+            postIds.moveToPosition(position);
+            return postIds.getInt(2) != 0;
+        } else {
+            return false;
+        }
+    }
+    
     @Override
     public int getCount() {
         return postIds == null ? 0 : postIds.getCount();
@@ -108,7 +117,9 @@ public class DirtyPostFragmentsAdapter extends FragmentStatePagerAdapterWithData
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(fragmentActivity, DirtyPostEntity.URI, 
-                new String[] { DirtyPostEntity.ID, "substr(" + DirtyPostEntity.MESSAGE + ", 1, 15)" }, 
+                new String[] { DirtyPostEntity.ID, 
+	        		"substr(" + DirtyPostEntity.MESSAGE + ", 1, 15)",
+	        		DirtyPostEntity.UNREAD }, 
                 showOnlyFavorites ? (DirtyPostEntity.FAVORITE + " != 0") : null, 
                 null, DirtyPostEntity.CREATION_DATE + " DESC");
     }

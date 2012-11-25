@@ -80,10 +80,15 @@ public class DirtyPostLoadRequest extends RequestBase {
         ContentProviderOperations result = new ContentProviderOperations();
         ArrayList<ContentProviderOperation> operations = new ArrayList<ContentProviderOperation>();
         Cursor currentPosts = executionContext.getContext().getContentResolver().query(
-                DirtyPostEntity.URI, new String [] { DirtyPostEntity.ID, DirtyPostEntity.SERVER_ID }, null, null, null);
+                DirtyPostEntity.URI, new String [] { DirtyPostEntity.ID, DirtyPostEntity.SERVER_ID, DirtyPostEntity.UNREAD }, null, null, null);
         try {
             for (DirtyPost post : dirtyPosts) {
-                post.setId(findId(currentPosts, post.getServerId()));
+            	if (moveCursorToPostWithServerId(currentPosts, post.getServerId())) {
+            		post.setId(currentPosts.getLong(0));
+            		post.setUnread(currentPosts.getInt(2) > 0);
+            	} else {
+            		post.setUnread(true);
+            	}
                 post.setInsertTime(System.currentTimeMillis());
                 operations.add(convertToOperation(post));
                 if (post.getId() == null) {
@@ -111,15 +116,15 @@ public class DirtyPostLoadRequest extends RequestBase {
         }
     }
 
-    private Long findId(Cursor currentPosts, long serverId) {
+    private boolean moveCursorToPostWithServerId(Cursor currentPosts, long serverId) {
         if (currentPosts.moveToFirst()) {
             do {
                 if (currentPosts.getLong(1) == serverId) {
-                    return currentPosts.getLong(0);
+                    return true;
                 }
             } while (currentPosts.moveToNext());
         }
-        return null;
+        return false;
     }
 
     private Pager<DirtyPost> createPager(DirtyBlog blog) {

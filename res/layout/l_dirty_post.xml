@@ -6,7 +6,7 @@
 
     <TextView
         android:layout_width="fill_parent"
-        android:layout_height="40dp" />
+        android:layout_height="40dp"/>
 
     <FrameLayout
         android:layout_width="fill_parent"
@@ -27,29 +27,28 @@
                 android:layout_gravity="center"
                 android:layout_margin="8dp" />
 
-            <LinearLayout 
+            <LinearLayout
                 android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:layout_gravity="center">
-            
-	            <Button
-	                android:id="@+id/load_refresh_comments"
-	                android:layout_width="wrap_content"
-	                android:layout_height="wrap_content"	                
-	                android:focusable="false"
-	                android:textSize="13dp"
-	                android:text="@string/load_comments" />
-	            
-	            <ImageButton 
-	                android:id="@+id/favorite_button"
-	                android:layout_width="wrap_content"
-	                android:layout_height="fill_parent"
-	                android:scaleType="center"
-	                android:src="@drawable/star_filled"
-	                android:focusable="false"/>
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" >
 
+                <Button
+                    android:id="@+id/load_refresh_comments"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:text="@string/load_comments"
+                    android:textSize="13dp" />
+
+                <ImageButton
+                    android:id="@+id/favorite_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:focusable="false"
+                    android:scaleType="center"
+                    android:src="@drawable/star_filled" />
             </LinearLayout>
-            
+
             <com.shaubert.widget.PatchedTextView
                 android:id="@+id/summary"
                 android:layout_width="wrap_content"

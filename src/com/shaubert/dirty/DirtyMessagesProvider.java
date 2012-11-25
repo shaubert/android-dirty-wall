@@ -50,40 +50,40 @@ public class DirtyMessagesProvider {
         
         int[] faces = new int[] {
                 R.drawable.jir_eblo1,
-                R.drawable.jir_eblo2,
-                R.drawable.jir_eblo3,
-                R.drawable.jir_eblo4,
-                R.drawable.jir_eblo5,
+                R.drawable.jir_eblo10,
+                R.drawable.jir_eblo11,
+                R.drawable.jir_eblo13,
+                R.drawable.jir_eblo9,
                 
-                R.drawable.med_eblo1,
-                R.drawable.med_eblo2,
-                R.drawable.med_eblo3,
                 R.drawable.med_eblo4,
-                R.drawable.med_eblo5,
                 
-                R.drawable.mudalcov_1,
-                R.drawable.mudalcov_2,
-                R.drawable.mudalcov_3,
-                R.drawable.mudalcov_4,
-                R.drawable.mudalcov_5,
+                R.drawable.chak_chak_14,
+                R.drawable.chak_chak_8,
                 
-                R.drawable.prohor_eblo1,
-                R.drawable.prohor_eblo2,
-                R.drawable.prohor_eblo3,
-                R.drawable.prohor_eblo4,
-                R.drawable.prohor_eblo5,
+                R.drawable.griyzl_eblo2,
+                R.drawable.griyzl_eblo4,
+                R.drawable.griyzl_eblo7,
                 
-                R.drawable.put_eblo1,
-                R.drawable.put_eblo2,
+                R.drawable.prohor_eblo8,
+                
+                R.drawable.ochishenko_2,
+                R.drawable.ochishenko_3,
+                R.drawable.ochishenko_4,
+                R.drawable.ochishenko_7,
+                R.drawable.ochishenko_10,
+                
                 R.drawable.put_eblo3,
                 R.drawable.put_eblo4,
                 R.drawable.put_eblo5,
                 
-                R.drawable.ziuga_eblo1,
-                R.drawable.ziuga_eblo2,
-                R.drawable.ziuga_eblo3,
-                R.drawable.ziuga_eblo4,
-                R.drawable.ziuga_eblo5,
+                R.drawable.ziuga_eblo12,
+                
+                R.drawable.kirill_2,
+                R.drawable.kirill_3,
+                
+                R.drawable.gera_4,
+                R.drawable.gera_5,
+                R.drawable.gera_6,
         };
         
         this.postLoadedMuden = new Muden(faces, appContext.getResources().getStringArray(R.array.new_post_formats)); 

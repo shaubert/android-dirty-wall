@@ -30,7 +30,15 @@ public class DirtyPost extends DirtyRecord {
     public boolean isFavorite() {
         return values.getIntAsBoolean(DirtyPostEntity.FAVORITE, false);
     }
-        
+    
+    public boolean isUnread() {
+        return values.getIntAsBoolean(DirtyPostEntity.UNREAD, false);
+    }
+    
+    public void setUnread(boolean unread) {
+        values.putBooleanAsInt(DirtyPostEntity.UNREAD, unread);
+    }
+    
     public int getCommentsCount() {
         return values.getAsInteger(DirtyPostEntity.COMMENTS_COUNT, 0);
     }
@@ -38,5 +46,12 @@ public class DirtyPost extends DirtyRecord {
     public void setCommentsCount(int commentsCount) {
         this.values.put(DirtyPostEntity.COMMENTS_COUNT, commentsCount);
     }
-                
+     
+    public void setSubBlogName(String subBlogName) {
+        this.values.put(DirtyPostEntity.SUB_BLOG_NAME, subBlogName);
+    }
+    
+    public String getSubBlogName() {
+        return this.values.getAsString(DirtyPostEntity.SUB_BLOG_NAME, null);
+    }
 } 

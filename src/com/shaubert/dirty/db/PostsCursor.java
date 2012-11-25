@@ -24,8 +24,10 @@ public class PostsCursor extends CursorWrapper {
     private int formattedMessage;
     private int insertionTime;
     private int golden;
+    private int unread;
     private int favorite;
     private int commentsCount;
+    private int subBlogName;
     
     public PostsCursor(Cursor cursor) {
         super(cursor);
@@ -47,7 +49,9 @@ public class PostsCursor extends CursorWrapper {
         insertionTime = cursor.getColumnIndex(DirtyPostEntity.INSERT_TIME);
         commentsCount = cursor.getColumnIndex(DirtyPostEntity.COMMENTS_COUNT);
         golden = cursor.getColumnIndex(DirtyPostEntity.GOLDEN);
+        unread = cursor.getColumnIndex(DirtyPostEntity.UNREAD);
         favorite = cursor.getColumnIndex(DirtyPostEntity.FAVORITE);
+        subBlogName = cursor.getColumnIndexOrThrow(DirtyPostEntity.SUB_BLOG_NAME);
     }
 
     public long getId() {
@@ -108,6 +112,14 @@ public class PostsCursor extends CursorWrapper {
     
     public boolean isFavorite() {
 		return getInt(favorite) != 0;
+	}
+    
+    public boolean isUnread() {
+    	return getInt(unread) != 0;
+    }
+    
+    public String getSubBlogName() {
+		return getString(subBlogName);
 	}
     
     @Override

@@ -3,7 +3,7 @@
 
     <string name="app_name">Dirty Wall</string>
     
-    <string name="post_summary_format" formatted="false">Написал %s, %s, %s, %s</string>
+    <string name="post_summary_format" formatted="false">Написал %s на %s, %s, %s, %s</string>
     <string name="comment_summary_format" formatted="false">Написал %s, %s, %s</string>
     <string name="creation_date_format" formatted="false">%s\u00A0в\u00A0%s</string>
     <string name="today">Сегодня</string>

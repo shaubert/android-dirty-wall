@@ -9,6 +9,7 @@ import com.shaubert.dirty.client.DirtyRecord.Image;
 import com.shaubert.dirty.client.HtmlTagFinder.AttributeWithValue.Constraint;
 import com.shaubert.dirty.client.HtmlTagFinder.Callback;
 import com.shaubert.dirty.client.HtmlTagFinder.Rule;
+import com.shaubert.dirty.client.HtmlTagFinder.TagNode;
 import com.shaubert.util.HtmlHelper;
 import com.shaubert.util.HtmlHelper.ImageHandler;
 import com.shaubert.util.Shlog;
@@ -20,6 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DirtyPostParser extends HtmlParser implements Parser {
     
@@ -29,6 +32,8 @@ public class DirtyPostParser extends HtmlParser implements Parser {
     private static final String POST_DIV_CLASS = "post";
     private static final String GERTRUDA_DIV_CLASS = "b-gertruda";
     private static final String TOTAL_PAGES_DIV_ID = "total_pages";    
+    
+    private static final Pattern DIGITS = Pattern.compile("[0-9]*");
     
     private static String gertrudaUrl = null;
     
@@ -108,21 +113,30 @@ public class DirtyPostParser extends HtmlParser implements Parser {
         parseBody(body, dirtyPost);
         
         HtmlTagFinder.TagNode info = childTags.get(1);
-        List<HtmlTagFinder.TagNode> infoTags = info.getNotContentChilds();
-        dirtyPost.setAuthor(infoTags.get(0).getChilds().get(0).getText());
-        dirtyPost.setAuthorLink("http://d3.ru" + infoTags.get(0).getAttributes().getValue("", "href"));
+        List<TagNode> aTags = info.findAll(new Rule("a"));
+        TagNode authorTag = aTags.get(0);
+		dirtyPost.setAuthor(authorTag.getChilds().get(0).getText());
+        dirtyPost.setAuthorLink("http://d3.ru" + authorTag.getAttributes().getValue("", "href"));
         String postDate = info.getChilds().get(2).getText().substring(2);
         dirtyPost.setCreationDate(helperParser.parseDate(postDate));
         dirtyPost.setCommentsCount(0);
-        String commentsString = infoTags.get(1).getNotContentChilds().get(0).getChilds().get(0).getText();
-        if (commentsString.split(" ").length == 2) {
+        TagNode commentsTag = info.findAll(new Rule("span")).get(0);
+        TagNode commentsHref = commentsTag.getNotContentChilds().get(0);
+        String commentsHrefUrl = commentsHref.getAttributes().getValue("href");
+        String d3BlogRef = commentsHrefUrl.startsWith("http") 
+        		? commentsHrefUrl.split("/")[2] : commentsHrefUrl.split("/")[1];
+        dirtyPost.setSubBlogName(d3BlogRef);
+		String commentsString = commentsHref.getChilds().get(0).getText();
+        Matcher commentsCountMatcher = DIGITS.matcher(commentsString);
+        if (commentsCountMatcher.find() && commentsCountMatcher.group().length() > 0) {
             try {
-                dirtyPost.setCommentsCount(Integer.parseInt(commentsString.split(" ")[0]));
+                dirtyPost.setCommentsCount(Integer.parseInt(commentsCountMatcher.group()));
             } catch (NumberFormatException ex) {
                 SHLOG.w(ex);
             }
         }
-    	dirtyPost.setVotesCount(Integer.parseInt(infoTags.get(isGolden ? 3 : 2).getNotContentChilds().get(0).getChilds().get(0).getText()));
+        TagNode voteTag = info.findAll(new Rule("div").withAttributeWithValue("class", "vote")).get(0);
+    	dirtyPost.setVotesCount(Integer.parseInt(voteTag.getNotContentChilds().get(0).getChilds().get(0).getText()));
         this.result.getResult().add(dirtyPost);
     }
     

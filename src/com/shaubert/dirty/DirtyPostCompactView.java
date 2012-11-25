@@ -3,6 +3,7 @@ package com.shaubert.dirty;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.graphics.drawable.StateListDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.preference.PreferenceManager;
@@ -103,11 +104,13 @@ public class DirtyPostCompactView extends FrameLayout implements Checkable {
     public void swapData(PostsCursor dirtyPost) {
     	postId = dirtyPost.getId();
     	isFavorite = dirtyPost.isFavorite();
+    	boolean unread = dirtyPost.isUnread();
     	
+    	message.setTypeface(null, unread ? Typeface.BOLD : Typeface.NORMAL);
+    	message.setTextSize(dirtyPreferences.getFontSize());
         message.setText(dirtyPost.getMessage());
-        message.setTextSize(dirtyPreferences.getFontSize());
+		summary.setTextSize(dirtyPreferences.getSummarySize());
         summary.setText(summaryFormatter.formatCompactSummaryText(dirtyPost));
-        summary.setTextSize(dirtyPreferences.getSummarySize());
         refreshFavoriteButton();
     }
 

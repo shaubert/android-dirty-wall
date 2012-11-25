@@ -9,6 +9,7 @@ import com.shaubert.util.PluralHelper;
 import android.content.Context;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.style.DynamicDrawableSpan;
 import android.text.style.ImageSpan;
 import android.text.style.URLSpan;
@@ -84,13 +85,19 @@ public class SummaryFormatter {
     public CharSequence formatSummaryText(DirtyPost dirtyPost) {
         String summaryFormat = context.getString(R.string.post_summary_format);
         String author = dirtyPost.getAuthor();
+        String subBlogUrl = TextUtils.isEmpty(dirtyPost.getSubBlogName()) ? "d3.ru" : dirtyPost.getSubBlogName();
         String text = String.format(summaryFormat, author,
+        		subBlogUrl,
                 formatCreationDate(new Date(dirtyPost.getCreationDateAsMillis()), R.string.creation_date_format), 
                 formatComments(dirtyPost.getCommentsCount()),
                 formatVotes(dirtyPost.getVotesCount()));
         SpannableStringBuilder builder = new SpannableStringBuilder(text);
         int authorIndex = text.indexOf(author);
         builder.setSpan(new URLSpan(dirtyPost.getAuthorLink()), authorIndex, authorIndex + author.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        if (!TextUtils.isEmpty(dirtyPost.getSubBlogName())) {
+        	int subBlogIndex = text.indexOf(subBlogUrl);
+        	builder.setSpan(new URLSpan("http://" + subBlogUrl), subBlogIndex, subBlogIndex + subBlogUrl.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
         if (dirtyPost.isGolden()) {
             builder.append("\u00A0\u00A0");
             builder.setSpan(new ImageSpan(context, R.drawable.stars, DynamicDrawableSpan.ALIGN_BASELINE), 
@@ -102,13 +109,18 @@ public class SummaryFormatter {
     public CharSequence formatCompactSummaryText(PostsCursor dirtyPost) {
         String summaryFormat = context.getString(R.string.post_summary_format);
         String author = dirtyPost.getAuthor();
-        String text = String.format(summaryFormat, author,
+        String subBlogUrl = TextUtils.isEmpty(dirtyPost.getSubBlogName()) ? "d3.ru" : dirtyPost.getSubBlogName();
+        String text = String.format(summaryFormat, author, subBlogUrl,
                 formatCreationDate(dirtyPost.getCreationDate(), R.string.creation_date_format), 
                 formatComments(dirtyPost.getCommentsCount()),
                 formatVotes(dirtyPost.getVotesCount()));
         SpannableStringBuilder builder = new SpannableStringBuilder(text);
         int authorIndex = text.indexOf(author);
         builder.setSpan(new URLSpan(dirtyPost.getAuthorLink()), authorIndex, authorIndex + author.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        if (!TextUtils.isEmpty(dirtyPost.getSubBlogName())) {
+        	int subBlogIndex = text.indexOf(subBlogUrl);
+        	builder.setSpan(new URLSpan("http://" + subBlogUrl), subBlogIndex, subBlogIndex + subBlogUrl.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
         if (dirtyPost.isGolden()) {
             builder.append("\u00A0\u00A0");
             builder.setSpan(new ImageSpan(context, R.drawable.stars, DynamicDrawableSpan.ALIGN_BASELINE), 

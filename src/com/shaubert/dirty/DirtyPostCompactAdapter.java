@@ -118,9 +118,10 @@ public class DirtyPostCompactAdapter extends CursorAdapter implements LoaderCall
         CursorLoader loader = new CursorLoader(fragmentActivity, 
                 DirtyPostEntity.URI, 
                 new String[] { DirtyPostEntity.ID, DirtyPostEntity.COMMENTS_COUNT, DirtyPostEntity.GOLDEN,
-        			DirtyPostEntity.FAVORITE, DirtyCommentEntity.AUTHOR, DirtyCommentEntity.AUTHOR_LINK, 
-        			DirtyCommentEntity.CREATION_DATE, DirtyCommentEntity.SERVER_ID,
-                    DirtyCommentEntity.VOTES_COUNT, DirtyCommentEntity.MESSAGE},
+        			DirtyPostEntity.FAVORITE, DirtyPostEntity.SUB_BLOG_NAME, DirtyPostEntity.UNREAD, DirtyCommentEntity.AUTHOR, 
+        			DirtyCommentEntity.AUTHOR_LINK, DirtyCommentEntity.CREATION_DATE, 
+        			DirtyCommentEntity.SERVER_ID, DirtyCommentEntity.VOTES_COUNT, 
+        			DirtyCommentEntity.MESSAGE},
                     showOnlyFavorites ? (DirtyPostEntity.FAVORITE + " != 0") : null,
                     null, DirtyPostEntity.CREATION_DATE + " DESC");
         loader.setUpdateThrottle(1000);

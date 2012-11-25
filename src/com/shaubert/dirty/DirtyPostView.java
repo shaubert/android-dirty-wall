@@ -1,18 +1,6 @@
 package com.shaubert.dirty;
 
-import com.shaubert.dirty.client.DirtyPost;
-import com.shaubert.dirty.db.DirtyContract.DirtyPostEntity;
-import com.shaubert.dirty.net.DataLoadRequest;
-import com.shaubert.net.core.RequestBase;
-import com.shaubert.net.core.RequestStatusListener;
-import com.shaubert.net.nutshell.Request;
-import com.shaubert.net.nutshell.RequestStatus;
-import com.shaubert.util.AsyncTasks;
-import com.shaubert.util.AsyncTasks.Task;
-import com.shaubert.util.BitmapDecodeTask;
-import com.shaubert.util.Networks;
-import com.shaubert.util.SelectableLinkMovementMethod;
-import com.shaubert.util.Sizes;
+import java.io.File;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -38,7 +26,19 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import java.io.File;
+import com.shaubert.dirty.client.DirtyPost;
+import com.shaubert.dirty.db.DirtyContract.DirtyPostEntity;
+import com.shaubert.dirty.net.DataLoadRequest;
+import com.shaubert.net.core.RequestBase;
+import com.shaubert.net.core.RequestStatusListener;
+import com.shaubert.net.nutshell.Request;
+import com.shaubert.net.nutshell.RequestStatus;
+import com.shaubert.util.AsyncTasks;
+import com.shaubert.util.AsyncTasks.Task;
+import com.shaubert.util.BitmapDecodeTask;
+import com.shaubert.util.Networks;
+import com.shaubert.util.SelectableLinkMovementMethod;
+import com.shaubert.util.Sizes;
 
 public class DirtyPostView extends FrameLayout implements Checkable {
 
@@ -230,6 +230,7 @@ public class DirtyPostView extends FrameLayout implements Checkable {
         if (bitmap != null) {
             bitmap.recycle();
         }
+        released = true;
     }
 
     public void setDirtyPost(DirtyPost dirtyPost) {
