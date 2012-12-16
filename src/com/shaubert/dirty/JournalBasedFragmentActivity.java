@@ -17,15 +17,21 @@ import android.support.v4.app.FragmentActivity;
 
 public class JournalBasedFragmentActivity extends FragmentActivity {
 
-    public class DefaultStatusListener extends RequestStatusListener {
-        @Override
+    public static class DefaultStatusListener extends RequestStatusListener {
+    	private JournalBasedFragmentActivity activity;
+    	
+        public DefaultStatusListener(JournalBasedFragmentActivity activity) {
+			this.activity = activity;
+		}
+
+		@Override
         public void onFinished(Request request) {
-            journal.unregisterForUpdates(request);
+            activity.journal.unregisterForUpdates(request);
         }
                 
         @Override
         public void onError(Request request) {
-            journal.unregisterForUpdates(request);
+            activity.journal.unregisterForUpdates(request);
         }
     };
     

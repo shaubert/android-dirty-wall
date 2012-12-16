@@ -5,7 +5,7 @@ import com.shaubert.blogadapter.client.DataLoader;
 import com.shaubert.blogadapter.client.HttpClientGateway;
 import com.shaubert.blogadapter.client.HttpDataLoader;
 import com.shaubert.blogadapter.client.HttpDataLoaderRequest;
-import com.shaubert.blogadapter.client.ParserFactory;
+import com.shaubert.blogadapter.client.Pager;
 
 public class DirtyBlog extends Blog {
 
@@ -24,10 +24,20 @@ public class DirtyBlog extends Blog {
     
     private final DirtyRequestProvider requestProvider;
     
-    private DirtyBlog(DataLoader dataLoader, ParserFactory parserFactory,
+    private DirtyBlog(DataLoader dataLoader, DirtyParserFactory parserFactory,
             DirtyRequestProvider requestProvider) {
         super(dataLoader, parserFactory, requestProvider);
         this.requestProvider = requestProvider;
+    }
+
+    public Pager<DirtyPost> createPager(String subBlogUrl) {
+        return new Pager<DirtyPost>(dataLoader, parserFactory.createPostParser(),
+                requestProvider.createRequestForPosts(subBlogUrl));
+    }
+
+	public Pager<DirtySubBlog> createBlogsPager(int offset) {
+        return new Pager<DirtySubBlog>(dataLoader, ((DirtyParserFactory) parserFactory).createBlogsParser(),
+        		requestProvider.createRequestForBlogs(offset));
     }
     
     public String getPostLink(DirtyPost post) {
@@ -38,4 +48,7 @@ public class DirtyBlog extends Blog {
         return ((HttpDataLoaderRequest) requestProvider.createRequestForComment(post, commentServerId)).getUrl();
     }
 
+    public String getAuthorLink(String authorName) {
+        return "http://d3.ru/user/" + authorName;
+    }
 }

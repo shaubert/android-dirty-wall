@@ -18,7 +18,7 @@ import com.shaubert.util.AsyncTasks.Task;
 import com.shaubert.util.Shlog;
 import com.shaubert.util.Versions;
 
-public class PostsPagerActivity extends DirtyBaseActivity {
+public class PostsPagerActivity extends DirtyActivityWithPosts {
 
 	public static final Shlog SHLOG = new Shlog(PostsPagerActivity.class.getSimpleName());
 
@@ -73,6 +73,7 @@ public class PostsPagerActivity extends DirtyBaseActivity {
 		postPager.setAdapter(postFragmentsAdapter);
 		postFragmentsAdapter.setShowOnlyFavorites(dirtyPreferences.isShowingOnlyFavorites());
 		postFragmentsAdapter.setEmptyView(dirtyTv);
+        postFragmentsAdapter.setSubBlogUrl(subBlogUrl);
 		postPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 			@Override
 			public void onPageSelected(int pageIndex) {

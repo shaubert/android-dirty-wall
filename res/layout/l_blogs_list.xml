@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:weightSum="1" >
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_weight="0.08" />
+
+    <ListView
+        android:id="@+id/blogs_list"
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_weight="0.92"
+        android:cacheColorHint="#0000"
+        android:divider="@null"
+        android:listSelector="@drawable/listview_transparent_selector"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp" />
+
+</LinearLayout>

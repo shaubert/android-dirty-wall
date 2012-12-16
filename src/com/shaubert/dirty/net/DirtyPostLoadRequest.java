@@ -1,15 +1,10 @@
 package com.shaubert.dirty.net;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.ContentProviderOperation;
 import android.content.ContentUris;
 import android.database.Cursor;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
-
-import com.shaubert.blogadapter.client.HttpDataLoaderRequest;
 import com.shaubert.blogadapter.client.Pager;
 import com.shaubert.dirty.DirtyNewPostsStatusBarNotification;
 import com.shaubert.dirty.client.DirtyBlog;
@@ -22,6 +17,9 @@ import com.shaubert.net.core.RequestStateBase;
 import com.shaubert.net.nutshell.ExecutionContext;
 import com.shaubert.util.Shlog;
 import com.shaubert.util.TimePreferences;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DirtyPostLoadRequest extends RequestBase {
 
@@ -135,9 +133,7 @@ public class DirtyPostLoadRequest extends RequestBase {
             pager = blog.createPager();
         } else {
             SHLOG.d("requesting posts from " + url);
-            HttpDataLoaderRequest request = new HttpDataLoaderRequest();
-            request.setUrl(url);
-            pager = blog.createPager(request);
+            pager = blog.createPager(url);
         }
         return pager;
     }

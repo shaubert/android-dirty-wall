@@ -1,6 +1,8 @@
 package com.shaubert.dirty;
 
+import android.text.TextUtils;
 import com.shaubert.dirty.db.DirtyContract.DirtyPostEntity;
+import com.shaubert.dirty.db.SqlHelper;
 import com.shaubert.util.FragmentStatePagerAdapterWithDatasetChangeSupport;
 
 import android.database.Cursor;
@@ -14,18 +16,19 @@ import android.support.v4.content.Loader;
 import android.view.View;
 
 public class DirtyPostFragmentsAdapter extends FragmentStatePagerAdapterWithDatasetChangeSupport implements LoaderCallbacks<Cursor> {
-    
+
     public interface OnLoadCompleteListener {
         void onLoadComplete(DirtyPostFragmentsAdapter adapter);
     }
-    
+
     private final FragmentActivity fragmentActivity;
     private Cursor postIds;
 
     private boolean saveStateWasCalled;
     private View emptyView;
     private boolean showOnlyFavorites;
-    
+    private String subBlogUrl;
+
     private OnLoadCompleteListener loadCompleteListener;
     
     public DirtyPostFragmentsAdapter(FragmentActivity fragmentActivity) {
@@ -40,7 +43,15 @@ public class DirtyPostFragmentsAdapter extends FragmentStatePagerAdapterWithData
     public void setShowOnlyFavorites(boolean showOnlyFavorites) {
         this.showOnlyFavorites = showOnlyFavorites;
     }
-    
+
+    public String getSubBlogUrl() {
+        return subBlogUrl;
+    }
+
+    public void setSubBlogUrl(String subBlogUrl) {
+        this.subBlogUrl = subBlogUrl;
+    }
+
     @Override
     public Fragment getItem(int position) {
         long id = getStableId(position);
@@ -119,9 +130,11 @@ public class DirtyPostFragmentsAdapter extends FragmentStatePagerAdapterWithData
         return new CursorLoader(fragmentActivity, DirtyPostEntity.URI, 
                 new String[] { DirtyPostEntity.ID, 
 	        		"substr(" + DirtyPostEntity.MESSAGE + ", 1, 15)",
-	        		DirtyPostEntity.UNREAD }, 
-                showOnlyFavorites ? (DirtyPostEntity.FAVORITE + " != 0") : null, 
-                null, DirtyPostEntity.CREATION_DATE + " DESC");
+	        		DirtyPostEntity.UNREAD },
+                SqlHelper.buildAndSelection(showOnlyFavorites ? (DirtyPostEntity.FAVORITE + " != 0") : null,
+                        !TextUtils.isEmpty(subBlogUrl) ? (DirtyPostEntity.SUB_BLOG_NAME + " = ?") : null),
+                TextUtils.isEmpty(subBlogUrl) ? null : new String[] {subBlogUrl},
+                DirtyPostEntity.CREATION_DATE + " DESC");
     }
 
     @Override

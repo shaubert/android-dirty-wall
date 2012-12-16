@@ -2,38 +2,24 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/go_to_first_menu_item"
-        android:showAsAction="ifRoom"
-        android:title="@string/move_to_first"
-        android:icon="@drawable/ic_menu_back">
-    </item>
-    
-    <item
-        android:id="@+id/refresh_posts_menu_item"
+        android:id="@+id/refresh_blogs_menu_item"
         android:showAsAction="always"
         android:title="@string/refresh_posts"
         android:icon="@drawable/ic_menu_refresh">
     </item>
 
     <item
-        android:id="@+id/blogs_menu_item"
-        android:showAsAction="never"
-        android:title="@string/blogs_list_activity_label"
-        android:icon="@drawable/ic_menu_blogs">
-    </item>
-    
-    <item
         android:id="@+id/favorites_menu_item"
         android:showAsAction="ifRoom"
         android:title="@string/only_favorites"
         android:icon="@drawable/ic_menu_show_only_favorites">
     </item>
-        
+
     <item
         android:id="@+id/settings_menu_item"
         android:showAsAction="ifRoom"
         android:title="@string/setting_menu_item_title"
         android:icon="@drawable/ic_menu_settings">
     </item>
-    
+
 </menu>

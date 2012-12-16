@@ -7,14 +7,15 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class DirtyRecordParser {
     
     private static final Shlog SHLOG = new Shlog(DirtyRecordParser.class.getSimpleName());
     
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-    private final SimpleDateFormat dateWithTimeFormat1 = new SimpleDateFormat("dd MMMM yyyy hh.mm");
-    private final SimpleDateFormat dateWithTimeFormat2 = new SimpleDateFormat("dd.MM.yyyy hh.mm");
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", new Locale("ru"));
+    private final SimpleDateFormat dateWithTimeFormat1 = new SimpleDateFormat("dd MMMM yyyy hh.mm", new Locale("ru"));
+    private final SimpleDateFormat dateWithTimeFormat2 = new SimpleDateFormat("dd.MM.yyyy hh.mm", new Locale("ru"));
     
     private static final String YOUTUBE_VIDEO_PATH = "http://img.youtube.com/vi/";
     
@@ -27,19 +28,20 @@ public class DirtyRecordParser {
     public Date parseDate(String recordDate) {
         try {
             String dateTime[] = recordDate.split(" в ");
-            String date = dateTime[0];
+            String date = dateTime[0].trim();
+            String time = dateTime[1].trim();
             final String dateWithTime;
             Calendar calendar = Calendar.getInstance(Dates.GMT);
             calendar.set(Calendar.HOUR_OF_DAY, 0);
             calendar.set(Calendar.MINUTE, 0);
             calendar.set(Calendar.SECOND, 0);
             if ("сегодня".equalsIgnoreCase(date)) {
-                dateWithTime = dateFormat.format(calendar.getTime()) + " " + dateTime[1];
+                dateWithTime = dateFormat.format(calendar.getTime()) + " " + time;
             } else if ("вчера".equalsIgnoreCase(date)) {
                 calendar.add(Calendar.DAY_OF_YEAR, -1);
-                dateWithTime = dateFormat.format(calendar.getTime()) + " " + dateTime[1];
+                dateWithTime = dateFormat.format(calendar.getTime()) + " " + time;
             } else {
-                dateWithTime = date + " " + dateTime[1];
+				dateWithTime = date + " " + time;
             }
             Date res = parseDateStr(dateWithTime, dateWithTimeFormat1);
             if (res == null) {

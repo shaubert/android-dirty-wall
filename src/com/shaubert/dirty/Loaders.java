@@ -6,6 +6,7 @@ public class Loaders {
 
     public static final int DIRTY_POST_IDS_LOADER = 1;
     public static final int DIRTY_POSTS_LOADER = 2;
+    public static final int DIRTY_BLOGS_LOADER = 3;
  
     public static final DefaultLoaderIdMapper POST_LOADER_MAPPER = new DefaultLoaderIdMapper(1000, 1000);
     

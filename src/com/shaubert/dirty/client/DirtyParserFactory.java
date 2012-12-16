@@ -14,5 +14,9 @@ public class DirtyParserFactory implements ParserFactory {
     public Parser createCommentsParser() {
         return new DirtyCommentParser();
     }
+    
+    public Parser createBlogsParser() {
+    	return new DirtyBlogsParser();
+    }
 
 }

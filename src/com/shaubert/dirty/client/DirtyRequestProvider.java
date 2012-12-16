@@ -3,6 +3,7 @@ package com.shaubert.dirty.client;
 import com.shaubert.blogadapter.client.DataLoaderRequest;
 import com.shaubert.blogadapter.client.HttpDataLoaderRequest;
 import com.shaubert.blogadapter.client.RequestProvider;
+import com.shaubert.blogadapter.client.HttpDataLoaderRequest.HttpMethod;
 import com.shaubert.blogadapter.domain.Post;
 
 public class DirtyRequestProvider implements RequestProvider {
@@ -11,6 +12,12 @@ public class DirtyRequestProvider implements RequestProvider {
     public DataLoaderRequest createRequestForPosts() {
         HttpDataLoaderRequest request = new HttpDataLoaderRequest();
         request.setUrl("http://www.d3.ru/new");
+        return request;
+    }
+
+    public DataLoaderRequest createRequestForPosts(String subBlogUrl) {
+        HttpDataLoaderRequest request = new HttpDataLoaderRequest();
+        request.setUrl("http://" + subBlogUrl + "/new");
         return request;
     }
 
@@ -23,6 +30,17 @@ public class DirtyRequestProvider implements RequestProvider {
         return request;
     }
 
+    public DataLoaderRequest createRequestForBlogs(int offset) {
+        HttpDataLoaderRequest request = new HttpDataLoaderRequest();
+        request = new HttpDataLoaderRequest();
+        request.setHttpMethod(HttpMethod.POST);
+        request.setEntityMineType("application/x-www-form-urlencoded");
+        request.setUrl("http://d3.ru/ajax/domains/");
+        String params = "offset=" + offset;
+        request.setEntity(params.getBytes());
+        return request;
+    }
+    
 	private String getSubBlogUrl(DirtyPost dirtyPost) {
 		String subBlogUrl = dirtyPost.getSubBlogName();
         if (subBlogUrl == null) {

@@ -1,12 +1,5 @@
 package com.shaubert.dirty;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -15,15 +8,23 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SectionIndexer;
-
 import com.shaubert.dirty.db.DirtyContract.DirtyCommentEntity;
 import com.shaubert.dirty.db.DirtyContract.DirtyPostEntity;
 import com.shaubert.dirty.db.PostsCursor;
+import com.shaubert.dirty.db.SqlHelper;
 import com.shaubert.util.Dates;
 import com.shaubert.util.FasterScrollerView;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 public class DirtyPostCompactAdapter extends CursorAdapter implements LoaderCallbacks<Cursor>, SectionIndexer {
 
@@ -34,6 +35,7 @@ public class DirtyPostCompactAdapter extends CursorAdapter implements LoaderCall
 	private FragmentActivity fragmentActivity;
 	private PostsCursor postsCursor;
 	private boolean showOnlyFavorites;
+    private String subBlogUrl;
 	
 	private DateFormat dateFormat;
 	private Date[] sections;
@@ -54,7 +56,15 @@ public class DirtyPostCompactAdapter extends CursorAdapter implements LoaderCall
 	public void setFasterScrollerView(FasterScrollerView fasterScrollerView) {
 		this.fasterScrollerView = fasterScrollerView;
 	}
-	
+
+    public String getSubBlogUrl() {
+        return subBlogUrl;
+    }
+
+    public void setSubBlogUrl(String subBlogUrl) {
+        this.subBlogUrl = subBlogUrl;
+    }
+
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         return new DirtyPostCompactView(context);
@@ -122,8 +132,10 @@ public class DirtyPostCompactAdapter extends CursorAdapter implements LoaderCall
         			DirtyCommentEntity.AUTHOR_LINK, DirtyCommentEntity.CREATION_DATE, 
         			DirtyCommentEntity.SERVER_ID, DirtyCommentEntity.VOTES_COUNT, 
         			DirtyCommentEntity.MESSAGE},
-                    showOnlyFavorites ? (DirtyPostEntity.FAVORITE + " != 0") : null,
-                    null, DirtyPostEntity.CREATION_DATE + " DESC");
+                    SqlHelper.buildAndSelection(showOnlyFavorites ? (DirtyPostEntity.FAVORITE + " != 0") : null,
+                            !TextUtils.isEmpty(subBlogUrl) ? (DirtyPostEntity.SUB_BLOG_NAME + " = ?") : null),
+                    TextUtils.isEmpty(subBlogUrl) ? null : new String[] {subBlogUrl},
+                    DirtyPostEntity.CREATION_DATE + " DESC");
         loader.setUpdateThrottle(1000);
         return loader;
     }

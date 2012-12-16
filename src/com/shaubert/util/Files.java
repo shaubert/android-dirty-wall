@@ -112,17 +112,19 @@ public class Files {
     public static List<File> searchFiles(File where, FilenameFilter filter) {
         List<File> result = new ArrayList<File>();
         String[] files = where.list();
-        for (String name : files) {
-            if (".".equals(name) || "..".equals(name)) {
-                continue;
-            }
-            
-            File file = new File(where, name);
-            if (file.isDirectory()) {
-                result.addAll(searchFiles(file, filter));
-            } else {
-                if (filter == null || (filter != null && filter.accept(where, name))) {
-                    result.add(file);
+        if (files != null) {
+            for (String name : files) {
+                if (".".equals(name) || "..".equals(name)) {
+                    continue;
+                }
+
+                File file = new File(where, name);
+                if (file.isDirectory()) {
+                    result.addAll(searchFiles(file, filter));
+                } else {
+                    if (filter == null || (filter != null && filter.accept(where, name))) {
+                        result.add(file);
+                    }
                 }
             }
         }

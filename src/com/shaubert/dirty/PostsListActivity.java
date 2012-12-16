@@ -16,7 +16,7 @@ import com.shaubert.util.FasterScrollerView;
 import com.shaubert.util.Files;
 import com.shaubert.util.Views;
 
-public class PostsListActivity extends DirtyBaseActivity {
+public class PostsListActivity extends DirtyActivityWithPosts {
 
 	private static final int PAGER_REQUEST_CODE = 41;
 	public static final String EXTRA_FROM_NOTIFICATION = "from-notification";
@@ -60,6 +60,7 @@ public class PostsListActivity extends DirtyBaseActivity {
         postCompactAdapter = new DirtyPostCompactAdapter(this);
         postCompactAdapter.setShowOnlyFavorites(dirtyPreferences.isShowingOnlyFavorites());
         postCompactAdapter.setFasterScrollerView(fasterScroller);
+        postCompactAdapter.setSubBlogUrl(subBlogUrl);
         postsCompactList.addHeaderView(Views.createVerticalSpacer(this, 10), null, false);
         postsCompactList.addFooterView(Views.createVerticalSpacer(this, 30), null, false);
         postsCompactList.setAdapter(postCompactAdapter);
@@ -117,6 +118,7 @@ public class PostsListActivity extends DirtyBaseActivity {
     private void openPager(long postId) {
     	Intent intent = new Intent(this, PostsPagerActivity.class);
 		intent.putExtra(PostsPagerActivity.EXTRA_POST_ID, postId);
+        intent.putExtra(PostsPagerActivity.EXTRA_DIRTY_SUB_BLOG_URL, subBlogUrl);
 		attachRequestsIds(intent);
 		this.startActivityForResult(intent, PAGER_REQUEST_CODE);
 		isPaused = true;

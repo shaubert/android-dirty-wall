@@ -17,7 +17,7 @@ import androidx.persistence.Id;
 import androidx.persistence.ManyToOne;
 import androidx.persistence.OneToMany;
 
-@Contract(authority = DirtyContract.AUTHORITY, dbFileName = "dirty.db", version = 18)
+@Contract(authority = DirtyContract.AUTHORITY, dbFileName = "dirty.db", version = 20)
 public class DirtyContract {
     
     public static final String AUTHORITY = "com.shaubert.dirty";
@@ -108,6 +108,45 @@ public class DirtyContract {
         public static final String COMMENTS_ORDER = "comments_order";
         
         public static final Uri URI = Uri.parse("content://" + AUTHORITY + "/dirtycommententity");
+        
+    }
+    
+    @Entity
+    public static class DirtyBlogEntity {
+       
+        @Id
+        @GeneratedValue
+        @Column(type = ColumnType.INT)
+        public static final String ID = BaseColumns._ID;
+
+        @Column(type = ColumnType.LONG)
+        public static final String BLOG_ID = "blog_id";
+        
+        @Column(type = ColumnType.STRING)
+        public static final String TITLE = "title";
+        
+        @Column(type = ColumnType.STRING)
+        public static final String NAME = "name";
+        
+        @Column(type = ColumnType.STRING)
+        public static final String DESCRIPTION = "description";
+        
+        @Column(type = ColumnType.STRING)
+        public static final String URL = "url";
+
+        @Column(type = ColumnType.STRING)
+        public static final String AUTHOR = "author";
+        
+        @Column(type = ColumnType.LONG)
+        public static final String AUTHOR_ID = "author_id";
+        
+        @Column(type = ColumnType.INT)
+        public static final String READERS_COUNT = "readers_count";
+        
+        @Column(type = ColumnType.INT)
+        public static final String FAVORITE = "favorite";
+        
+        public static final Uri URI = Uri.parse("content://" + AUTHORITY + "/dirtyblogentity");
         
     }
     

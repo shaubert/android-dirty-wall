@@ -42,7 +42,15 @@ public class DirtyPreferences {
     public void setShowOnlyFavorites(boolean show) {
         preferences.edit().putBoolean("only-favorites", show).commit();
     }
-    
+
+    public boolean isShowingOnlyFavoriteBlogs() {
+        return preferences.getBoolean("only-favorite-blogs", false);
+    }
+
+    public void setShowOnlyFavoriteBlogs(boolean show) {
+        preferences.edit().putBoolean("only-favorite-blogs", show).commit();
+    }
+
     public boolean isPetrEnabled() {
         return preferences.getBoolean(petrPrefName, true);
     }
