@@ -10,4 +10,4 @@ Dependencies
 
 * [Android Network Fundamentals] (https://github.com/shaubert/android-network-fundamentals)
 * [Blog Adapter] (https://github.com/shaubert/blog-adapter)
-* [Crouton} (https://github.com/keyboardsurfer/Crouton)
+* [Crouton] (https://github.com/keyboardsurfer/Crouton)
