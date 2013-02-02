@@ -29,6 +29,7 @@ public class DirtyPostLoadRequest extends RequestBase {
     public static final String NEW_POSTS_NUMBER_PARAM = "new";
     public static final String FORCE_PARAM = "force";
     public static final String BACKGROUND_NOTIFICATION_PARAM = "background-notification";	
+    public static final String END_TIME_PARAM = "end-time";
 
 	private static class ContentProviderOperations {
         public ArrayList<ContentProviderOperation> ops;
@@ -47,9 +48,14 @@ public class DirtyPostLoadRequest extends RequestBase {
     }
 
     @Override
-    public void execute(ExecutionContext executionContext) throws Exception {  
+    public void execute(ExecutionContext executionContext) throws Exception {
+        String prefName = DirtyPostLoadRequest.class.getSimpleName();
+        String subBlogUrl = getState().getString(URL_TO_LOAD_PARAM);
+        if (subBlogUrl != null) {
+            prefName = prefName + '-' + subBlogUrl;
+        }
         TimePreferences timePreferences = new TimePreferences(PreferenceManager.getDefaultSharedPreferences(
-                executionContext.getContext()), DirtyPostLoadRequest.class.getSimpleName(), THRESHOLD);
+                executionContext.getContext()), prefName, THRESHOLD);
         boolean force = getState().getBoolean(FORCE_PARAM, false);
         if (force || timePreferences.shouldPerformOperation()) {
             Pager<DirtyPost> pager = createPager(DirtyBlog.getInstance());
@@ -63,6 +69,7 @@ public class DirtyPostLoadRequest extends RequestBase {
             SHLOG.logTimer(timerName);
             getState().put(NEW_POSTS_NUMBER_PARAM, res.insertsCount);
             getState().put(GERTRUDA_URL_PARAM, DirtyPostParser.getGertrudaUrl());
+            getState().put(END_TIME_PARAM, System.currentTimeMillis());
             if (getState().getBoolean(BACKGROUND_NOTIFICATION_PARAM, false)) {
             	sendStatusBarNotification(res.insertsCount, executionContext);
             }

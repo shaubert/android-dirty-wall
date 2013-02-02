@@ -106,6 +106,10 @@ public class DirtyBlogView extends FrameLayout implements Checkable {
     public void swapData(BlogsCursor blog) {
     	blogId = blog.getId();
     	isFavorite = blog.isFavorite();
+
+        description.setVisibility(VISIBLE);
+        summary.setVisibility(VISIBLE);
+        favoriteButton.setVisibility(VISIBLE);
     	
     	title.setTextSize(dirtyPreferences.getFontSize());
     	title.setTypeface(null, Typeface.BOLD);
@@ -124,7 +128,19 @@ public class DirtyBlogView extends FrameLayout implements Checkable {
         
         refreshFavoriteButton();
     }
-    
+
+    public void setMainPage() {
+        blogId = DirtyBlogsAdapter.MAIN_PAGE_ID;
+        isFavorite = false;
+        description.setVisibility(GONE);
+        summary.setVisibility(GONE);
+        favoriteButton.setVisibility(GONE);
+
+        title.setTextSize(dirtyPreferences.getFontSize());
+        title.setTypeface(null, Typeface.BOLD);
+        title.setText(R.string.sub_blog_main);
+    }
+
     private void refreshFavoriteButton() {
         favoriteButton.setImageResource(isFavorite ? R.drawable.star_filled : R.drawable.star_empty);
     }
@@ -143,5 +159,4 @@ public class DirtyBlogView extends FrameLayout implements Checkable {
         isFavorite = !isFavorite;
         refreshFavoriteButton();
     }
-
 }

@@ -16,12 +16,15 @@ import com.shaubert.dirty.db.DirtyContract.DirtyBlogEntity;
 
 public class DirtyBlogsAdapter extends CursorAdapter implements LoaderCallbacks<Cursor> {
 
+    public static final int MAIN_PAGE_ID = -2;
+    public final Object MAIN_PAGE_ITEM = new Object();
+
     public interface OnLoadCompleteListener {
         void onLoadComplete(DirtyBlogsAdapter adapter);
     }
 
 	private FragmentActivity fragmentActivity;
-	private BlogsCursor blogsCursor;
+	protected BlogsCursor blogsCursor;
 
     private OnLoadCompleteListener loadCompleteListener;
 
@@ -41,6 +44,55 @@ public class DirtyBlogsAdapter extends CursorAdapter implements LoaderCallbacks<
         return loadOnlyFavorites;
     }
 
+    @Override
+    public long getItemId(int position) {
+        if (position == 0) {
+            return MAIN_PAGE_ID;
+        } else {
+            if (blogsCursor != null && blogsCursor.moveToPosition(position - 1)) {
+                return blogsCursor.getBlogId();
+            } else {
+                return -1;
+            }
+        }
+    }
+
+    @Override
+    public int getCount() {
+        return super.getCount() + 1;
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return position == 0 ? MAIN_PAGE_ITEM : super.getItem(position - 1);
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        if (position == 0) {
+            if (convertView == null) {
+                convertView = newView(fragmentActivity, null, parent);
+            }
+            bindView(convertView, fragmentActivity, null);
+            return convertView;
+        } else {
+            return super.getView(position - 1, convertView, parent);
+        }
+    }
+
+    @Override
+    public View getDropDownView(int position, View convertView, ViewGroup parent) {
+        if (position == 0) {
+            if (convertView == null) {
+                convertView = newDropDownView(fragmentActivity, null, parent);
+            }
+            bindView(convertView, fragmentActivity, null);
+            return convertView;
+        } else {
+            return super.getDropDownView(position - 1, convertView, parent);
+        }
+    }
+
     public void setLoadOnlyFavorites(boolean loadOnlyFavorites) {
         this.loadOnlyFavorites = loadOnlyFavorites;
     }
@@ -57,18 +109,26 @@ public class DirtyBlogsAdapter extends CursorAdapter implements LoaderCallbacks<
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
     	DirtyBlogView dirtyBlogView = (DirtyBlogView)view;
-    	dirtyBlogView.swapData(blogsCursor);
+        if (cursor == null) {
+            dirtyBlogView.setMainPage();
+        } else {
+    	    dirtyBlogView.swapData(blogsCursor);
+        }
     }
 
     public int getBlogPosition(long blogId) {
-    	if (blogsCursor != null && blogsCursor.moveToFirst()) {
-    		do {
-    			if (blogsCursor.getBlogId() == blogId) {
-    				return blogsCursor.getPosition();
-    			}
-    		} while (blogsCursor.moveToNext());
-    	}
-    	return -1;
+        if (MAIN_PAGE_ID == blogId) {
+            return 0;
+        } else {
+            if (blogsCursor != null && blogsCursor.moveToFirst()) {
+                do {
+                    if (blogsCursor.getBlogId() == blogId) {
+                        return blogsCursor.getPosition() + 1;
+                    }
+                } while (blogsCursor.moveToNext());
+            }
+            return -1;
+        }
     }
     
     @Override

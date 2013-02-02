@@ -23,6 +23,12 @@
         android:summaryOff="@string/load_images_only_with_wifi_off_summary"
         android:summaryOn="@string/load_images_only_with_wifi_on_summary"
         android:title="@string/load_images_only_with_wifi_title" />
-    
-    
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="@string/use_crouron_key"
+        android:summaryOff="@string/use_crouron_off_summary"
+        android:summaryOn="@string/use_crouron_on_summary"
+        android:title="@string/use_crouron_title" />
+
 </PreferenceScreen>

@@ -116,11 +116,19 @@ public class DirtyMessagesProvider {
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         return result;
     }
+
+    public CharSequence getSimpleMessageForNewPosts(int count) {
+        return getNewPostsString(count).toString();
+    }
     
     public int getRandomFaceImageId() {
         return postLoadedMuden.getImageId();
     }
-    
+
+    public CharSequence getSimpleErrorMessage() {
+        return appContext.getText(R.string.simple_error_text);
+    }
+
     public CharSequence getErrorMessage() {
         SpannableStringBuilder result = new SpannableStringBuilder(errorMuden.getMessage());
         result.setSpan(new ForegroundColorSpan(appContext.getResources().getColor(R.color.error_red)), 

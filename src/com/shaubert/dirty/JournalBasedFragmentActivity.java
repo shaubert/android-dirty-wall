@@ -42,13 +42,18 @@ public class JournalBasedFragmentActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         
         setupJournal();
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
         if (savedInstanceState != null) {
             onRestoreRequestState(savedInstanceState);
         } else {
             onStartInitialRequests();
         }
     }
-    
+
     public void onStartInitialRequests() {
     }
 

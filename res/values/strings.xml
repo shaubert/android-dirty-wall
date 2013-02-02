@@ -73,7 +73,12 @@
     <string name="background_sync_period_dialog_title">Проверять новые посты</string>
     <string name="background_sync_period_title">Частота проверки новых постов</string>
     <string name="new_posts_notification_title">Новые посты</string>
-    
+
+    <string name="use_crouron_key">use_crouton_pref</string>
+    <string name="use_crouron_title">Маленькие подсказки</string>
+    <string name="use_crouron_on_summary">К черту политические морды</string>
+    <string name="use_crouron_off_summary">Вещают политики</string>
+
     <string name="blog_summary_format" formatted="false">%s, автор %s, %s</string>
     <string name="one_subscriber">%d\u00A0подписчик</string>
     <string name="few_subscribers">%d\u00A0подписчика</string>
@@ -81,6 +86,9 @@
     
     <string name="blogs_list_activity_label">Блоги</string>
 
+    <string name="simple_error_text">Ошибочка вышла</string>
+
     <string name="tap_to_retry">Нажмите для повтора</string>
     <string name="endless_adapter_error_hint">Ошибочка вышла</string>
+    <string name="sub_blog_main">Главная</string>
 </resources>

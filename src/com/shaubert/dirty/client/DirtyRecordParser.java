@@ -14,8 +14,8 @@ public class DirtyRecordParser {
     private static final Shlog SHLOG = new Shlog(DirtyRecordParser.class.getSimpleName());
     
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", new Locale("ru"));
-    private final SimpleDateFormat dateWithTimeFormat1 = new SimpleDateFormat("dd MMMM yyyy hh.mm", new Locale("ru"));
-    private final SimpleDateFormat dateWithTimeFormat2 = new SimpleDateFormat("dd.MM.yyyy hh.mm", new Locale("ru"));
+    private final SimpleDateFormat dateWithTimeFormat1 = new SimpleDateFormat("dd MMMM yyyy HH.mm", new Locale("ru"));
+    private final SimpleDateFormat dateWithTimeFormat2 = new SimpleDateFormat("dd.MM.yyyy HH.mm", new Locale("ru"));
     
     private static final String YOUTUBE_VIDEO_PATH = "http://img.youtube.com/vi/";
     
@@ -30,6 +30,9 @@ public class DirtyRecordParser {
             String dateTime[] = recordDate.split(" в ");
             String date = dateTime[0].trim();
             String time = dateTime[1].trim();
+            if (time.contains(" ")) {
+                time = time.split(" ")[0];
+            }
             final String dateWithTime;
             Calendar calendar = Calendar.getInstance(Dates.GMT);
             calendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -43,9 +46,9 @@ public class DirtyRecordParser {
             } else {
 				dateWithTime = date + " " + time;
             }
-            Date res = parseDateStr(dateWithTime, dateWithTimeFormat1);
+            Date res = parseDateStr(dateWithTime, dateWithTimeFormat2);
             if (res == null) {
-            	res = parseDateStr(dateWithTime, dateWithTimeFormat2);
+            	res = parseDateStr(dateWithTime, dateWithTimeFormat1);
             }
             
             if (res != null) {

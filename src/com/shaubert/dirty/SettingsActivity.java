@@ -1,7 +1,5 @@
 package com.shaubert.dirty;
 
-import java.util.List;
-
 import android.annotation.TargetApi;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -11,9 +9,10 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
-
 import com.shaubert.util.Shlog;
 import com.shaubert.util.Versions;
+
+import java.util.List;
 
 @TargetApi(11)
 public class SettingsActivity extends PreferenceActivity {
@@ -62,7 +61,6 @@ public class SettingsActivity extends PreferenceActivity {
 
 		if (!Versions.isApiLevelAvailable(11)) {
 			addPreferencesFromResource(R.xml.old_prefs);
-			setFavoritesPreferenceListener(findPreference(getString(R.string.export_favorites_pref_key)));
 			setFavoritesPreferenceListener(findPreference(getString(R.string.export_favorites_pref_key)));
 			setSyncIntervalPreferenceListener(findPreference(getString(R.string.background_sync_period_key)));
 		} else {

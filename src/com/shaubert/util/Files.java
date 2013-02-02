@@ -41,12 +41,12 @@ public class Files {
         protected abstract void doWrite(T stream) throws IOException;
     }
     
-    public static File getGertrudaFile(Context context, String url) {
-        return new File(getGertrudaDir(context), url.substring(url.lastIndexOf('/') + 1));
+    public static File getGertrudaFile(Context context, String subBlog, String url) {
+        return new File(getGertrudaDir(context, subBlog), url.substring(url.lastIndexOf('/') + 1));
     }
     
-    public static File getGertrudaDir(Context context) {
-        File dir = new File(getHomeDir(context), "/gertruda");
+    public static File getGertrudaDir(Context context, String subBlog) {
+        File dir = new File(getHomeDir(context), "/gertruda" + (subBlog == null ? "" : ("/" + subBlog)));
         dir.mkdirs();
         return dir;
     }

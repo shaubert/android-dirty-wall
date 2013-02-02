@@ -16,6 +16,7 @@ public class DirtyPreferences {
     private String imageLoadingAlwaysPrefName;
 	private String bakgroundSyncIntervalPrefName;
 	private String bakgroundSyncPrefName;
+	private String useCroutonPrefName;
 
     public DirtyPreferences(SharedPreferences preferences, Context context) {
         this.preferences = preferences;
@@ -25,16 +26,41 @@ public class DirtyPreferences {
         imageLoadingAlwaysPrefName = context.getString(R.string.load_images_only_with_wifi_key);
         bakgroundSyncPrefName = context.getString(R.string.posts_background_sync_key);
         bakgroundSyncIntervalPrefName = context.getString(R.string.background_sync_period_key);
+        useCroutonPrefName = context.getString(R.string.use_crouron_key);
     }
 
-    public long getLastViewedPostId() {
-        return preferences.getLong("last-post-id", -1);
+    public long getLastViewedPostId(String subBlog) {
+        return preferences.getLong(getLastPostIdKey(subBlog), -1);
     }
-    
-    public void setLastViewedPostId(long id) {
-        preferences.edit().putLong("last-post-id", id).commit();
+
+    private String getLastPostIdKey(String subBlog) {
+        return "last-post-id" + (subBlog == null ? "" : ("-" + subBlog));
     }
-    
+
+    public void setLastViewedPostId(String subBlog, long id) {
+        preferences.edit().putLong(getLastPostIdKey(subBlog), id).commit();
+    }
+
+    public String getLastSubBlog() {
+        return preferences.getString("last-sub-blog", null);
+    }
+
+    public void setLastSubBlog(String lastSubBlog) {
+        preferences.edit().putString("last-sub-blog", lastSubBlog).commit();
+    }
+
+    public long getLastListVisiblePostId(String subBlog) {
+        return preferences.getLong(getLastListVisiblePostIdKey(subBlog), -1);
+    }
+
+    private String getLastListVisiblePostIdKey(String subBlog) {
+        return "last-visible-post-id" + (subBlog == null ? "" : ("-" + subBlog));
+    }
+
+    public void setLastListVisiblePostId(String subBlog, long id) {
+        preferences.edit().putLong(getLastListVisiblePostIdKey(subBlog), id).commit();
+    }
+
     public boolean isShowingOnlyFavorites() {
         return preferences.getBoolean("only-favorites", false);
     }
@@ -96,4 +122,12 @@ public class DirtyPreferences {
 	public void setNewPostsCount(int value) {
 		preferences.edit().putInt("new-posts-count", value).commit();
 	}
+
+    public boolean isUseCrouton() {
+        return preferences.getBoolean(useCroutonPrefName, true);
+    }
+
+    public void setUseCrouton(boolean use) {
+        preferences.edit().putBoolean(useCroutonPrefName, use).commit();
+    }
 }

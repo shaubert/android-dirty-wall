@@ -54,9 +54,17 @@ public class BlogsListActivity extends DirtyBaseActivity {
     private MenuItem refreshMenuItem;
 
     @Override
-    public void onContentChanged() {
-    	super.onContentChanged();
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
+        if (Versions.isApiLevelAvailable(11)) {
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
+        initContent();
+    }
+
+    private void initContent() {
     	ViewStub stub = (ViewStub) findViewById(R.id.content_stub);
     	stub.setLayoutResource(R.layout.l_blogs_list);
     	stub.inflate();
@@ -77,9 +85,13 @@ public class BlogsListActivity extends DirtyBaseActivity {
         blogList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                BlogsCursor blog = (BlogsCursor) blogList.getAdapter().getItem(position);
-                if (blog != null) {
-                    openPostListForBlog(blog.getUrl());
+                if (id == DirtyBlogsAdapter.MAIN_PAGE_ID) {
+                    setResultAndFinish(null);
+                } else {
+                    BlogsCursor blog = (BlogsCursor) blogList.getAdapter().getItem(position);
+                    if (blog != null) {
+                        setResultAndFinish(blog.getUrl());
+                    }
                 }
             }
         });
@@ -88,10 +100,13 @@ public class BlogsListActivity extends DirtyBaseActivity {
     	getGertruda().loadGertrudaFromCacheIfNeeded();
     }
 
-    private void openPostListForBlog(String url) {
-        Intent intent = new Intent(this, PostsListActivity.class);
-        intent.putExtra(DirtyActivityWithPosts.EXTRA_DIRTY_SUB_BLOG_URL, url);
-        startActivity(intent);
+    private void setResultAndFinish(String subBlog) {
+        Intent data = new Intent();
+        data.putExtra(PostsListActivity.EXTRA_DIRTY_SUB_BLOG_URL, subBlog);
+        setResult(RESULT_OK, data);
+
+        onBackPressed();
+        overridePendingTransition(0, android.R.anim.slide_out_right);
     }
 
     private void setupListAdapter() {
@@ -229,6 +244,10 @@ public class BlogsListActivity extends DirtyBaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+
             case R.id.refresh_blogs_menu_item:
                 reloadBlogs();
                 return true;

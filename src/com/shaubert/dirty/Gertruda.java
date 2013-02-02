@@ -46,6 +46,8 @@ public class Gertruda {
 	
     private View gertrudaBox;
     private ImageView gertruda;
+
+    private String subBlog;
     
     private JournalBasedFragmentActivity activity;
     
@@ -54,7 +56,22 @@ public class Gertruda {
         findUiElements();
 	}
 
-	private void findUiElements() {
+    public String getSubBlog() {
+        return subBlog;
+    }
+
+    public void setSubBlog(String subBlog) {
+        if (!TextUtils.equals(subBlog, this.subBlog)) {
+            this.subBlog = subBlog;
+            this.gertrudaPath = null;
+
+            if (gertrudaLoadRequest != null) {
+                gertrudaLoadRequest.cancel();
+            }
+        }
+    }
+
+    private void findUiElements() {
 		gertrudaBox = activity.findViewById(R.id.gertruda_box);
 		if (gertrudaBox != null) {
 			gertruda = (ImageView)gertrudaBox.findViewById(R.id.gertruda);
@@ -65,7 +82,7 @@ public class Gertruda {
         if (gertrudaLoadRequest == null || (
                 RequestStatus.isWaitingOrProcessing(gertrudaLoadRequest.getState().getStatus()) 
                 && !gertrudaUrl.equals(gertrudaLoadRequest.getState().getString("url")))) {
-            File file = Files.getGertrudaFile(activity, gertrudaUrl);
+            File file = Files.getGertrudaFile(activity, subBlog, gertrudaUrl);
             gertrudaPath = file.getAbsolutePath();
             if (!file.exists()) {
                 gertrudaLoadRequest = new DataLoadRequest(gertrudaUrl, gertrudaPath);
@@ -91,7 +108,7 @@ public class Gertruda {
                 if (gertrudaBox.getVisibility() != View.VISIBLE) {
                     gertrudaBox.setVisibility(View.VISIBLE);
                     gertrudaBox.startAnimation(AnimationUtils.makeInAnimation(
-                    		activity.getApplicationContext(), true));
+                    		activity, true));
                 }
             }
         };
@@ -104,7 +121,7 @@ public class Gertruda {
                 String filename;
                 @Override
                 public void run(Activity context) {
-                    File dir = Files.getGertrudaDir(context);
+                    File dir = Files.getGertrudaDir(context, subBlog);
                     String[] images = dir.list(new FilenameFilter() {
                         @Override
                         public boolean accept(File dir, String filename) {
