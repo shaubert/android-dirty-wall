@@ -31,10 +31,18 @@ public class DataLoadRequest extends RequestBase {
         super(state);
     }
 
+    public String getUrl() {
+        return getState().getString("url");
+    }
+
+    public String getOutputFilename() {
+        return getState().getString("file");
+    }
+
     public void execute() throws Exception {
         execute(null);
     }
-    
+
     @Override
     public void execute(ExecutionContext executionContext) throws Exception {
         String urlString = getState().getString("url");

@@ -1,24 +1,23 @@
 package com.shaubert.dirty.client;
 
-import com.shaubert.blogadapter.client.Blog;
-import com.shaubert.blogadapter.client.DataLoader;
-import com.shaubert.blogadapter.client.HttpClientGateway;
-import com.shaubert.blogadapter.client.HttpDataLoader;
-import com.shaubert.blogadapter.client.HttpDataLoaderRequest;
-import com.shaubert.blogadapter.client.Pager;
+import com.shaubert.blogadapter.client.*;
+import com.shaubert.dirty.DirtyPreferences;
 
 public class DirtyBlog extends Blog {
 
     //http://img.dirty.ru/d3/gertruda/40.jpg
     
     private static DirtyBlog instance;
-    
-    public static DirtyBlog getInstance() {
+
+    public static void init(DirtyPreferences dirtyPreferences) {
         if (instance == null) {
             DataLoader dataLoader = new HttpDataLoader(new HttpClientGateway());
-            DirtyRequestProvider requestProvider = new DirtyRequestProvider();
+            DirtyRequestProvider requestProvider = new DirtyRequestProvider(dirtyPreferences);
             instance = new DirtyBlog(dataLoader, new DirtyParserFactory(), requestProvider);
         }
+    }
+
+    public static DirtyBlog getInstance() {
         return instance;
     }
     
@@ -50,5 +49,9 @@ public class DirtyBlog extends Blog {
 
     public String getAuthorLink(String authorName) {
         return "http://d3.ru/user/" + authorName;
+    }
+
+    public DirtyRequestProvider getRequestProvider() {
+        return requestProvider;
     }
 }

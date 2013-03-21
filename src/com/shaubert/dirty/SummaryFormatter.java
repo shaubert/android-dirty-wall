@@ -18,6 +18,7 @@ import android.text.style.URLSpan;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class SummaryFormatter {
 
@@ -30,9 +31,7 @@ public class SummaryFormatter {
         this.context = context;
         
         dateFormat = new SimpleDateFormat(context.getString(R.string.post_date_format));
-        dateFormat.setTimeZone(Dates.GMT);
         timeFormat = new SimpleDateFormat(context.getString(R.string.post_time_format));
-        timeFormat.setTimeZone(Dates.GMT);
     }
     
     public String formatCreationDate(Date creationDate, int formatId) {
@@ -43,9 +42,9 @@ public class SummaryFormatter {
         final String dateStr;
         final String timeStr;
         if (creationDate.getTime() > 0) {
-            if (!fullDate && Dates.isToday(creationDate, Dates.GMT)) {
+            if (!fullDate && Dates.isToday(creationDate, TimeZone.getDefault())) {
                 dateStr = context.getString(R.string.today).toLowerCase();
-            } else if (!fullDate && Dates.isYesterday(creationDate, Dates.GMT)) {
+            } else if (!fullDate && Dates.isYesterday(creationDate, TimeZone.getDefault())) {
                 dateStr = context.getString(R.string.yesterday).toLowerCase();
             } else {
                 dateStr = dateFormat.format(creationDate);

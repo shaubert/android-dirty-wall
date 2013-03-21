@@ -209,7 +209,6 @@ public class DirtyPostFragment extends JournalBasedFragment {
         super.onActivityCreated(savedInstanceState);
 
         refreshContent();
-        initDirtyPostLoader();
     }
     
     @Override
@@ -252,6 +251,8 @@ public class DirtyPostFragment extends JournalBasedFragment {
     public void onResume() {
         super.onResume();
         postView.resume();
+        initDirtyPostLoader();
+        commentsAdapter.initLoader();
         commentsAdapter.notifyDataSetChanged();
     }
     
@@ -260,6 +261,9 @@ public class DirtyPostFragment extends JournalBasedFragment {
         if (postAndCommentActionMode != null) {
             postAndCommentActionMode.finish();
         }
+        postLoaderCallbacks.destroyLoader();
+        postLoaderCallbacks.setDirtyPostLoadedCallback(null);
+        commentsAdapter.destroyLoader();
         super.onPause();
         postView.pause();
     }
@@ -290,12 +294,13 @@ public class DirtyPostFragment extends JournalBasedFragment {
     }
     
     private void initDirtyPostLoader() {
-        postLoaderCallbacks = new DirtyPostLoaderCallbacks(getActivity(), postId) {
+        postLoaderCallbacks = new DirtyPostLoaderCallbacks(getActivity(), postId);
+        postLoaderCallbacks.setDirtyPostLoadedCallback(new DirtyPostLoaderCallbacks.DirtyPostLoadedCallback() {
             @Override
             public void onDirtyPostLoaded(DirtyPost dirtyPost) {
                 setDirtyPost(dirtyPost);
             }
-        };
+        });
         postLoaderCallbacks.initLoader();
     }
     

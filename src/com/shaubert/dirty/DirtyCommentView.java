@@ -1,7 +1,6 @@
 package com.shaubert.dirty;
 
-import java.io.File;
-
+import android.app.Activity;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
@@ -18,44 +17,30 @@ import android.support.v4.util.LruCache;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewConfiguration;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.Checkable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.shaubert.dirty.client.DirtyRecord.Image;
 import com.shaubert.dirty.db.CommentsCursor;
 import com.shaubert.dirty.db.DirtyContract.DirtyCommentEntity;
 import com.shaubert.dirty.net.DataLoadRequest;
-import com.shaubert.util.Bitmaps;
+import com.shaubert.util.*;
 import com.shaubert.util.Bitmaps.Size;
-import com.shaubert.util.Files;
-import com.shaubert.util.FixedSizeImageView;
-import com.shaubert.util.Networks;
-import com.shaubert.util.SelectableLinkMovementMethod;
-import com.shaubert.util.Shlog;
-import com.shaubert.util.Sizes;
+
+import java.io.File;
 
 public class DirtyCommentView extends LinearLayout implements Checkable {
 
     private static final Shlog SHLOG = new Shlog(DirtyCommentView.class.getSimpleName());
     
     private static LruCache<Long, Spanned> spanCache = new LruCache<Long, Spanned>(100);
-    private static LruCache<String, Bitmap> imageCache = new LruCache<String, Bitmap>(5 * 1024 * 1024) {
-        @Override
-        protected int sizeOf(String key, Bitmap value) {
-            return value == null ? 0 : value.getRowBytes();
-        }
-    };
-    
+
     private View frame;
     private ViewGroup frameBody;
     private TextView message;
+    private TextView gifDescription;
     private ImageView image;
     private TextView summary;
     
@@ -70,12 +55,14 @@ public class DirtyCommentView extends LinearLayout implements Checkable {
     private SummaryFormatter summaryFormatter;
 
     private DirtyPreferences dirtyPreferences;
-    
-    public DirtyCommentView(Context context) {
+    private final LruCache<String,Bitmap> imageCache;
+
+    public DirtyCommentView(Activity context) {
         super(context);
         setGravity(Gravity.RIGHT);
         setWeightSum(1f);
-        
+
+        this.imageCache = ((DirtyApp) context.getApplication()).getImageCache();
         this.dirtyPreferences = new DirtyPreferences(
                 PreferenceManager.getDefaultSharedPreferences(context), context);
         
@@ -88,6 +75,7 @@ public class DirtyCommentView extends LinearLayout implements Checkable {
         message.setMovementMethod(SelectableLinkMovementMethod.getInstance());
         message.setClickable(false);
         message.setLongClickable(false);
+        gifDescription = (TextView) frame.findViewById(R.id.gif_description);
         image = (ImageView)frame.findViewById(R.id.image);
         summary = (TextView)frame.findViewById(R.id.summary);
         summary.setMovementMethod(SelectableLinkMovementMethod.getInstance());
@@ -172,11 +160,15 @@ public class DirtyCommentView extends LinearLayout implements Checkable {
         }
         message.setTextSize(dirtyPreferences.getFontSize());
         
+        gifDescription.setVisibility(GONE);
         Image[] images = cursor.getImages();
         if (images != null && images.length > 0) {
             image.setVisibility(View.VISIBLE);
             Image commentImage = images[0];
-            
+
+            if (commentImage.src.endsWith(".gif")) {
+                gifDescription.setVisibility(VISIBLE);
+            }
             if (commentImage.widht != -1 && commentImage.height != -1) {
                 int max = Sizes.dpToPx(128, getContext());
                 Size size = Bitmaps.getScaledSize(max, max, commentImage.widht, commentImage.height);

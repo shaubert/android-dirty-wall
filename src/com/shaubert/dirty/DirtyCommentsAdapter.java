@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 public class DirtyCommentsAdapter extends CursorAdapter implements LoaderCallbacks<Cursor> {
 
     private final long postId;
+    private final int loaderId;
     private final FragmentActivity fragmentActivity;
     
     private CommentsCursor commentsCursor;
@@ -26,10 +27,15 @@ public class DirtyCommentsAdapter extends CursorAdapter implements LoaderCallbac
         super(fragmentActivity, null, 0);
         this.fragmentActivity = fragmentActivity;
         this.postId = postId;
+        this.loaderId = Loaders.COMMENTS_LOADER_MAPPER.getLoaderIdFrom(postId);
         
-        fragmentActivity.getSupportLoaderManager().initLoader(Loaders.COMMENTS_LOADER_MAPPER.getLoaderIdFrom(postId), null, this);
+        initLoader();
     }
-    
+
+    public void initLoader() {
+        fragmentActivity.getSupportLoaderManager().initLoader(loaderId, null, this);
+    }
+
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         return new DirtyCommentView(fragmentActivity);
@@ -63,5 +69,8 @@ public class DirtyCommentsAdapter extends CursorAdapter implements LoaderCallbac
     public void onLoaderReset(Loader<Cursor> loader) {
         swapCursor(null);
     }
-    
+
+    public void destroyLoader() {
+        fragmentActivity.getLoaderManager().destroyLoader(loaderId);
+    }
 }

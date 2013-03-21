@@ -21,10 +21,7 @@ import com.shaubert.util.FasterScrollerView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public class DirtyPostCompactAdapter extends CursorAdapter implements LoaderCallbacks<Cursor>, SectionIndexer {
 
@@ -48,8 +45,7 @@ public class DirtyPostCompactAdapter extends CursorAdapter implements LoaderCall
         super(fragmentActivity, null, 0);
         this.fragmentActivity = fragmentActivity;
         this.dateFormat = new SimpleDateFormat(fragmentActivity.getString(R.string.post_list_header_date_format), new Locale("ru"));
-        this.dateFormat.setTimeZone(Dates.GMT);
-        
+
         fragmentActivity.getSupportLoaderManager().initLoader(Loaders.DIRTY_POSTS_LOADER, null, this);
 	}
 	
@@ -92,9 +88,9 @@ public class DirtyPostCompactAdapter extends CursorAdapter implements LoaderCall
     private String formatHeaderText(PostsCursor postsCursor) {
     	Date creationDate = postsCursor.getCreationDate();
         if (creationDate.getTime() > 0) {
-            if (Dates.isToday(creationDate, Dates.GMT)) {
+            if (Dates.isToday(creationDate, TimeZone.getDefault())) {
                 return fragmentActivity.getString(R.string.today);
-            } else if (Dates.isYesterday(creationDate, Dates.GMT)) {
+            } else if (Dates.isYesterday(creationDate, TimeZone.getDefault())) {
                 return fragmentActivity.getString(R.string.yesterday);
             } else {
                 return dateFormat.format(creationDate);
@@ -167,7 +163,7 @@ public class DirtyPostCompactAdapter extends CursorAdapter implements LoaderCall
 			Date prevDate = null;
 			do {
 				Date newDate = postsCursor.getCreationDate();
-				if (prevDate == null || !Dates.isSameDay(newDate, prevDate, Dates.GMT)) {
+				if (prevDate == null || !Dates.isSameDay(newDate, prevDate, TimeZone.getDefault())) {
 					days.add(newDate);
 					headers.add(formatHeaderText(postsCursor));
 				}
@@ -190,7 +186,7 @@ public class DirtyPostCompactAdapter extends CursorAdapter implements LoaderCall
 		Date date = sections[Math.min(section, sections.length - 1)];
 		if (postsCursor != null && postsCursor.moveToFirst()) {
 			do {
-				if (Dates.isSameDay(postsCursor.getCreationDate(), date, Dates.GMT)) {
+				if (Dates.isSameDay(postsCursor.getCreationDate(), date, TimeZone.getDefault())) {
 					return postsCursor.getPosition();
 				}
 			} while (postsCursor.moveToNext());
@@ -203,7 +199,7 @@ public class DirtyPostCompactAdapter extends CursorAdapter implements LoaderCall
 		if (postsCursor != null && postsCursor.moveToPosition(position)) {
 			Date date = postsCursor.getCreationDate();
 			for (int i = 0; i < sections.length; i++) {
-				if (Dates.isSameDay(date, sections[i], Dates.GMT)) {
+				if (Dates.isSameDay(date, sections[i], TimeZone.getDefault())) {
 					return i;
 				}
 			}

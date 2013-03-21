@@ -25,4 +25,5 @@ public class FixedSizeImageView extends ImageView {
     public void callRequestLayout() {
         super.requestLayout();
     }
+
 }

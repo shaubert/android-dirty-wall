@@ -17,6 +17,7 @@ public class DirtyPreferences {
 	private String bakgroundSyncIntervalPrefName;
 	private String bakgroundSyncPrefName;
 	private String useCroutonPrefName;
+    private String showAllOrMainPrefName;
 
     public DirtyPreferences(SharedPreferences preferences, Context context) {
         this.preferences = preferences;
@@ -27,6 +28,7 @@ public class DirtyPreferences {
         bakgroundSyncPrefName = context.getString(R.string.posts_background_sync_key);
         bakgroundSyncIntervalPrefName = context.getString(R.string.background_sync_period_key);
         useCroutonPrefName = context.getString(R.string.use_crouron_key);
+        showAllOrMainPrefName = context.getString(R.string.main_page_show_all_key);
     }
 
     public long getLastViewedPostId(String subBlog) {
@@ -78,7 +80,7 @@ public class DirtyPreferences {
     }
 
     public boolean isPetrEnabled() {
-        return preferences.getBoolean(petrPrefName, true);
+        return preferences.getBoolean(petrPrefName, false);
     }
     
     public int getFontSize() {
@@ -129,5 +131,13 @@ public class DirtyPreferences {
 
     public void setUseCrouton(boolean use) {
         preferences.edit().putBoolean(useCroutonPrefName, use).commit();
+    }
+
+    public boolean isShowAllOnMainPage() {
+        return preferences.getBoolean(showAllOrMainPrefName, false);
+    }
+
+    public void setShowAllOnMainPage(boolean all) {
+        preferences.edit().putBoolean(showAllOrMainPrefName, all).commit();
     }
 }

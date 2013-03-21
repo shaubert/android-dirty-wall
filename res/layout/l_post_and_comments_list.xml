@@ -22,7 +22,8 @@
             android:paddingRight="8dp"
             android:cacheColorHint="#0000"
             android:divider="@null"
-            android:listSelector="@drawable/listview_transparent_selector"/>
+            android:listSelector="@drawable/listview_transparent_selector"
+            android:scrollbarStyle="outsideOverlay"/>
     </LinearLayout>
 
     <ImageView

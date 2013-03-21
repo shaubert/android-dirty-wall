@@ -1,7 +1,5 @@
 package com.shaubert.dirty;
 
-import java.io.File;
-
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -10,6 +8,7 @@ import android.graphics.drawable.StateListDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.util.LruCache;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -25,7 +24,6 @@ import android.widget.Checkable;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
 import com.shaubert.dirty.client.DirtyPost;
 import com.shaubert.dirty.db.DirtyContract.DirtyPostEntity;
 import com.shaubert.dirty.net.DataLoadRequest;
@@ -33,22 +31,21 @@ import com.shaubert.net.core.RequestBase;
 import com.shaubert.net.core.RequestStatusListener;
 import com.shaubert.net.nutshell.Request;
 import com.shaubert.net.nutshell.RequestStatus;
-import com.shaubert.util.AsyncTasks;
+import com.shaubert.util.*;
 import com.shaubert.util.AsyncTasks.Task;
-import com.shaubert.util.BitmapDecodeTask;
-import com.shaubert.util.Networks;
-import com.shaubert.util.SelectableLinkMovementMethod;
-import com.shaubert.util.Sizes;
+
+import java.io.File;
 
 public class DirtyPostView extends FrameLayout implements Checkable {
+
 
     public interface OnCommentLoadClickListener {
         void onCommentLoadClicked(DirtyPostView dirtyPostPresenter);
     }
-    
+
     private static class ImageLoaderRequestListener extends RequestStatusListener {
         private JournalBasedFragmentActivity activity;
-        
+
         public ImageLoaderRequestListener(JournalBasedFragmentActivity activity) {
             this.activity = activity;
         }
@@ -59,47 +56,50 @@ public class DirtyPostView extends FrameLayout implements Checkable {
             final long rPostId = ((RequestBase) request).getState().getLong("postId", -1);
             activity.getContentResolver().notifyChange(ContentUris.withAppendedId(DirtyPostEntity.URI, rPostId), null);
         }
-        
+
         @Override
         public void onError(Request request) {
             activity.unregisterForUpdates((RequestBase)request);
         }
     }
-    
+
     private static final String IMAGE_LOADER_REQUEST_ID = "image_loader_request_id";
-    
+
     private DirtyPost dirtyPost;
     private final long postId;
-    
+
     private View postView;
     private View frameBody;
     private TextView message;
     private TextView summary;
     private View loadOrRefreshComments;
     private ImageButton favoriteButton;
-    
+
     private OnCommentLoadClickListener commentLoadClickListener;
-    
+
     private DataLoadRequest imageLoaderRequest;
     private long imageLoaderRequestId;
     private boolean requestRestoreFinished;
     private String currentImagePath;
     private BitmapDecodeTask bitmapDecodeTask;
     private Bitmap bitmap;
-    
+
     private final JournalBasedFragmentActivity activity;
     private boolean released;
-    
-    private SummaryFormatter summaryFormatter;
 
+    private SummaryFormatter summaryFormatter;
     private DirtyPreferences dirtyPreferences;
-    
+
+    private final LruCache<String, Bitmap> imageCache;
+
     public DirtyPostView(JournalBasedFragmentActivity activity, long postId) {
         super(activity);
-        
+
         this.activity = activity;
         this.postId = postId;
-        
+
+        this.imageCache = ((DirtyApp) activity.getApplication()).getImageCache();
+
         this.summaryFormatter = new SummaryFormatter(activity);
         this.dirtyPreferences = new DirtyPreferences(
                 PreferenceManager.getDefaultSharedPreferences(activity), activity);
@@ -256,12 +256,15 @@ public class DirtyPostView extends FrameLayout implements Checkable {
     private void processPostImages() {
         File imagePath = dirtyPost.getCachedImagePath();
         if (imagePath != null && requestRestoreFinished) {
-            if (!imagePath.exists() && (imageLoaderRequest == null || imageLoaderRequest.isCancelled())) {
+            if (shouldLoadImage(imagePath)) {
             	if (dirtyPreferences.shouldLoadImagesOnlyWithWiFi()) {
             		if (!Networks.hasWiFiConnection(activity)) {
             			return;
             		}
             	}
+                if (imageLoaderRequest != null) {
+                    activity.cancelRequest(imageLoaderRequestId);
+                }
                 imageLoaderRequest = new DataLoadRequest(dirtyPost.getImages()[0].src, dirtyPost.getCachedImagePath().getAbsolutePath());
                 imageLoaderRequest.getState().put("postId", postId);
                 imageLoaderRequest.setFullStateChangeListener(new ImageLoaderRequestListener(activity));
@@ -271,12 +274,25 @@ public class DirtyPostView extends FrameLayout implements Checkable {
                 if (imageLoaderRequest != null && imageLoaderRequest.getState().getStatus() == RequestStatus.FINISHED_WITH_ERRORS) {
                     showImageLoadingError();
                 } else if (!path.equals(currentImagePath)) {
-                    loadImage(path);
+                    if (imagePath.exists()) {
+                        loadImage(path);
+                    }
                 } else if (bitmap != null) {
                     setImage(bitmap);
                 }
             }
         }
+    }
+
+    private boolean shouldLoadImage(File imagePath) {
+        if (dirtyPost.getImages().length < 0) {
+            return false;
+        }
+        String loadingUrl = dirtyPost.getImages()[0].src;
+        return !imagePath.exists()
+                && (imageLoaderRequest == null
+                    || imageLoaderRequest.isCancelled()
+                    || !imageLoaderRequest.getUrl().equals(loadingUrl));
     }
 
     protected void toggleFavorite() {
@@ -308,20 +324,26 @@ public class DirtyPostView extends FrameLayout implements Checkable {
             bitmapDecodeTask.cancel(true);
         }
         currentImagePath = imagePath;
-        bitmapDecodeTask = new BitmapDecodeTask(Sizes.dpToPx(256, message.getContext()), Sizes.dpToPx(256, message.getContext())) {
-            @Override
-            protected void onImageLoaded(Bitmap bitmap) {
-                setImage(bitmap);
-            }
-            
-            @Override
-            protected void onLoadError() {
-                super.onLoadError();
-                currentImagePath = null;
-                showImageDecodingError();
-            }
-        };
-        bitmapDecodeTask.execute(new File(imagePath));        
+        Bitmap cachedBitmap = imageCache.get(imagePath);
+        if (cachedBitmap == null) {
+            int maxSize = Sizes.dpToPx(256, message.getContext());
+            bitmapDecodeTask = new BitmapDecodeTask(maxSize, maxSize) {
+                @Override
+                protected void onImageLoaded(Bitmap bitmap) {
+                    setImage(bitmap);
+                }
+
+                @Override
+                protected void onLoadError() {
+                    super.onLoadError();
+                    currentImagePath = null;
+                    showImageDecodingError();
+                }
+            };
+            bitmapDecodeTask.execute(new File(imagePath));
+        } else {
+            setImage(cachedBitmap);
+        }
     }
 
     

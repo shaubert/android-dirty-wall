@@ -34,8 +34,13 @@ public class HtmlHelper {
     public static interface ImageHandler {
         public void onImgTag(String src, int widht, int height);
     }
-    
-    public static void convertToSpannable(HtmlTagFinder.TagNode tag, SpannableStringBuilder builder, Object[] spans, ImageHandler imageHandler) {
+
+    public static interface UnknownTagHandler {
+        public void onUnknownTag(HtmlTagFinder.TagNode tag);
+    }
+
+    public static void convertToSpannable(HtmlTagFinder.TagNode tag, SpannableStringBuilder builder, Object[] spans,
+                                          ImageHandler imageHandler, UnknownTagHandler unknownTagHandler) {
         SpannableStringBuilder result = new SpannableStringBuilder();
         for (HtmlTagFinder.TagNode node : tag.getChilds()) {
             if (node.isContentNode()) {
@@ -63,7 +68,7 @@ public class HtmlHelper {
                 }
             } else {
                 String name = node.getName();
-                Object[] resSpan = createSpanForTag(node, imageHandler);
+                Object[] resSpan = createSpanForTag(node, imageHandler, unknownTagHandler);
                 
                 if ("br".equalsIgnoreCase(name)) {
                     handleBr(result);
@@ -72,7 +77,7 @@ public class HtmlHelper {
                 }
                 
                 if (!"script".equalsIgnoreCase(name)) {
-                    convertToSpannable(node, result, resSpan, imageHandler);
+                    convertToSpannable(node, result, resSpan, imageHandler, unknownTagHandler);
                 }
                 
                 if (isHeaderTag(name)) {
@@ -90,7 +95,7 @@ public class HtmlHelper {
         builder.append(result);
     }
     
-    private static Object[] createSpanForTag(HtmlTagFinder.TagNode node, ImageHandler imageHandler) {
+    private static Object[] createSpanForTag(HtmlTagFinder.TagNode node, ImageHandler imageHandler, UnknownTagHandler unknownTagHandler) {
         String tag = node.getName();
         if (tag.equalsIgnoreCase("em")) {
             return collect(new StyleSpan(Typeface.BOLD));
@@ -176,6 +181,10 @@ public class HtmlHelper {
                         SHLOG.w(ex);
                     }
                 }
+            }
+        } else {
+            if (unknownTagHandler != null) {
+                unknownTagHandler.onUnknownTag(node);
             }
         }
         return new Object[0];

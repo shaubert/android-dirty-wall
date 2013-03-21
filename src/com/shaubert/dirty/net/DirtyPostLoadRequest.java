@@ -2,6 +2,7 @@ package com.shaubert.dirty.net;
 
 import android.content.ContentProviderOperation;
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -109,9 +110,13 @@ public class DirtyPostLoadRequest extends RequestBase {
 
     private ContentProviderOperation convertToOperation(DirtyPost post) {
         if (post.getId() != null) {
+            ContentValues values = post.getValues();
+            values.remove(DirtyPostEntity.MESSAGE);
+            values.remove(DirtyPostEntity.IMAGE_URLS);
+            values.remove(DirtyPostEntity.FORMATTED_MESSAGE);
             return ContentProviderOperation
                     .newUpdate(ContentUris.withAppendedId(DirtyPostEntity.URI, post.getId()))
-                    .withValues(post.getValues())
+                    .withValues(values)
                     .build();
         } else {
             return ContentProviderOperation
@@ -136,12 +141,11 @@ public class DirtyPostLoadRequest extends RequestBase {
         final Pager<DirtyPost> pager;
         String url = getState().getString(URL_TO_LOAD_PARAM);
         if (TextUtils.isEmpty(url)) {
-            SHLOG.d("requesting newest posts");
             pager = blog.createPager();
         } else {
-            SHLOG.d("requesting posts from " + url);
             pager = blog.createPager(url);
         }
+        SHLOG.d("requesting posts with " + pager.getInitialRequest());
         return pager;
     }
 

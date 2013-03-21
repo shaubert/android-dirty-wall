@@ -5,6 +5,8 @@ import com.shaubert.blogadapter.client.ParserFactory;
 
 public class DirtyParserFactory implements ParserFactory {
 
+
+
     @Override
     public Parser createPostParser() {
         return new DirtyPostParser();

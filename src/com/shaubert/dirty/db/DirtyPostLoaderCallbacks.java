@@ -1,7 +1,5 @@
 package com.shaubert.dirty.db;
 
-import java.util.Arrays;
-
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -13,7 +11,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-
 import com.shaubert.dirty.Loaders;
 import com.shaubert.dirty.client.DirtyPost;
 import com.shaubert.dirty.client.DirtyRecord.Image;
@@ -21,12 +18,18 @@ import com.shaubert.dirty.db.DirtyContract.DirtyPostEntity;
 import com.shaubert.util.Files;
 import com.shaubert.util.Shlog;
 
-public abstract class DirtyPostLoaderCallbacks implements LoaderCallbacks<Cursor> {
+import java.util.Arrays;
+
+public class DirtyPostLoaderCallbacks implements LoaderCallbacks<Cursor> {
     
     private static final Shlog SHLOG = new Shlog(DirtyPostLoaderCallbacks.class.getSimpleName());
     
     private static final String REFRESING_SPANNED_TEXT_TIMER = "refresing spanned text for ";
-    
+
+    public interface DirtyPostLoadedCallback {
+        void onDirtyPostLoaded(DirtyPost dirtyPost);
+    }
+
     private final long postId;
     private DirtyPost dirtyPost;
     private AsyncTask<?, ?, ?> postProcessTask;
@@ -34,12 +37,18 @@ public abstract class DirtyPostLoaderCallbacks implements LoaderCallbacks<Cursor
     private final FragmentActivity activity;
     private Handler handler;
 
+    private DirtyPostLoadedCallback dirtyPostLoadedCallback;
+
     public DirtyPostLoaderCallbacks(FragmentActivity activity, long postId) {
         this.activity = activity;
         this.postId = postId;
         this.handler = new Handler();
     }
-        
+
+    public void setDirtyPostLoadedCallback(DirtyPostLoadedCallback dirtyPostLoadedCallback) {
+        this.dirtyPostLoadedCallback = dirtyPostLoadedCallback;
+    }
+
     public void initLoader() {
         activity.getSupportLoaderManager().initLoader(getLoaderId(postId), null, this);
     }
@@ -47,7 +56,11 @@ public abstract class DirtyPostLoaderCallbacks implements LoaderCallbacks<Cursor
     public void restartLoader() {
         activity.getSupportLoaderManager().restartLoader(getLoaderId(postId), null, this);
     }
-    
+
+    public void destroyLoader() {
+        activity.getSupportLoaderManager().destroyLoader(getLoaderId(postId));
+    }
+
     public static int getLoaderId(long postid) {
         return Loaders.POST_LOADER_MAPPER.getLoaderIdFrom(postid);
     }
@@ -106,15 +119,15 @@ public abstract class DirtyPostLoaderCallbacks implements LoaderCallbacks<Cursor
             
             protected void onPostExecute(DirtyPost result) {
                 if (result == dirtyPost) {
-                    onDirtyPostLoaded(dirtyPost);
+                    if (dirtyPostLoadedCallback != null) {
+                        dirtyPostLoadedCallback.onDirtyPostLoaded(dirtyPost);
+                    }
                 } else {
                     SHLOG.d("ignoring processing task result for " + postId);
                 }
             }
         }.execute(post);
     }
-    
-    public abstract void onDirtyPostLoaded(DirtyPost dirtyPost);
     
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {

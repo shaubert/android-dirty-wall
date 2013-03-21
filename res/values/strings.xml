@@ -9,7 +9,7 @@
     <string name="today">Сегодня</string>
     <string name="yesterday">Вчера</string>
     <string name="post_date_format">d.M.yyyy</string>
-    <string name="post_time_format">H.mm</string>
+    <string name="post_time_format">H:mm</string>
     <string name="post_list_header_date_format">d MMMM yyyy</string>
     
     <string name="one_comment">%d\u00A0комментарий</string>
@@ -48,7 +48,11 @@
     <string name="font_size_pref_key">font_size_pref</string>
     <string name="font_size_pref_title">Размер шрифта</string>
     <string name="setting_menu_item_title">Настройки</string>
-    
+    <string name="main_page_show_all_key">main_page_show_all_pref</string>
+    <string name="main_page_show_all_title">Всё вместе</string>
+    <string name="main_page_show_all_descr_on">Показывать на главной всё вместе</string>
+    <string name="main_page_show_all_descr_off">Показывать главную</string>
+
     <string name="main_setting_header_title">Основные настройки</string>
     <string name="favorites_setting_header_title">Отмеченные посты</string>
     <string name="background_sync_setting_header_title">Фоновая загрузка</string>
@@ -91,4 +95,7 @@
     <string name="tap_to_retry">Нажмите для повтора</string>
     <string name="endless_adapter_error_hint">Ошибочка вышла</string>
     <string name="sub_blog_main">Главная</string>
+
+    <string name="animated_gif_description">gif</string>
+
 </resources>

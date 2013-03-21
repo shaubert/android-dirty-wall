@@ -1,8 +1,16 @@
 package com.shaubert.dirty.net;
 
+import android.content.ContentProviderOperation;
+import android.content.ContentUris;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.DatabaseUtils;
+import android.net.Uri;
+import android.preference.PreferenceManager;
 import com.shaubert.blogadapter.client.Pager;
 import com.shaubert.dirty.client.DirtyBlog;
 import com.shaubert.dirty.client.DirtyComment;
+import com.shaubert.dirty.client.DirtyCommentParser;
 import com.shaubert.dirty.client.DirtyPost;
 import com.shaubert.dirty.db.DirtyContract;
 import com.shaubert.dirty.db.DirtyContract.DirtyCommentEntity;
@@ -12,14 +20,6 @@ import com.shaubert.net.core.RequestStateBase;
 import com.shaubert.net.nutshell.ExecutionContext;
 import com.shaubert.util.Shlog;
 import com.shaubert.util.TimePreferences;
-
-import android.content.ContentProviderOperation;
-import android.content.ContentUris;
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.DatabaseUtils;
-import android.net.Uri;
-import android.preference.PreferenceManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,8 +47,10 @@ public class DirtyCommentsLoadRequest extends RequestBase {
             DirtyPost post = selectPost(executionContext);
             Pager<DirtyComment> pager = DirtyBlog.getInstance().createPager(post);
             List<DirtyComment> dirtyComments = pager.loadNext();
+            DirtyPost parsedPostBody = ((DirtyCommentParser) pager.getParser()).getDirtyPost();
             SHLOG.d("comments processed, converting to cpo");
             ArrayList<ContentProviderOperation> operations = convertToOperations(executionContext, dirtyComments, post);
+            operations.add(createUpdatePostOp(post, parsedPostBody));
             String timerName = "apply batch of " + operations.size() + " cpo";
             SHLOG.resetTimer(timerName);
             executionContext.getContext().getContentResolver().applyBatch(DirtyContract.AUTHORITY, operations);
@@ -57,6 +59,17 @@ public class DirtyCommentsLoadRequest extends RequestBase {
         } else {
             SHLOG.d("skipping " + DirtyCommentsLoadRequest.class.getSimpleName() + ": last sync was too recent");
         }
+    }
+
+    private ContentProviderOperation createUpdatePostOp(DirtyPost post, DirtyPost parsedPostBody) {
+        post.setSpannedText(parsedPostBody.getSpannedText());
+        post.setFormattedText(parsedPostBody.getFormattedText());
+        post.setMessage(parsedPostBody.getMessage());
+        post.setImages(parsedPostBody.getImages());
+        return ContentProviderOperation
+                .newUpdate(ContentUris.withAppendedId(DirtyPostEntity.URI, post.getId()))
+                .withValues(post.getValues())
+                .build();
     }
 
     private ArrayList<ContentProviderOperation> convertToOperations(ExecutionContext executionContext, 

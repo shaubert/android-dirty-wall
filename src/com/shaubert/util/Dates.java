@@ -6,7 +6,7 @@ import java.util.TimeZone;
 
 public class Dates {
 
-    public static final TimeZone GMT = TimeZone.getTimeZone("GMT");
+//    public static final TimeZone GMT = TimeZone.getTimeZone("GMT");
 
     /**
      * <p>Checks if two dates are on the same day ignoring time.</p>

@@ -1,33 +1,31 @@
 package com.shaubert.dirty.client;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.annotation.SuppressLint;
-
 import com.shaubert.blogadapter.client.DataLoaderRequest;
 import com.shaubert.blogadapter.client.PagerDataParserResult;
 import com.shaubert.blogadapter.client.Parser;
 import com.shaubert.blogadapter.client.ParserResultList;
 import com.shaubert.util.Shlog;
 import com.shaubert.util.Versions;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 public class DirtyBlogsParser implements Parser {
 
 	public static final Shlog SHLOG = new Shlog(DirtyBlogsParser.class.getSimpleName());
 	
-	private DirtyRequestProvider requestProvider = new DirtyRequestProvider();
+	private DirtyRequestProvider requestProvider = DirtyBlog.getInstance().getRequestProvider();
 	private PagerDataParserResult<DirtySubBlog> result;
 
 	private static final String LOAD_TIMER = "blogs parse time";
-	
+
 	@SuppressLint("NewApi")
 	@SuppressWarnings("unchecked")
 	@Override

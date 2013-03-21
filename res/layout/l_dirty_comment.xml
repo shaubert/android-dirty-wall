@@ -4,32 +4,43 @@
     android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:layout_weight="1"
-    android:background="@drawable/picture_frame" >
+    android:background="@drawable/picture_frame">
 
     <LinearLayout
         android:id="@+id/frame_body"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/frame_background"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <com.shaubert.widget.PatchedTextView
             android:id="@+id/message"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp" />
+            android:layout_margin="8dp"/>
 
-        <com.shaubert.util.FixedSizeImageView
-            android:id="@+id/image"
-            android:layout_width="128dp"
-            android:layout_height="128dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginRight="8dp"/>
-        
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <com.shaubert.util.FixedSizeImageView
+                android:id="@+id/image"
+                android:layout_width="128dp"
+                android:layout_height="128dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"/>
+
+            <TextView
+                android:id="@+id/gif_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/animated_gif_description"
+                android:visibility="gone"
+                android:textAppearance="?android:attr/textAppearanceMediumInverse"/>
+        </RelativeLayout>
+
         <com.shaubert.widget.PatchedTextView
             android:id="@+id/summary"
             android:layout_width="wrap_content"
@@ -38,6 +49,6 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:textColor="@android:color/darker_gray"
-            android:textSize="10dp" />
+            android:textSize="10dp"/>
     </LinearLayout>
 </LinearLayout>

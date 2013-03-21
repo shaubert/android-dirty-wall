@@ -1,21 +1,11 @@
 package com.shaubert.dirty.client;
 
-import com.shaubert.blogadapter.client.DataLoaderRequest;
-import com.shaubert.blogadapter.client.HttpDataLoaderRequest;
-import com.shaubert.blogadapter.client.PagerDataParserResult;
-import com.shaubert.blogadapter.client.Parser;
-import com.shaubert.blogadapter.client.ParserResultList;
-import com.shaubert.dirty.client.DirtyRecord.Image;
+import com.shaubert.blogadapter.client.*;
 import com.shaubert.dirty.client.HtmlTagFinder.AttributeWithValue.Constraint;
 import com.shaubert.dirty.client.HtmlTagFinder.Callback;
 import com.shaubert.dirty.client.HtmlTagFinder.Rule;
 import com.shaubert.dirty.client.HtmlTagFinder.TagNode;
-import com.shaubert.util.HtmlHelper;
-import com.shaubert.util.HtmlHelper.ImageHandler;
 import com.shaubert.util.Shlog;
-
-import android.text.SpannableStringBuilder;
-import android.text.TextUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -96,12 +86,15 @@ public class DirtyPostParser extends HtmlParser implements Parser {
     private void parseGertruda(HtmlTagFinder.TagNode gertrudaTag) {
         try {
             gertrudaUrl = gertrudaTag.findPath("a", "img").get(0).getAttributes().getValue("", "src");
+            if (gertrudaUrl != null && !gertrudaUrl.startsWith("http")) {
+                gertrudaUrl = "http://d3.ru" + gertrudaUrl;
+            }
         } catch (Exception ex) {
             SHLOG.w(ex);
         }
     }
 
-    private void parsePost(HtmlTagFinder.TagNode post) {
+    public void parsePost(HtmlTagFinder.TagNode post) {
         DirtyPost dirtyPost = new DirtyPost();
         dirtyPost.setServerId(Long.parseLong(post.getAttributes().getValue("", "id").substring(1)));
         SHLOG.d("parsing post " + dirtyPost.getServerId());
@@ -110,56 +103,60 @@ public class DirtyPostParser extends HtmlParser implements Parser {
         
         List<HtmlTagFinder.TagNode> childTags = post.getNotContentChilds();
         HtmlTagFinder.TagNode body = childTags.get(0);
-        parseBody(body, dirtyPost);
-        
+        helperParser.parseBody(body, dirtyPost);
+
         HtmlTagFinder.TagNode info = childTags.get(1);
         List<TagNode> aTags = info.findAll(new Rule("a"));
         TagNode authorTag = aTags.get(0);
 		dirtyPost.setAuthor(authorTag.getChilds().get(0).getText());
         dirtyPost.setAuthorLink("http://d3.ru" + authorTag.getAttributes().getValue("", "href"));
-        String postDate = info.getChilds().get(2).getText().substring(2);
-        dirtyPost.setCreationDate(helperParser.parseDate(postDate));
+        List<TagNode> dateSpans = info.findAll(new Rule("span").withAttribute("data-epoch_date"));
+        if (dateSpans.size() == 1) {
+            TagNode dateSpan = dateSpans.get(0);
+            String postDate = dateSpan.getAttributes().getValue("data-epoch_date");
+            dirtyPost.setCreationDate(helperParser.parseEpochDate(postDate));
+        }
         dirtyPost.setCommentsCount(0);
-        TagNode commentsTag = info.findAll(new Rule("span")).get(0);
-        TagNode commentsHref = commentsTag.getNotContentChilds().get(0);
-        String commentsHrefUrl = commentsHref.getAttributes().getValue("href");
-        String d3BlogRef = commentsHrefUrl.startsWith("http") 
-        		? commentsHrefUrl.split("/")[2] : commentsHrefUrl.split("/")[1];
-        dirtyPost.setSubBlogName(d3BlogRef);
-		String commentsString = commentsHref.getChilds().get(0).getText();
-        Matcher commentsCountMatcher = DIGITS.matcher(commentsString);
-        if (commentsCountMatcher.find() && commentsCountMatcher.group().length() > 0) {
-            try {
-                dirtyPost.setCommentsCount(Integer.parseInt(commentsCountMatcher.group()));
-            } catch (NumberFormatException ex) {
-                SHLOG.w(ex);
+        TagNode commentsTag = findTag(info, "оммент");
+        TagNode commentsHref = commentsTag.getParent();
+        while (commentsHref != null && !commentsHref.getName().equals("a")) {
+            commentsHref = commentsHref.getParent();
+        }
+        if (commentsHref != null) {
+            String commentsHrefUrl = commentsHref.getAttributes().getValue("href");
+            String d3BlogRef = commentsHrefUrl.startsWith("http")
+                    ? commentsHrefUrl.split("/")[2] : commentsHrefUrl.split("/")[1];
+            dirtyPost.setSubBlogName(d3BlogRef);
+            String commentsString = commentsHref.getChilds().get(0).getText();
+            Matcher commentsCountMatcher = DIGITS.matcher(commentsString);
+            if (commentsCountMatcher.find() && commentsCountMatcher.group().length() > 0) {
+                try {
+                    dirtyPost.setCommentsCount(Integer.parseInt(commentsCountMatcher.group()));
+                } catch (NumberFormatException ex) {
+                    SHLOG.w(ex);
+                }
             }
         }
         TagNode voteTag = info.findAll(new Rule("div").withAttributeWithValue("class", "vote")).get(0);
     	dirtyPost.setVotesCount(Integer.parseInt(voteTag.getNotContentChilds().get(0).getChilds().get(0).getText()));
         this.result.getResult().add(dirtyPost);
     }
-    
-    private void parseBody(HtmlTagFinder.TagNode body, final DirtyPost dirtyPost) {
-        SpannableStringBuilder builder = new SpannableStringBuilder();
-        final List<Image> images = new ArrayList<Image>();
-        HtmlHelper.convertToSpannable(body, builder, null, new ImageHandler() {
-            @Override
-            public void onImgTag(String src, int widht, int height) {
-                images.add(new Image(src, widht, height));
-                
-                String videoUrl = helperParser.tryToConvertToVideoUrl(src);
-                if (!TextUtils.isEmpty(videoUrl)) {
-                    dirtyPost.setVideoUrl(videoUrl);
+
+    private TagNode findTag(TagNode root, String query) {
+        if (root.getText() != null && root.getText().contains(query)) {
+            return root;
+        } else {
+            for (TagNode node : root.getChilds()) {
+                TagNode result = findTag(node, query);
+                if (result != null) {
+                    return result;
                 }
             }
-        });
-        dirtyPost.setSpannedText(builder);
-        dirtyPost.setFormattedText(HtmlHelper.toHtml(builder));
-        dirtyPost.setMessage(builder.toString());
-        dirtyPost.setImages(images.toArray(new Image[images.size()]));        
+            return null;
+        }
+
     }
-           
+
     private void parseNextPageLink(HtmlTagFinder.TagNode tag) {
         int totalPages = Integer.parseInt(tag.getNotContentChilds().get(0).getChilds().get(0).getText());
         SHLOG.d("parsed total pages = " + totalPages);
