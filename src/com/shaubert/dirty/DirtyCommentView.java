@@ -37,7 +37,6 @@ public class DirtyCommentView extends LinearLayout implements Checkable {
     
     private static LruCache<Long, Spanned> spanCache = new LruCache<Long, Spanned>(100);
 
-    private View frame;
     private ViewGroup frameBody;
     private TextView message;
     private TextView gifDescription;
@@ -68,21 +67,20 @@ public class DirtyCommentView extends LinearLayout implements Checkable {
         
         this.summaryFormatter = new SummaryFormatter(context);
         LayoutInflater inflater = LayoutInflater.from(context);
-        frame = inflater.inflate(R.layout.l_dirty_comment, this, true);
-        
-        frameBody = (ViewGroup)frame.findViewById(R.id.frame_body);
-        message = (TextView)frame.findViewById(R.id.message);
+        inflater.inflate(R.layout.l_dirty_comment, this, true);
+
+        frameBody = (ViewGroup) findViewById(R.id.frame_body);
+        message = (TextView) findViewById(R.id.message);
         message.setMovementMethod(SelectableLinkMovementMethod.getInstance());
         message.setClickable(false);
         message.setLongClickable(false);
-        gifDescription = (TextView) frame.findViewById(R.id.gif_description);
-        image = (ImageView)frame.findViewById(R.id.image);
-        summary = (TextView)frame.findViewById(R.id.summary);
+        gifDescription = (TextView) findViewById(R.id.gif_description);
+        image = (ImageView) findViewById(R.id.image);
+        summary = (TextView) findViewById(R.id.summary);
         summary.setMovementMethod(SelectableLinkMovementMethod.getInstance());
         summary.setClickable(false);
         summary.setLongClickable(false);
-        frame = frame.findViewById(R.id.message_frame);
-        
+
         image.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -139,9 +137,9 @@ public class DirtyCommentView extends LinearLayout implements Checkable {
         
         summary.setText(summaryFormatter.formatSummaryText(cursor));
         summary.setTextSize(dirtyPreferences.getSummarySize());
-        LinearLayout.LayoutParams params = (LayoutParams)frame.getLayoutParams();
+        LinearLayout.LayoutParams params = (LayoutParams) frameBody.getLayoutParams();
         params.weight = Math.max(0.5f, 1 - cursor.getIndentLevel() / 50f);
-        frame.setLayoutParams(params);
+        frameBody.setLayoutParams(params);
   
         if (frameBody.getChildCount() > 3) {
             frameBody.removeViewAt(3);
@@ -226,7 +224,7 @@ public class DirtyCommentView extends LinearLayout implements Checkable {
             		}
             	}
             	
-                cache = Files.getCommentImageCache(frame.getContext(), commentServerId, url);
+                cache = Files.getCommentImageCache(getContext(), commentServerId, url);
                 if (!decodeImage() && !isCancelled()) {
                     DataLoadRequest loadRequest = new DataLoadRequest(url, cache.getAbsolutePath());
                     try {

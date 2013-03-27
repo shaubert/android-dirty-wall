@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="DirtyTheme" parent="@android:style/Theme.Light">
+    <style name="System" parent="@android:style/Theme.Light">
+    </style>
+
+    <style name="DirtyTheme" parent="System">
+    </style>
+
+    <style name="DirtyTheme.Posts" parent="System">
+        <item name="android:windowBackground">@color/white</item>
     </style>
     
 </resources>

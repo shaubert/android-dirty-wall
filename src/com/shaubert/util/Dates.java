@@ -6,7 +6,7 @@ import java.util.TimeZone;
 
 public class Dates {
 
-//    public static final TimeZone GMT = TimeZone.getTimeZone("GMT");
+    private static Calendar calendar = Calendar.getInstance();
 
     /**
      * <p>Checks if two dates are on the same day ignoring time.</p>
@@ -19,13 +19,19 @@ public class Dates {
         if (date1 == null || date2 == null) {
             throw new IllegalArgumentException("The dates must not be null");
         }
-        Calendar cal1 = Calendar.getInstance(zone);
+        Calendar cal1 = getCalendarInstance(zone);
         cal1.setTime(date1);
-        Calendar cal2 = Calendar.getInstance(zone);
+        Calendar cal2 = getCalendarInstance(zone);
         cal2.setTime(date2);
         return isSameDay(cal1, cal2);
     }
-    
+
+    private static synchronized Calendar getCalendarInstance(TimeZone zone) {
+        Calendar res = (Calendar) calendar.clone();
+        res.setTimeZone(zone);
+        return res;
+    }
+
     /**
      * <p>Checks if two calendars represent the same day ignoring time.</p>
      * @param cal1  the first calendar, not altered, not null
@@ -49,7 +55,7 @@ public class Dates {
      * @throws IllegalArgumentException if the date is <code>null</code>
      */
     public static boolean isToday(Date date, TimeZone zone) {
-        return isSameDay(date, Calendar.getInstance(zone).getTime(), zone);
+        return isSameDay(date, getCalendarInstance(zone).getTime(), zone);
     }
     
     /**
@@ -59,17 +65,17 @@ public class Dates {
      * @throws IllegalArgumentException if the calendar is <code>null</code>
      */
     public static boolean isToday(Calendar cal, TimeZone zone) {
-        return isSameDay(cal, Calendar.getInstance(zone));
+        return isSameDay(cal, getCalendarInstance(zone));
     }
     
     public static boolean isYesterday(Date date, TimeZone zone) {
-        Calendar cal = Calendar.getInstance(zone);
+        Calendar cal = getCalendarInstance(zone);
         cal.setTime(date);
         return isYesterday(cal, zone);
     }
     
     public static boolean isYesterday(Calendar cal, TimeZone zone) {
-        Calendar cal2 = Calendar.getInstance(zone);
+        Calendar cal2 = getCalendarInstance(zone);
         cal2.add(Calendar.DAY_OF_YEAR, -1);
         return isSameDay(cal, cal2);
     }
@@ -85,9 +91,9 @@ public class Dates {
         if (date1 == null || date2 == null) {
             throw new IllegalArgumentException("The dates must not be null");
         }
-        Calendar cal1 = Calendar.getInstance(zone);
+        Calendar cal1 = getCalendarInstance(zone);
         cal1.setTime(date1);
-        Calendar cal2 = Calendar.getInstance(zone);
+        Calendar cal2 = getCalendarInstance(zone);
         cal2.setTime(date2);
         return isBeforeDay(cal1, cal2);
     }
@@ -121,9 +127,9 @@ public class Dates {
         if (date1 == null || date2 == null) {
             throw new IllegalArgumentException("The dates must not be null");
         }
-        Calendar cal1 = Calendar.getInstance(zone);
+        Calendar cal1 = getCalendarInstance(zone);
         cal1.setTime(date1);
-        Calendar cal2 = Calendar.getInstance(zone);
+        Calendar cal2 = getCalendarInstance(zone);
         cal2.setTime(date2);
         return isAfterDay(cal1, cal2);
     }
@@ -157,7 +163,7 @@ public class Dates {
         if (date == null) {
             throw new IllegalArgumentException("The date must not be null");
         }
-        Calendar cal = Calendar.getInstance(zone);
+        Calendar cal = getCalendarInstance(zone);
         cal.setTime(date);
         return isWithinDaysFuture(cal, days, zone);
     }
@@ -173,8 +179,8 @@ public class Dates {
         if (cal == null) {
             throw new IllegalArgumentException("The date must not be null");
         }
-        Calendar today = Calendar.getInstance(zone);
-        Calendar future = Calendar.getInstance(zone);
+        Calendar today = getCalendarInstance(zone);
+        Calendar future = getCalendarInstance(zone);
         future.add(Calendar.DAY_OF_YEAR, days);
         return (isAfterDay(cal, today) && ! isAfterDay(cal, future));
     }
@@ -189,7 +195,7 @@ public class Dates {
         if (date == null) {
             return null;
         }
-        Calendar c = Calendar.getInstance(zone);
+        Calendar c = getCalendarInstance(zone);
         c.setTime(date);
         c.set(Calendar.HOUR_OF_DAY, 0);
         c.set(Calendar.MINUTE, 0);
@@ -211,7 +217,7 @@ public class Dates {
         if (date == null) {
             return false;
         }
-        Calendar c = Calendar.getInstance(zone);
+        Calendar c = getCalendarInstance(zone);
         c.setTime(date);
         if (c.get(Calendar.HOUR_OF_DAY) > 0) {
             return true;

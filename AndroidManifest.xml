@@ -22,6 +22,7 @@
         <activity
             android:name=".PostsListActivity"
             android:label="@string/app_name"
+            android:theme="@style/DirtyTheme.Posts"
             android:launchMode="singleTop" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,10 +33,12 @@
         <activity
             android:name=".PostsPagerActivity"
             android:label="@string/app_name"
+            android:theme="@style/DirtyTheme.Posts"
             android:launchMode="singleTop" />
         <activity
             android:name=".BlogsListActivity"
             android:label="@string/blogs_list_activity_label"
+            android:theme="@style/DirtyTheme.Posts"
             android:launchMode="singleTop" />
         <activity
             android:name=".SettingsActivity"

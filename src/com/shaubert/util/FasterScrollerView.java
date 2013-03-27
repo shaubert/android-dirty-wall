@@ -121,7 +121,7 @@ public class FasterScrollerView extends FrameLayout implements OnScrollListener,
 	private boolean mMatchDragPosition;
 
 	private boolean mChangedBounds;
-	private boolean mAlwaysShow;
+	private boolean mAlwaysShow = true;
 
 	private Handler mHandler = new Handler();
 
@@ -130,7 +130,7 @@ public class FasterScrollerView extends FrameLayout implements OnScrollListener,
 
 	private boolean mFastScrollEnabled = false;
 
-	private int mOverlayPosition = OVERLAY_FLOATING;
+	private int mOverlayPosition = OVERLAY_AT_THUMB;
 
 	private final Rect mTmpRect = new Rect();
 
@@ -171,9 +171,9 @@ public class FasterScrollerView extends FrameLayout implements OnScrollListener,
 	private void init(Context context) {
 		// Get both the scrollbar states drawables
 		final Resources res = context.getResources();
-		setThumbDrawable(res.getDrawable(R.drawable.scrollbar_handle_accelerated_anim2));
+		setThumbDrawable(res.getDrawable(R.drawable.fastscroll_thumb));
 
-		mOverlayDrawable = res.getDrawable(android.R.drawable.alert_dark_frame);
+		mOverlayDrawable = res.getDrawable(R.drawable.fastscroll_label_right_holo_light);
 
 		mScrollCompleted = true;
 		setWillNotDraw(false);
@@ -862,16 +862,16 @@ public class FasterScrollerView extends FrameLayout implements OnScrollListener,
 
 		@Override
 		public void run() {
-			if (getState() != STATE_EXIT) {
-				startFade();
-				return;
-			}
+            if (getState() != STATE_EXIT) {
+                startFade();
+                return;
+            }
 
-			if (getAlpha() > 0) {
-				doInvalidate();
-			} else {
-				setState(STATE_NONE);
-			}
+            if (getAlpha() > 0) {
+                doInvalidate();
+            } else {
+                setState(STATE_NONE);
+            }
 		}
 	}
 }

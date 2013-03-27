@@ -35,7 +35,8 @@ public class DirtyPostCompactAdapter extends CursorAdapter implements LoaderCall
     private String subBlogUrl;
 	
 	private DateFormat dateFormat;
-	private Date[] sections;
+	private List<Date> sections;
+    private Map<Date, Integer> sectionPositions;
 	private String[] sectionLabels;
 	private FasterScrollerView fasterScrollerView;
 	
@@ -45,6 +46,8 @@ public class DirtyPostCompactAdapter extends CursorAdapter implements LoaderCall
         super(fragmentActivity, null, 0);
         this.fragmentActivity = fragmentActivity;
         this.dateFormat = new SimpleDateFormat(fragmentActivity.getString(R.string.post_list_header_date_format), new Locale("ru"));
+        this.sectionPositions = new HashMap<Date, Integer>();
+        this.sections = new ArrayList<Date>();
 
         fragmentActivity.getSupportLoaderManager().initLoader(Loaders.DIRTY_POSTS_LOADER, null, this);
 	}
@@ -157,21 +160,22 @@ public class DirtyPostCompactAdapter extends CursorAdapter implements LoaderCall
     }
 
     private void refreshSections() {
-    	List<Date> days = new ArrayList<Date>();
+        sections.clear();
+        sectionPositions.clear();
+
     	List<String> headers = new ArrayList<String>();
 		if (postsCursor != null && postsCursor.moveToFirst()) {
 			Date prevDate = null;
 			do {
 				Date newDate = postsCursor.getCreationDate();
 				if (prevDate == null || !Dates.isSameDay(newDate, prevDate, TimeZone.getDefault())) {
-					days.add(newDate);
+					sections.add(newDate);
+                    sectionPositions.put(newDate, postsCursor.getPosition());
 					headers.add(formatHeaderText(postsCursor));
 				}
 				prevDate = newDate; 
 			} while (postsCursor.moveToNext());
 		}
-		sections = new Date[days.size()];
-		days.toArray(sections);
 		sectionLabels = new String[headers.size()];
 		headers.toArray(sectionLabels);
     }
@@ -183,28 +187,19 @@ public class DirtyPostCompactAdapter extends CursorAdapter implements LoaderCall
 
 	@Override
 	public int getPositionForSection(int section) {
-		Date date = sections[Math.min(section, sections.length - 1)];
-		if (postsCursor != null && postsCursor.moveToFirst()) {
-			do {
-				if (Dates.isSameDay(postsCursor.getCreationDate(), date, TimeZone.getDefault())) {
-					return postsCursor.getPosition();
-				}
-			} while (postsCursor.moveToNext());
-		}
-		return section;
+        return sectionPositions.get(sections.get(section));
 	}
 
 	@Override
 	public int getSectionForPosition(int position) {
-		if (postsCursor != null && postsCursor.moveToPosition(position)) {
-			Date date = postsCursor.getCreationDate();
-			for (int i = 0; i < sections.length; i++) {
-				if (Dates.isSameDay(date, sections[i], TimeZone.getDefault())) {
-					return i;
-				}
-			}
-		}
-		return sections.length - 1;
+        postsCursor.moveToPosition(position);
+        Date date = postsCursor.getCreationDate();
+        for (int pos = sections.size() - 1; pos >= 0; pos--) {
+            if (date.compareTo(sections.get(pos)) <= 0) {
+                return pos;
+            }
+        }
+		return 0;
 	}
 	
 }

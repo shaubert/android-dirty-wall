@@ -93,7 +93,7 @@ public class DirtyPreferences {
     }
     
     public float getSummarySize() {
-        return getFontSize() * 0.7f;
+        return getFontSize() * 0.85f;
     }
     
     public boolean shouldLoadImagesOnlyWithWiFi() {

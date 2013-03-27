@@ -11,4 +11,8 @@
     <!-- Height of the fastscroll thumb -->
     <dimen name="fastscroll_thumb_height">52dp</dimen>
 
+    <dimen name="frame_margin_left">4.5dp</dimen>
+    <dimen name="frame_margin_top">3.5dp</dimen>
+    <dimen name="frame_margin_right">7.5dp</dimen>
+    <dimen name="frame_margin_bottom">6.5dp</dimen>
 </resources>

@@ -2,63 +2,61 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="40dp"/>
 
-    <FrameLayout
+    <LinearLayout
+        android:id="@+id/frame_body"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/picture_frame" >
+        android:background="@drawable/frame_background"
+        android:paddingLeft="@dimen/frame_margin_left"
+        android:paddingTop="@dimen/frame_margin_top"
+        android:paddingRight="@dimen/frame_margin_right"
+        android:paddingBottom="@dimen/frame_margin_bottom"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/frame_body"
+        <com.shaubert.widget.PatchedTextView
+            android:id="@+id/message"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/frame_background"
-            android:orientation="vertical" >
+            android:layout_gravity="center"
+            android:layout_margin="8dp"/>
 
-            <com.shaubert.widget.PatchedTextView
-                android:id="@+id/message"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="8dp" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
 
-            <LinearLayout
+            <Button
+                android:id="@+id/load_refresh_comments"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center" >
+                android:focusable="false"
+                android:text="@string/load_comments"
+                android:textSize="13dp"/>
 
-                <Button
-                    android:id="@+id/load_refresh_comments"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:text="@string/load_comments"
-                    android:textSize="13dp" />
-
-                <ImageButton
-                    android:id="@+id/favorite_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    android:focusable="false"
-                    android:scaleType="center"
-                    android:src="@drawable/star_filled" />
-            </LinearLayout>
-
-            <com.shaubert.widget.PatchedTextView
-                android:id="@+id/summary"
+            <ImageButton
+                android:id="@+id/favorite_button"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:textColor="@android:color/darker_gray"
-                android:textSize="10dp" />
+                android:layout_height="fill_parent"
+                android:focusable="false"
+                android:scaleType="center"
+                android:src="@drawable/star_filled"/>
         </LinearLayout>
-    </FrameLayout>
+
+        <com.shaubert.widget.PatchedTextView
+            android:id="@+id/summary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="10dp"/>
+    </LinearLayout>
 
 </LinearLayout>

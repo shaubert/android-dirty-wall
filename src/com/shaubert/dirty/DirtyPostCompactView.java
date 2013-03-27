@@ -3,7 +3,6 @@ package com.shaubert.dirty;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
-import android.graphics.Typeface;
 import android.graphics.drawable.StateListDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.preference.PreferenceManager;
@@ -15,7 +14,6 @@ import android.widget.Checkable;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.shaubert.dirty.db.DirtyContract.DirtyPostEntity;
 import com.shaubert.dirty.db.PostsCursor;
 import com.shaubert.util.AsyncTasks;
@@ -33,6 +31,7 @@ public class DirtyPostCompactView extends FrameLayout implements Checkable {
     private TextView message;
     private TextView summary;
     private ImageView favoriteButton;
+    private View unreadMark;
     
     private SummaryFormatter summaryFormatter;
     private DirtyPreferences dirtyPreferences;
@@ -63,7 +62,8 @@ public class DirtyPostCompactView extends FrameLayout implements Checkable {
             public void onClick(View v) {
                 toggleFavorite();
             }
-        });        
+        });
+        unreadMark = postView.findViewById(R.id.unread_mark);
         
         setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
     }
@@ -105,8 +105,8 @@ public class DirtyPostCompactView extends FrameLayout implements Checkable {
     	postId = dirtyPost.getId();
     	isFavorite = dirtyPost.isFavorite();
     	boolean unread = dirtyPost.isUnread();
-    	
-    	message.setTypeface(null, unread ? Typeface.BOLD : Typeface.NORMAL);
+
+        unreadMark.setVisibility(unread ? VISIBLE : GONE);
     	message.setTextSize(dirtyPreferences.getFontSize());
         message.setText(dirtyPost.getMessage());
 		summary.setTextSize(dirtyPreferences.getSummarySize());
