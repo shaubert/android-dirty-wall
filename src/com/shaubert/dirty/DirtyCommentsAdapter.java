@@ -71,6 +71,6 @@ public class DirtyCommentsAdapter extends CursorAdapter implements LoaderCallbac
     }
 
     public void destroyLoader() {
-        fragmentActivity.getLoaderManager().destroyLoader(loaderId);
+        fragmentActivity.getSupportLoaderManager().destroyLoader(loaderId);
     }
 }
