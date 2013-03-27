@@ -41,6 +41,7 @@ public class DirtyCommentView extends LinearLayout implements Checkable {
     private TextView message;
     private TextView gifDescription;
     private ImageView image;
+    private ViewGroup imageBox;
     private TextView summary;
     
     private String imageUrl;
@@ -74,6 +75,7 @@ public class DirtyCommentView extends LinearLayout implements Checkable {
         message.setMovementMethod(SelectableLinkMovementMethod.getInstance());
         message.setClickable(false);
         message.setLongClickable(false);
+        imageBox = (ViewGroup) findViewById(R.id.image_box);
         gifDescription = (TextView) findViewById(R.id.gif_description);
         image = (ImageView) findViewById(R.id.image);
         summary = (TextView) findViewById(R.id.summary);
@@ -161,7 +163,7 @@ public class DirtyCommentView extends LinearLayout implements Checkable {
         gifDescription.setVisibility(GONE);
         Image[] images = cursor.getImages();
         if (images != null && images.length > 0) {
-            image.setVisibility(View.VISIBLE);
+            imageBox.setVisibility(View.VISIBLE);
             Image commentImage = images[0];
 
             if (commentImage.src.endsWith(".gif")) {
@@ -191,7 +193,7 @@ public class DirtyCommentView extends LinearLayout implements Checkable {
             }
         } else {
             image.setImageBitmap(null);
-            image.setVisibility(View.GONE);
+            imageBox.setVisibility(View.GONE);
             imageUrl = videoUrl = null;
         }
     }
