@@ -1,11 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ListView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/blogs_list"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:cacheColorHint="#0000"
-    android:divider="@null"
-    android:listSelector="@drawable/listview_transparent_selector"
-    android:paddingLeft="8dp"
-    android:paddingRight="8dp"
-    android:scrollbarStyle="outsideOverlay"/>
+    android:orientation="vertical">
+
+    <ListView
+        android:id="@+id/blogs_list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:cacheColorHint="#0000"
+        android:divider="@null"
+        android:listSelector="@drawable/listview_transparent_selector"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:scrollbarStyle="outsideOverlay"/>
+
+    <LinearLayout
+        android:id="@+id/search_box"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-7dp"
+        android:background="@drawable/picture_frame"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/filter_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:hint="@string/blogs_search_hint"
+            android:imeOptions="actionSearch"/>
+
+        <ImageView
+            android:id="@+id/search_close_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="10dp"
+            android:layout_marginRight="@dimen/frame_margin_right"
+            android:layout_marginBottom="3dp"
+            android:src="@drawable/ic_search_clear"
+            android:background="?selectableItemBackground"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

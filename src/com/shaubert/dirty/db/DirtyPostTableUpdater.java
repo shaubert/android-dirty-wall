@@ -11,6 +11,8 @@ public class DirtyPostTableUpdater implements UpdateCallback {
 	//version 17, added "unread INTEGER" column
 	//version 18, added "sub_blog_name TEXT" column
 	//version 19, none
+	//version 20, none
+	//version 21, none
 	@Override
 	public void onUpdate(Entity entity, SQLiteDatabase db, int oldVersion, int newVersion) {
 		if (oldVersion < 17) {

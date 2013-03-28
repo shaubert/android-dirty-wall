@@ -2,6 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
+        android:id="@+id/search_menu_item"
+        android:showAsAction="always"
+        android:title="@string/search_menu_title"
+        android:icon="@drawable/ic_menu_search">
+    </item>
+
+    <item
         android:id="@+id/refresh_blogs_menu_item"
         android:showAsAction="always"
         android:title="@string/refresh_posts"

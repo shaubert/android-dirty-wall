@@ -8,6 +8,8 @@ import android.widget.ImageView;
 
 public class GertrudaImageView extends ImageView {
 
+    private boolean colorFilterEnabled;
+
     public GertrudaImageView(Context context) {
         super(context);
         init();
@@ -24,7 +26,19 @@ public class GertrudaImageView extends ImageView {
     }
 
     private void init() {
-        setColorFilter(Color.WHITE, PorterDuff.Mode.OVERLAY);
+        setColorFilterEnabled(true);
+    }
+
+    public void setColorFilterEnabled(boolean colorFilterEnabled) {
+        if (this.colorFilterEnabled != colorFilterEnabled) {
+            this.colorFilterEnabled = colorFilterEnabled;
+            if (colorFilterEnabled) {
+                setColorFilter(Color.argb(110, 255, 255, 255), PorterDuff.Mode.LIGHTEN);
+            } else {
+                setColorFilter(null);
+            }
+        }
+
     }
 
 }

@@ -1,23 +1,15 @@
 package com.shaubert.dirty.db;
 
-import static androidx.persistence.CascadeType.REMOVE;
-
-import org.ecype.diego.Update;
-import org.ecype.diego.Uris;
-
 import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
-import androidx.persistence.Column;
-import androidx.persistence.ColumnType;
-import androidx.persistence.Contract;
-import androidx.persistence.Entity;
-import androidx.persistence.GeneratedValue;
-import androidx.persistence.Id;
-import androidx.persistence.ManyToOne;
-import androidx.persistence.OneToMany;
+import androidx.persistence.*;
+import org.ecype.diego.Update;
+import org.ecype.diego.Uris;
 
-@Contract(authority = DirtyContract.AUTHORITY, dbFileName = "dirty.db", version = 20)
+import static androidx.persistence.CascadeType.REMOVE;
+
+@Contract(authority = DirtyContract.AUTHORITY, dbFileName = "dirty.db", version = 21)
 public class DirtyContract {
     
     public static final String AUTHORITY = "com.shaubert.dirty";
@@ -124,13 +116,22 @@ public class DirtyContract {
         
         @Column(type = ColumnType.STRING)
         public static final String TITLE = "title";
-        
+
+        @Column(type = ColumnType.STRING)
+        public static final String TITLE_LOWER = "title_lower";
+
         @Column(type = ColumnType.STRING)
         public static final String NAME = "name";
         
         @Column(type = ColumnType.STRING)
+        public static final String NAME_LOWER = "name_lower";
+
+        @Column(type = ColumnType.STRING)
         public static final String DESCRIPTION = "description";
-        
+
+        @Column(type = ColumnType.STRING)
+        public static final String DESCRIPTION_LOWER = "description_lower";
+
         @Column(type = ColumnType.STRING)
         public static final String URL = "url";
 

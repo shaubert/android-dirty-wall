@@ -64,6 +64,14 @@ public class DirtySubBlog {
 	public void setTitle(String title) {
 		values.put(DirtyBlogEntity.TITLE, title);
 	}
+
+    public String getTitleLower() {
+        return values.getAsString(DirtyBlogEntity.TITLE_LOWER);
+    }
+
+    public void setTitleLower(String title) {
+        values.put(DirtyBlogEntity.TITLE_LOWER, title);
+    }
 	
 	public String getName() {
 		return values.getAsString(DirtyBlogEntity.NAME);
@@ -72,14 +80,31 @@ public class DirtySubBlog {
 	public void setName(String name) {
 		values.put(DirtyBlogEntity.NAME, name);
 	}
-	
-	public String getDescription() {
+
+    public String getNameLower() {
+        return values.getAsString(DirtyBlogEntity.NAME_LOWER);
+    }
+
+    public void setNameLower(String name) {
+        values.put(DirtyBlogEntity.NAME_LOWER, name);
+    }
+
+
+    public String getDescription() {
 		return values.getAsString(DirtyBlogEntity.DESCRIPTION);
 	}
 	
 	public void setDescription(String description) {
 		values.put(DirtyBlogEntity.DESCRIPTION, description);
 	}
+
+    public String getDescriptionLower() {
+        return values.getAsString(DirtyBlogEntity.DESCRIPTION_LOWER);
+    }
+
+    public void setDescriptionLower(String description) {
+        values.put(DirtyBlogEntity.DESCRIPTION_LOWER, description);
+    }
 	
 	public String getUrl() {
 		return values.getAsString(DirtyBlogEntity.URL);

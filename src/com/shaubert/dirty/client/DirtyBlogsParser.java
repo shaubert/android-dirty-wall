@@ -90,9 +90,12 @@ public class DirtyBlogsParser implements Parser {
 		blog.setAuthorId(userId);
 		blog.setBlogId(id);
 		blog.setDescription(desrc);
+		blog.setDescriptionLower(desrc != null ? desrc.toLowerCase() : desrc);
 		blog.setName(name);
+		blog.setNameLower(name != null ? name.toLowerCase() : null);
 		blog.setReadersCount(readersCount);
 		blog.setTitle(title);
+		blog.setTitleLower(title != null ? title.toLowerCase() : null);
 		blog.setUrl(url);
 		
 		result.getResult().add(blog);

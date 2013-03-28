@@ -95,5 +95,7 @@
     <string name="sub_blog_main">Главная</string>
 
     <string name="animated_gif_description">gif</string>
+    <string name="blogs_search_hint">Поиск</string>
+    <string name="search_menu_title">Поиск</string>
 
 </resources>

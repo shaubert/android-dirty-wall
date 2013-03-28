@@ -2,6 +2,7 @@
 <resources>
 
     <style name="System" parent="@android:style/Theme.Holo.Light">
+        <item name="selectableItemBackground">?android:attr/selectableItemBackground</item>
     </style>
-    
+
 </resources>

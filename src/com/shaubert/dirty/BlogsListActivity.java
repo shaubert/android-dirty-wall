@@ -3,8 +3,12 @@ package com.shaubert.dirty;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.*;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import com.commonsware.cwac.endless.EndlessAdapter;
 import com.shaubert.dirty.db.BlogsCursor;
@@ -43,6 +47,9 @@ public class BlogsListActivity extends DirtyBaseActivity {
 	protected long dirtyBlogsLoadRequestId;
     protected DirtyBlogsLoadRequest dirtyBlogsLoadRequest;
 
+    public String query;
+    private View searchBox;
+    private EditText filterView;
 	private ListView blogList;
 	private DirtyBlogsAdapter blogsAdapter;
 	private DirtyBlogsAdapter favoriteBlogsAdapter;
@@ -97,7 +104,50 @@ public class BlogsListActivity extends DirtyBaseActivity {
         });
         setupListAdapter();
 
+        searchBox = findViewById(R.id.search_box);
+        filterView = (EditText) findViewById(R.id.filter_view);
+        filterView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                setQuery(s.toString());
+            }
+        });
+        findViewById(R.id.search_close_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cancelSearch();
+            }
+        });
+
     	getGertruda().loadGertrudaFromCacheIfNeeded();
+    }
+
+    private void setQuery(String q) {
+        query = q;
+        if (dirtyPreferences.isShowingOnlyFavoriteBlogs()) {
+            favoriteBlogsAdapter.setQuery(query);
+        } else {
+            blogsAdapter.setQuery(query);
+        }
+    }
+
+    private void showSearchBox() {
+        searchBox.setVisibility(View.VISIBLE);
+        searchBox.startAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_in_from_top_anim));
+    }
+
+    private void cancelSearch() {
+        filterView.setText(null);
+        searchBox.setVisibility(View.GONE);
+        searchBox.startAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_out_to_top_anim));
     }
 
     private void setResultAndFinish(String subBlog) {
@@ -114,12 +164,14 @@ public class BlogsListActivity extends DirtyBaseActivity {
             if (blogList.getAdapter() != favoriteBlogsAdapter) {
                 favoriteBlogsAdapter.refresh();
                 blogList.setAdapter(favoriteBlogsAdapter);
+                favoriteBlogsAdapter.setQuery(query);
             }
         } else {
             if (blogList.getAdapter() != blogsEndlessAdapter) {
                 blogsAdapter.refresh();
                 pauseEndlessAdapterBeforeLoadFinished();
                 blogList.setAdapter(blogsEndlessAdapter);
+                blogsAdapter.setQuery(query);
             }
         }
     }
@@ -154,7 +206,7 @@ public class BlogsListActivity extends DirtyBaseActivity {
 	}
 	
 	protected void tryToLoadMore() {
-		startLoadBlogsRequestIfNotStarted(blogsAdapter.getCount());
+		startLoadBlogsRequestIfNotStarted(blogsAdapter.getTotalCount());
 	}
     
     @Override
@@ -246,6 +298,14 @@ public class BlogsListActivity extends DirtyBaseActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
+                return true;
+
+            case R.id.search_menu_item:
+                if (searchBox.getVisibility() == View.VISIBLE) {
+                    cancelSearch();
+                } else {
+                    showSearchBox();
+                }
                 return true;
 
             case R.id.refresh_blogs_menu_item:

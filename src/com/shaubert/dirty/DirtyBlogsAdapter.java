@@ -1,5 +1,6 @@
 package com.shaubert.dirty;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -8,11 +9,13 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
+import android.text.TextUtils;
+import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.shaubert.dirty.db.BlogsCursor;
 import com.shaubert.dirty.db.DirtyContract.DirtyBlogEntity;
+import com.shaubert.dirty.db.SqlHelper;
 
 public class DirtyBlogsAdapter extends CursorAdapter implements LoaderCallbacks<Cursor> {
 
@@ -29,6 +32,8 @@ public class DirtyBlogsAdapter extends CursorAdapter implements LoaderCallbacks<
     private OnLoadCompleteListener loadCompleteListener;
 
     private boolean loadOnlyFavorites;
+
+    private String query;
 
 	public DirtyBlogsAdapter(FragmentActivity fragmentActivity) {
         super(fragmentActivity, null, 0);
@@ -60,6 +65,16 @@ public class DirtyBlogsAdapter extends CursorAdapter implements LoaderCallbacks<
     @Override
     public int getCount() {
         return super.getCount() + 1;
+    }
+
+    public int getTotalCount() {
+        ContentResolver resolver = fragmentActivity.getContentResolver();
+        Cursor cursor = resolver.query(DirtyBlogEntity.URI,
+                new String[]{"COUNT(" + DirtyBlogEntity.ID + ")"},
+                null, null, null);
+        int result = cursor.moveToFirst() ? cursor.getInt(0) : 0;
+        cursor.close();
+        return result;
     }
 
     @Override
@@ -133,16 +148,41 @@ public class DirtyBlogsAdapter extends CursorAdapter implements LoaderCallbacks<
     
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        CursorLoader loader = new CursorLoader(fragmentActivity, 
+        Pair<String, String[]> selection = formatSelection();
+        CursorLoader loader = new CursorLoader(fragmentActivity,
                 DirtyBlogEntity.URI,
-                null,
-                loadOnlyFavorites ? (DirtyBlogEntity.FAVORITE + " != 0") : null,
-                null,
+                new String[]{
+                        DirtyBlogEntity.TITLE,
+                        DirtyBlogEntity.DESCRIPTION,
+                        DirtyBlogEntity.AUTHOR,
+                        DirtyBlogEntity.NAME,
+                        DirtyBlogEntity.URL,
+                        DirtyBlogEntity.BLOG_ID,
+                        DirtyBlogEntity.FAVORITE,
+                        DirtyBlogEntity.ID,
+                        DirtyBlogEntity.READERS_COUNT,
+                },
+                SqlHelper.buildAndSelection(loadOnlyFavorites ? (DirtyBlogEntity.FAVORITE + " != 0") : null,
+                        selection.first),
+                selection.second,
                 DirtyBlogEntity.READERS_COUNT + " DESC");
         loader.setUpdateThrottle(1000);
         return loader;
     }
-    
+
+    private Pair<String, String[]> formatSelection() {
+        if (TextUtils.isEmpty(query) || query.trim().length() == 0) {
+            return new Pair<String, String[]>(null, null);
+        } else {
+            String q = "%" + query.toLowerCase() + "%";
+            String selection = "(" + DirtyBlogEntity.URL + " like ?) OR "
+                    + "(" + DirtyBlogEntity.AUTHOR + " like ?) OR "
+                    + "(" + DirtyBlogEntity.DESCRIPTION_LOWER + " like ?) OR "
+                    + "(" + DirtyBlogEntity.TITLE_LOWER + " like ?)";
+            return new Pair<String, String[]>(selection, new String[] { q, q, q, q });
+        }
+    }
+
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
     	blogsCursor = new BlogsCursor(data);
@@ -163,4 +203,11 @@ public class DirtyBlogsAdapter extends CursorAdapter implements LoaderCallbacks<
         swapCursor(null);
     }
 
+
+    public void setQuery(String query) {
+        if (!TextUtils.equals(this.query, query)) {
+            this.query = query;
+            refresh();
+        }
+    }
 }
