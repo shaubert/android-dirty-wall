@@ -17,7 +17,7 @@ import com.shaubert.dirty.db.DirtyContract.DirtyPostEntity;
 import com.shaubert.dirty.db.PostsCursor;
 import com.shaubert.dirty.db.SqlHelper;
 import com.shaubert.util.Dates;
-import com.shaubert.util.FasterScrollerView;
+import com.shaubert.widget.FasterScrollerView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -130,7 +130,7 @@ public class DirtyPostCompactAdapter extends CursorAdapter implements LoaderCall
         			DirtyPostEntity.FAVORITE, DirtyPostEntity.SUB_BLOG_NAME, DirtyPostEntity.UNREAD, DirtyCommentEntity.AUTHOR, 
         			DirtyCommentEntity.AUTHOR_LINK, DirtyCommentEntity.CREATION_DATE, 
         			DirtyCommentEntity.SERVER_ID, DirtyCommentEntity.VOTES_COUNT, 
-        			DirtyCommentEntity.MESSAGE},
+        			"substr(" + DirtyCommentEntity.MESSAGE + ",0,200) as " + DirtyCommentEntity.MESSAGE},
                     SqlHelper.buildAndSelection(showOnlyFavorites ? (DirtyPostEntity.FAVORITE + " != 0") : null,
                             !TextUtils.isEmpty(subBlogUrl) ? (DirtyPostEntity.SUB_BLOG_NAME + " = ?") : null),
                     TextUtils.isEmpty(subBlogUrl) ? null : new String[] {subBlogUrl},

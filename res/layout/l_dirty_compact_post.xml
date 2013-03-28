@@ -10,8 +10,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
         android:layout_marginBottom="6dp"
+        android:layout_marginRight="10dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:gravity="center"
+        android:gravity="right"
         android:singleLine="true"
         android:ellipsize="end"
         android:text="@string/yesterday"/>
@@ -46,9 +47,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="8dp"
-                android:layout_weight="1"
-                android:ellipsize="end"
-                android:maxLines="5"/>
+                android:layout_weight="1"/>
 
             <ImageView
                 android:id="@+id/favorite_button"

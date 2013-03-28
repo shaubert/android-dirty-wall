@@ -45,6 +45,7 @@ public class Bitmaps {
             in = new FileInputStream(file);
 
             options = new BitmapFactory.Options();
+            options.inPurgeable = true;
             if (inWidth > maxWidht || inHeight > maxHeight) {
                 // calc rought re-size (this is no exact resize)
                 float scale = Math.max((float)inWidth/maxWidht, (float)inHeight/maxHeight);

@@ -28,6 +28,7 @@ import com.shaubert.dirty.db.DirtyContract.DirtyCommentEntity;
 import com.shaubert.dirty.net.DataLoadRequest;
 import com.shaubert.util.*;
 import com.shaubert.util.Bitmaps.Size;
+import com.shaubert.widget.FixedSizeImageView;
 
 import java.io.File;
 

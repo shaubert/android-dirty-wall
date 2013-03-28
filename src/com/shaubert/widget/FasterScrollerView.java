@@ -1,4 +1,4 @@
-package com.shaubert.util;
+package com.shaubert.widget;
 
 /*
  * Copyright (C) 2008 Google Inc.

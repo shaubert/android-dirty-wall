@@ -6,6 +6,9 @@ import android.content.Context;
 import android.graphics.drawable.StateListDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.preference.PreferenceManager;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.RelativeSizeSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -107,8 +110,21 @@ public class DirtyPostCompactView extends FrameLayout implements Checkable {
     	boolean unread = dirtyPost.isUnread();
 
         unreadMark.setVisibility(unread ? VISIBLE : GONE);
+
     	message.setTextSize(dirtyPreferences.getFontSize());
-        message.setText(dirtyPost.getMessage());
+        String text = dirtyPost.getMessage();
+        int newLineIndex = text.indexOf('\n');
+        if (newLineIndex < 0 && text.length() <= 60) {
+            newLineIndex = text.length();
+        }
+        if (newLineIndex > 0) {
+            SpannableStringBuilder builder = new SpannableStringBuilder(text);
+            builder.setSpan(new RelativeSizeSpan(1.2f), 0, newLineIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            message.setText(builder);
+        } else {
+            message.setText(text);
+        }
+
 		summary.setTextSize(dirtyPreferences.getSummarySize());
         summary.setText(summaryFormatter.formatCompactSummaryText(dirtyPost));
         refreshFavoriteButton();

@@ -1,4 +1,4 @@
-package com.shaubert.util;
+package com.shaubert.widget;
 
 import android.content.Context;
 import android.preference.ListPreference;

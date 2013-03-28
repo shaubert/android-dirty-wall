@@ -23,7 +23,6 @@ import java.util.TimeZone;
 public class SummaryFormatter {
 
     private SimpleDateFormat dateFormat;
-    private SimpleDateFormat timeFormat;
     private final Context context;
 
     
@@ -31,30 +30,26 @@ public class SummaryFormatter {
         this.context = context;
         
         dateFormat = new SimpleDateFormat(context.getString(R.string.post_date_format));
-        timeFormat = new SimpleDateFormat(context.getString(R.string.post_time_format));
     }
     
-    public String formatCreationDate(Date creationDate, int formatId) {
-        return formatCreationDate(creationDate, formatId, false);
+    public String formatCreationDate(Date creationDate) {
+        return formatCreationDate(creationDate, false);
     }
     
-    public String formatCreationDate(Date creationDate, int formatId, boolean fullDate) {
-        final String dateStr;
-        final String timeStr;
+    public String formatCreationDate(Date creationDate, boolean fullDate) {
+        final String resStr;
         if (creationDate.getTime() > 0) {
             if (!fullDate && Dates.isToday(creationDate, TimeZone.getDefault())) {
-                dateStr = context.getString(R.string.today).toLowerCase();
+                resStr = context.getString(R.string.today).toLowerCase();
             } else if (!fullDate && Dates.isYesterday(creationDate, TimeZone.getDefault())) {
-                dateStr = context.getString(R.string.yesterday).toLowerCase();
+                resStr = context.getString(R.string.yesterday).toLowerCase();
             } else {
-                dateStr = dateFormat.format(creationDate);
+                resStr = dateFormat.format(creationDate);
             }
-            timeStr = timeFormat.format(creationDate);
         } else {
-            dateStr = "?";
-            timeStr = "?";
+            resStr = "? в ?";
         }
-        return String.format(context.getString(formatId), dateStr, timeStr);
+        return resStr;
     }
     
     public String formatComments(int count) {
@@ -89,7 +84,7 @@ public class SummaryFormatter {
         String subBlogUrl = TextUtils.isEmpty(dirtyPost.getSubBlogName()) ? "d3.ru" : dirtyPost.getSubBlogName();
         String text = String.format(summaryFormat, author,
         		subBlogUrl,
-                formatCreationDate(new Date(dirtyPost.getCreationDateAsMillis()), R.string.creation_date_format), 
+                formatCreationDate(new Date(dirtyPost.getCreationDateAsMillis())),
                 formatComments(dirtyPost.getCommentsCount()),
                 formatVotes(dirtyPost.getVotesCount()));
         SpannableStringBuilder builder = new SpannableStringBuilder(text);
@@ -112,7 +107,7 @@ public class SummaryFormatter {
         String author = dirtyPost.getAuthor();
         String subBlogUrl = TextUtils.isEmpty(dirtyPost.getSubBlogName()) ? "d3.ru" : dirtyPost.getSubBlogName();
         String text = String.format(summaryFormat, author, subBlogUrl,
-                formatCreationDate(dirtyPost.getCreationDate(), R.string.creation_date_format), 
+                formatCreationDate(dirtyPost.getCreationDate()),
                 formatComments(dirtyPost.getCommentsCount()),
                 formatVotes(dirtyPost.getVotesCount()));
         SpannableStringBuilder builder = new SpannableStringBuilder(text);
@@ -124,7 +119,7 @@ public class SummaryFormatter {
         }
         if (dirtyPost.isGolden()) {
             builder.append("\u00A0\u00A0");
-            builder.setSpan(new ImageSpan(context, R.drawable.stars, DynamicDrawableSpan.ALIGN_BASELINE), 
+            builder.setSpan(new ImageSpan(context, R.drawable.stars, DynamicDrawableSpan.ALIGN_BASELINE),
                     builder.length() - 1, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         return builder;
@@ -136,7 +131,7 @@ public class SummaryFormatter {
         String subBlogUrl = TextUtils.isEmpty(dirtyPost.getSubBlogName()) ? "d3.ru" : dirtyPost.getSubBlogName();
         String text = String.format(summaryFormat, author,
                 subBlogUrl,
-                formatCreationDate(new Date(dirtyPost.getCreationDateAsMillis()), R.string.creation_date_format),
+                formatCreationDate(new Date(dirtyPost.getCreationDateAsMillis())),
                 formatComments(dirtyPost.getCommentsCount()),
                 formatVotes(dirtyPost.getVotesCount()));
         if (dirtyPost.isGolden()) {
@@ -149,7 +144,7 @@ public class SummaryFormatter {
         String summaryFormat = context.getString(R.string.comment_summary_format);
         String author = comment.getAuthor();
         String text = String.format(summaryFormat, author,
-                formatCreationDate(comment.getCreationDate(), R.string.creation_date_format), 
+                formatCreationDate(comment.getCreationDate()),
                 formatVotes(comment.getVotesCount()));
         SpannableStringBuilder builder = new SpannableStringBuilder(text);
         int authorIndex = text.indexOf(author);

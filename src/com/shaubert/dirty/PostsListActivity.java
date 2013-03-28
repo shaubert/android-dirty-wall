@@ -13,7 +13,7 @@ import android.widget.ListView;
 
 import com.shaubert.dirty.DirtyPostCompactAdapter.OnLoadCompleteListener;
 import com.shaubert.util.DatabaseCleaner;
-import com.shaubert.util.FasterScrollerView;
+import com.shaubert.widget.FasterScrollerView;
 import com.shaubert.util.Files;
 import com.shaubert.util.Views;
 
