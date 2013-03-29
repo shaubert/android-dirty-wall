@@ -85,7 +85,7 @@ public class DirtyPostFragment extends JournalBasedFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        postId = getArguments().getLong(POST_ID);        
+        postId = getArguments().getLong(POST_ID);
     }
     
     @Override
@@ -127,6 +127,10 @@ public class DirtyPostFragment extends JournalBasedFragment {
         if (!Versions.isApiLevelAvailable(11)) {
             registerForContextMenu(contentListView);
         }
+
+        initDirtyPostLoader();
+        commentsAdapter.initLoader();
+
         return result;
     }
 
@@ -251,8 +255,6 @@ public class DirtyPostFragment extends JournalBasedFragment {
     public void onResume() {
         super.onResume();
         postView.resume();
-        initDirtyPostLoader();
-        commentsAdapter.initLoader();
         commentsAdapter.notifyDataSetChanged();
     }
     
@@ -261,9 +263,6 @@ public class DirtyPostFragment extends JournalBasedFragment {
         if (postAndCommentActionMode != null) {
             postAndCommentActionMode.finish();
         }
-        postLoaderCallbacks.destroyLoader();
-        postLoaderCallbacks.setDirtyPostLoadedCallback(null);
-        commentsAdapter.destroyLoader();
         super.onPause();
         postView.pause();
     }
@@ -272,6 +271,9 @@ public class DirtyPostFragment extends JournalBasedFragment {
     public void onDestroy() {
         super.onDestroy();
         postView.release();
+        postLoaderCallbacks.destroyLoader();
+        postLoaderCallbacks.setDirtyPostLoadedCallback(null);
+        commentsAdapter.destroyLoader();
     }
     
     private void setContentVisible(boolean visible) {

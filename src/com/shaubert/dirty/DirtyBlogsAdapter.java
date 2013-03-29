@@ -178,6 +178,7 @@ public class DirtyBlogsAdapter extends CursorAdapter implements LoaderCallbacks<
             String selection = "(" + DirtyBlogEntity.URL + " like ?) OR "
                     + "(" + DirtyBlogEntity.AUTHOR + " like ?) OR "
                     + "(" + DirtyBlogEntity.DESCRIPTION_LOWER + " like ?) OR "
+                    + "(" + DirtyBlogEntity.NAME_LOWER + " like ?) OR "
                     + "(" + DirtyBlogEntity.TITLE_LOWER + " like ?)";
             return new Pair<String, String[]>(selection, new String[] { q, q, q, q });
         }
@@ -207,7 +208,7 @@ public class DirtyBlogsAdapter extends CursorAdapter implements LoaderCallbacks<
     public void setQuery(String query) {
         if (!TextUtils.equals(this.query, query)) {
             this.query = query;
-            refresh();
+            fragmentActivity.getSupportLoaderManager().restartLoader(Loaders.DIRTY_BLOGS_LOADER, null, this);
         }
     }
 }

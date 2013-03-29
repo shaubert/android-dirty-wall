@@ -4,6 +4,7 @@ import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewStub;
@@ -211,7 +212,16 @@ public class PostsListActivity extends DirtyActivityWithPosts {
     		return false;
     	}
     }
-    
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        boolean res = super.onCreateOptionsMenu(menu);
+        if (res) {
+            menu.findItem(R.id.go_to_first_menu_item).setIcon(R.drawable.ic_menu_up);
+        }
+        return res;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

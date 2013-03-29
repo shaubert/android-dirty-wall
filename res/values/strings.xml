@@ -8,6 +8,8 @@
     <string name="today">Сегодня</string>
     <string name="yesterday">Вчера</string>
     <string name="post_date_format">d.M.yyyy\u00A0в\u00A0H:mm</string>
+    <string name="post_today_format">сегодня\u00A0в\u00A0H:mm</string>
+    <string name="post_yesterday_format">вчера\u00A0в\u00A0H:mm</string>
     <string name="post_list_header_date_format">d MMMM yyyy</string>
     
     <string name="one_comment">%d\u00A0комментарий</string>

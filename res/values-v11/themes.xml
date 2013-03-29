@@ -2,7 +2,88 @@
 <resources>
 
     <style name="System" parent="@android:style/Theme.Holo.Light">
-        <item name="selectableItemBackground">?android:attr/selectableItemBackground</item>
+        <item name="selectableItemBackground">@drawable/selectable_background_dirty</item>
+        <item name="android:selectableItemBackground">@drawable/selectable_background_dirty</item>
+    </style>
+
+    <style name="DirtyTheme" parent="System">
+        <item name="android:actionBarItemBackground">@drawable/selectable_background_dirty</item>
+        <item name="android:popupMenuStyle">@style/PopupMenu.Dirty</item>
+        <item name="android:dropDownListViewStyle">@style/DropDownListView.Dirty</item>
+        <item name="android:actionBarTabStyle">@style/ActionBarTabStyle.Dirty</item>
+        <item name="android:actionDropDownStyle">@style/DropDownNav.Dirty</item>
+        <item name="android:actionBarStyle">@style/ActionBar.Solid.Dirty</item>
+        <item name="android:actionModeBackground">@drawable/cab_background_top_dirty</item>
+        <item name="android:actionModeSplitBackground">@drawable/cab_background_bottom_dirty</item>
+        <item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Dirty</item>
+
+        <item name="android:alertDialogTheme">@style/AlertDialog.Dirty</item>
+
+        <item name="android:editTextBackground">@drawable/edit_text_holo_light</item>
+        <item name="android:listChoiceIndicatorMultiple">@drawable/btn_check_holo_light</item>
+        <item name="android:listChoiceIndicatorSingle">@drawable/btn_radio_holo_light</item>
+        <item name="android:buttonStyle">@style/ButtonDirty</item>
+        <item name="android:imageButtonStyle">@style/ImageButtonDirty</item>
+        <item name="android:listChoiceBackgroundIndicator">@drawable/list_selector_holo_light</item>
+        <item name="android:activatedBackgroundIndicator">@drawable/activated_background_holo_light</item>
+
+        <item name="android:textColorLink">#666</item>
+    </style>
+
+    <style name="AlertDialog.Dirty" parent="@android:style/Theme.Holo.Light.Dialog">
+        <item name="android:selectableItemBackground">@drawable/selectable_background_dirty</item>
+
+        <item name="android:editTextBackground">@drawable/edit_text_holo_light</item>
+        <item name="android:listChoiceIndicatorMultiple">@drawable/btn_check_holo_light</item>
+        <item name="android:listChoiceIndicatorSingle">@drawable/btn_radio_holo_light</item>
+        <item name="android:buttonStyle">@style/ButtonDirty</item>
+        <item name="android:imageButtonStyle">@style/ImageButtonDirty</item>
+        <item name="android:listChoiceBackgroundIndicator">@drawable/list_selector_holo_light</item>
+        <item name="android:activatedBackgroundIndicator">@drawable/activated_background_holo_light</item>
+
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowTitleStyle">@style/DialogWindowTitle</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowMinWidthMajor">@android:dimen/dialog_min_width_major</item>
+        <item name="android:windowMinWidthMinor">@android:dimen/dialog_min_width_minor</item>
+    </style>
+
+    <style name="ActionBar.Solid.Dirty" parent="@android:style/Widget.Holo.Light.ActionBar.Solid">
+        <item name="android:background">@drawable/ab_solid_dirty</item>
+        <item name="android:backgroundStacked">@drawable/ab_stacked_solid_dirty</item>
+        <item name="android:backgroundSplit">@drawable/ab_bottom_solid_dirty</item>
+        <item name="android:progressBarStyle">@style/ProgressBar.Dirty</item>
+    </style>
+
+    <style name="ActionBar.Transparent.Dirty" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">@drawable/ab_transparent_dirty</item>
+        <item name="android:progressBarStyle">@style/ProgressBar.Dirty</item>
+    </style>
+
+    <style name="PopupMenu.Dirty" parent="@android:style/Widget.Holo.Light.ListPopupWindow">
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_dirty</item>
+    </style>
+
+    <style name="DropDownListView.Dirty" parent="@android:style/Widget.Holo.Light.ListView.DropDown">
+        <item name="android:listSelector">@drawable/selectable_background_dirty</item>
+    </style>
+
+    <style name="ActionBarTabStyle.Dirty" parent="@android:style/Widget.Holo.Light.ActionBar.TabView">
+        <item name="android:background">@drawable/tab_indicator_ab_dirty</item>
+    </style>
+
+    <style name="DropDownNav.Dirty" parent="@android:style/Widget.Holo.Light.Spinner">
+        <item name="android:background">@drawable/spinner_background_ab_dirty</item>
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_dirty</item>
+        <item name="android:dropDownSelector">@drawable/selectable_background_dirty</item>
+    </style>
+
+    <style name="ProgressBar.Dirty" parent="@android:style/Widget.Holo.Light.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/progress_horizontal_dirty</item>
+    </style>
+
+    <style name="ActionButton.CloseMode.Dirty" parent="@android:style/Widget.Holo.Light.ActionButton.CloseMode">
+        <item name="android:background">@drawable/btn_cab_done_dirty</item>
     </style>
 
 </resources>

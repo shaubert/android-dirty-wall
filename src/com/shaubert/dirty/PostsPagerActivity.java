@@ -9,7 +9,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewStub;
+import android.widget.LinearLayout;
 import com.shaubert.dirty.DirtyPostFragmentsAdapter.OnLoadCompleteListener;
 import com.shaubert.dirty.db.DirtyContract.DirtyPostEntity;
 import com.shaubert.util.AsyncTasks;
@@ -45,7 +47,9 @@ public class PostsPagerActivity extends DirtyActivityWithPosts {
     private void initContent() {
         ViewStub stub = (ViewStub) findViewById(R.id.content_stub);
         stub.setLayoutResource(R.layout.l_posts_pager);
-        stub.inflate();
+        View view = stub.inflate();
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) view.getLayoutParams();
+        params.weight = 1;
 
         postPager = (ViewPager) findViewById(R.id.post_pager);
         postFragmentsAdapter = new DirtyPostFragmentsAdapter(this);

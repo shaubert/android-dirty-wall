@@ -58,5 +58,4 @@
             android:textColor="@android:color/darker_gray"
             android:textSize="10dp"/>
     </LinearLayout>
-
 </LinearLayout>

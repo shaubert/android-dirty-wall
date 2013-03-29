@@ -109,7 +109,8 @@ public class DirtyPostParser extends HtmlParser implements Parser {
         List<TagNode> aTags = info.findAll(new Rule("a"));
         TagNode authorTag = aTags.get(0);
 		dirtyPost.setAuthor(authorTag.getChilds().get(0).getText());
-        dirtyPost.setAuthorLink("http://d3.ru" + authorTag.getAttributes().getValue("", "href"));
+        String authorHref = authorTag.getAttributes().getValue("", "href");
+        dirtyPost.setAuthorLink(authorHref.startsWith("http") ? authorHref : ("http://d3.ru" + authorHref));
         List<TagNode> dateSpans = info.findAll(new Rule("span").withAttribute("data-epoch_date"));
         if (dateSpans.size() == 1) {
             TagNode dateSpan = dateSpans.get(0);

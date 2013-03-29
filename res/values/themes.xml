@@ -8,7 +8,7 @@
     <style name="DirtyTheme" parent="System">
     </style>
 
-    <style name="DirtyTheme.Posts" parent="System">
+    <style name="DirtyTheme.Posts">
         <item name="android:windowBackground">@color/white</item>
     </style>
     

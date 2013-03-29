@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.*;
 import android.view.animation.AnimationUtils;
@@ -131,7 +132,7 @@ public class BlogsListActivity extends DirtyBaseActivity {
     }
 
     private void setQuery(String q) {
-        query = q;
+        query = TextUtils.isEmpty(q == null ? null : q.trim()) ? null : q;
         if (dirtyPreferences.isShowingOnlyFavoriteBlogs()) {
             favoriteBlogsAdapter.setQuery(query);
         } else {

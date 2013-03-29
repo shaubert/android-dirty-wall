@@ -6,5 +6,7 @@
     <color name="white">#FFF</color>
     <color name="aqua">#80C0FF</color>
     <color name="error_red">#FF6060</color>
-    
+
+    <color name="pressed_dirty">#CC99CC00</color>
+    <color name="green_dirty">#99CC00</color>
 </resources>

@@ -108,7 +108,7 @@ public class DirtyCommentParser extends HtmlParser implements Parser {
             if (href.startsWith("http")) {
                 comment.setAuthorLink(href);
             } else {
-                comment.setAuthorLink("http://www.d3.ru" + href);
+                comment.setAuthorLink("http://d3.ru" + href);
             }
         }
         List<TagNode> dateSpans = info.findAll(new Rule("span").withAttribute("data-epoch_date"));

@@ -39,12 +39,8 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:weightSum="1">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="0.28"/>
+        android:weightSum="1"
+        android:gravity="right">
 
         <ViewStub
             android:id="@+id/content_stub"
@@ -57,7 +53,7 @@
     <View
         android:id="@+id/grass"
         android:layout_width="fill_parent"
-        android:layout_height="30.5dp"
+        android:layout_height="20.5dp"
         android:layout_alignParentBottom="true"
         android:background="@drawable/grass_rep"/>
 

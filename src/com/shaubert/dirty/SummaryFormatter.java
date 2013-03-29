@@ -23,13 +23,17 @@ import java.util.TimeZone;
 public class SummaryFormatter {
 
     private SimpleDateFormat dateFormat;
+    private final SimpleDateFormat todayFormat;
+    private final SimpleDateFormat yesterdayFormat;
+
     private final Context context;
 
-    
     public SummaryFormatter(Context context) {
         this.context = context;
         
         dateFormat = new SimpleDateFormat(context.getString(R.string.post_date_format));
+        todayFormat = new SimpleDateFormat(context.getString(R.string.post_today_format));
+        yesterdayFormat = new SimpleDateFormat(context.getString(R.string.post_yesterday_format));
     }
     
     public String formatCreationDate(Date creationDate) {
@@ -40,9 +44,9 @@ public class SummaryFormatter {
         final String resStr;
         if (creationDate.getTime() > 0) {
             if (!fullDate && Dates.isToday(creationDate, TimeZone.getDefault())) {
-                resStr = context.getString(R.string.today).toLowerCase();
+                resStr = todayFormat.format(creationDate);
             } else if (!fullDate && Dates.isYesterday(creationDate, TimeZone.getDefault())) {
-                resStr = context.getString(R.string.yesterday).toLowerCase();
+                resStr = yesterdayFormat.format(creationDate);
             } else {
                 resStr = dateFormat.format(creationDate);
             }

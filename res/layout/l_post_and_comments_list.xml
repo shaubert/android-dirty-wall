@@ -1,25 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="wrap_content"
+    android:weightSum="1"
+    android:gravity="right">
 
-    <ListView
-        android:id="@+id/post_listview"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:cacheColorHint="#0000"
-        android:divider="@null"
-        android:listSelector="@drawable/listview_transparent_selector"
-        android:scrollbarStyle="outsideOverlay"/>
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_weight="0.92"
+        android:layout_height="fill_parent">
 
-    <ImageView
-        android:id="@+id/post_loading_progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:src="@drawable/logo_dirty_2"
-        android:visibility="gone" />
+        <ListView
+            android:id="@+id/post_listview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:cacheColorHint="#0000"
+            android:divider="@null"
+            android:listSelector="@drawable/listview_transparent_selector"
+            android:scrollbarStyle="outsideOverlay"/>
 
-</FrameLayout>
+        <ImageView
+            android:id="@+id/post_loading_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/logo_dirty_2"
+            android:visibility="gone"/>
+
+    </FrameLayout>
+</LinearLayout>
