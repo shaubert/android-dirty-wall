@@ -3,6 +3,7 @@ package com.shaubert.dirty;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.graphics.drawable.StateListDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.preference.PreferenceManager;
@@ -112,6 +113,7 @@ public class DirtyPostCompactView extends FrameLayout implements Checkable {
         unreadMark.setVisibility(unread ? VISIBLE : GONE);
 
     	message.setTextSize(dirtyPreferences.getFontSize());
+        message.setTypeface(dirtyPreferences.isUseSerifFontFamily() ? Typeface.SERIF : Typeface.SANS_SERIF);
         String text = dirtyPost.getMessage();
         int newLineIndex = text.indexOf('\n');
         if (newLineIndex < 0 && text.length() <= 60) {

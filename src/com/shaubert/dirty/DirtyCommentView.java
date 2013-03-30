@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.graphics.drawable.StateListDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.net.Uri;
@@ -160,6 +161,7 @@ public class DirtyCommentView extends LinearLayout implements Checkable {
             message.setVisibility(View.GONE);
         }
         message.setTextSize(dirtyPreferences.getFontSize());
+        message.setTypeface(dirtyPreferences.isUseSerifFontFamily() ? Typeface.SERIF : Typeface.SANS_SERIF);
         
         gifDescription.setVisibility(GONE);
         Image[] images = cursor.getImages();

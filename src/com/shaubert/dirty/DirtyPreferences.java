@@ -18,6 +18,7 @@ public class DirtyPreferences {
 	private String bakgroundSyncPrefName;
 	private String useCroutonPrefName;
     private String showAllOrMainPrefName;
+    private String useSerifFontFamilyPrefName;
 
     public DirtyPreferences(SharedPreferences preferences, Context context) {
         this.preferences = preferences;
@@ -29,6 +30,7 @@ public class DirtyPreferences {
         bakgroundSyncIntervalPrefName = context.getString(R.string.background_sync_period_key);
         useCroutonPrefName = context.getString(R.string.use_crouron_key);
         showAllOrMainPrefName = context.getString(R.string.main_page_show_all_key);
+        useSerifFontFamilyPrefName = context.getString(R.string.use_serif_font_family_key);
     }
 
     public long getLastViewedPostId(String subBlog) {
@@ -139,5 +141,13 @@ public class DirtyPreferences {
 
     public void setShowAllOnMainPage(boolean all) {
         preferences.edit().putBoolean(showAllOrMainPrefName, all).commit();
+    }
+
+    public boolean isUseSerifFontFamily() {
+        return preferences.getBoolean(useSerifFontFamilyPrefName, true);
+    }
+
+    public void setUseSerifFontFamily(boolean serif) {
+        preferences.edit().putBoolean(useSerifFontFamilyPrefName, serif).commit();
     }
 }

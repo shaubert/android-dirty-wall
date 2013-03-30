@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.*;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -143,12 +144,29 @@ public class BlogsListActivity extends DirtyBaseActivity {
     private void showSearchBox() {
         searchBox.setVisibility(View.VISIBLE);
         searchBox.startAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_in_from_top_anim));
+        searchBox.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                filterView.requestFocus();
+
+                InputMethodManager service = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                service.showSoftInput(filterView, 0);
+            }
+        }, 500);
     }
 
     private void cancelSearch() {
         filterView.setText(null);
         searchBox.setVisibility(View.GONE);
         searchBox.startAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_out_to_top_anim));
+
+        filterView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                InputMethodManager service = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                service.hideSoftInputFromWindow(filterView.getWindowToken(), 0);
+            }
+        }, 500);
     }
 
     private void setResultAndFinish(String subBlog) {

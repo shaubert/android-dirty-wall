@@ -104,6 +104,7 @@ public class DirtyContract {
     }
     
     @Entity
+    @Update(callback = DirtyBlogTableUpdater.class)
     public static class DirtyBlogEntity {
        
         @Id

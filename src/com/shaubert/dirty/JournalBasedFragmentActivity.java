@@ -14,8 +14,13 @@ import com.shaubert.net.nutshell.RequestStatus;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import com.shaubert.util.Shlog;
 
 public class JournalBasedFragmentActivity extends FragmentActivity {
+
+    private static final Shlog SHLOG = new Shlog(JournalBasedFragmentActivity.class.getSimpleName());
+
+    public static final String FAILED_TO_REGISTER = "failed_to_register";
 
     public static class DefaultStatusListener extends RequestStatusListener {
     	private JournalBasedFragmentActivity activity;
@@ -70,9 +75,17 @@ public class JournalBasedFragmentActivity extends FragmentActivity {
     }
     
     public long startRequest(RequestBase request) {
-        journal.register(request);
-        journal.registerForUpdates(request);
-        return request.getState().getId();
+        try {
+            journal.register(request);
+            journal.registerForUpdates(request);
+            return request.getState().getId();
+        } catch (Exception ex) {
+            SHLOG.e("failed to register request", ex);
+            request.getState().setStatus(RequestStatus.FINISHED_WITH_ERRORS);
+            request.getState().put(FAILED_TO_REGISTER, true);
+            request.setState(request.getState());
+            return -1;
+        }
     }
     
     public void cancelRequest(RequestBase request) {

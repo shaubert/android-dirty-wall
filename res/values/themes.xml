@@ -6,6 +6,7 @@
     </style>
 
     <style name="DirtyTheme" parent="System">
+        <item name="android:textColorLink">#666</item>
     </style>
 
     <style name="DirtyTheme.Posts">

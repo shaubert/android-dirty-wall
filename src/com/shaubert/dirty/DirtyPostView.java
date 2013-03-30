@@ -4,6 +4,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.graphics.drawable.StateListDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
@@ -73,6 +74,7 @@ public class DirtyPostView extends FrameLayout implements Checkable {
     private TextView message;
     private TextView summary;
     private View loadOrRefreshComments;
+    private View loadOrRefreshProgress;
     private ImageButton favoriteButton;
 
     private OnCommentLoadClickListener commentLoadClickListener;
@@ -124,6 +126,7 @@ public class DirtyPostView extends FrameLayout implements Checkable {
                 }
             }
         });
+        loadOrRefreshProgress = postView.findViewById(R.id.comments_loading_progress);
         favoriteButton = (ImageButton)postView.findViewById(R.id.favorite_button);
         favoriteButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -166,6 +169,16 @@ public class DirtyPostView extends FrameLayout implements Checkable {
                 transition.resetTransition();
             }
         }
+    }
+
+    public void showCommentsLoadingProgress() {
+        loadOrRefreshComments.setVisibility(INVISIBLE);
+        loadOrRefreshProgress.setVisibility(VISIBLE);
+    }
+
+    public void hideCommentsLoadingProgress() {
+        loadOrRefreshComments.setVisibility(VISIBLE);
+        loadOrRefreshProgress.setVisibility(INVISIBLE);
     }
     
     public void setCommentLoadClickListener(OnCommentLoadClickListener commentLoadClickListener) {
@@ -233,6 +246,10 @@ public class DirtyPostView extends FrameLayout implements Checkable {
         released = true;
     }
 
+    public boolean isReleased() {
+        return released;
+    }
+
     public void setDirtyPost(DirtyPost dirtyPost) {
         this.dirtyPost = dirtyPost;
         refreshContent();
@@ -242,6 +259,7 @@ public class DirtyPostView extends FrameLayout implements Checkable {
         if (dirtyPost != null) {
             message.setText(dirtyPost.getSpannedText());
             message.setTextSize(dirtyPreferences.getFontSize());
+            message.setTypeface(dirtyPreferences.isUseSerifFontFamily() ? Typeface.SERIF : Typeface.SANS_SERIF);
             summary.setText(summaryFormatter.formatSummaryText(dirtyPost));
             summary.setTextSize(dirtyPreferences.getSummarySize());
             refreshFavoriteButton();

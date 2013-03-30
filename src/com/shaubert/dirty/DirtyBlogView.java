@@ -111,11 +111,12 @@ public class DirtyBlogView extends FrameLayout implements Checkable {
         summary.setVisibility(VISIBLE);
         favoriteButton.setVisibility(VISIBLE);
     	
-    	title.setTextSize(dirtyPreferences.getFontSize());
-    	title.setTypeface(null, Typeface.BOLD);
+    	title.setTextSize(dirtyPreferences.getFontSize() * 1.2f);
+    	title.setTypeface(dirtyPreferences.isUseSerifFontFamily() ? Typeface.SERIF : Typeface.SANS_SERIF);
     	title.setText(blog.getTitle());
     	
     	description.setTextSize(dirtyPreferences.getFontSize());
+        description.setTypeface(dirtyPreferences.isUseSerifFontFamily() ? Typeface.SERIF : Typeface.SANS_SERIF);
     	SpannableStringBuilder descriptionBuilder = new SpannableStringBuilder(blog.getName());
     	if (!TextUtils.isEmpty(blog.getDescription())) {
 	    	descriptionBuilder.append('\n');

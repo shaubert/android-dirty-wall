@@ -62,18 +62,26 @@ public class DirtyPostFragment extends JournalBasedFragment {
     private ActionMode postAndCommentActionMode;
 
     private class DirtyCommentsLoadRequestListener extends DefaultStatusListener {
-        
+        @Override
+        public void onFinished(Request request) {
+            super.onFinished(request);
+            if (getActivity() != null) {
+                hideCommentsLoadingProgress();
+            }
+        }
+
         @Override
         public void onError(Request request) {
             super.onError(request);
             if (getActivity() != null) {
                 DirtyMessagesProvider prov = DirtyMessagesProvider.getInstance(getActivity().getApplicationContext());
-                DirtyToast.show(getActivity(), prov.getRandomFaceImageId(), prov.getErrorMessage()); 
+                DirtyToast.show(getActivity(), prov.getRandomFaceImageId(), prov.getErrorMessage());
+                hideCommentsLoadingProgress();
             }
         }
         
     }
-            
+
     public static DirtyPostFragment newInstance(long postId) {
         Bundle bundle = new Bundle();
         bundle.putLong(POST_ID, postId);
@@ -237,6 +245,9 @@ public class DirtyPostFragment extends JournalBasedFragment {
                         if (!RequestStatus.isFinishedSomehow(commentsLoadRequest.getState().getStatus())) {
                             commentsLoadRequest.setFullStateChangeListener(new DirtyCommentsLoadRequestListener());
                             registerForUpdates(commentsLoadRequest);
+                            showCommentsLoadingProgress();
+                        } else {
+                            hideCommentsLoadingProgress();
                         }
                     }
                 }
@@ -247,7 +258,7 @@ public class DirtyPostFragment extends JournalBasedFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        postView.restoreRequestState(outState);
+        postView.saveInstanceState(outState);
         outState.putLong(COMMENTS_LOAD_REQUEST_ID, commentsLoadRequestId);
     }
     
@@ -332,10 +343,23 @@ public class DirtyPostFragment extends JournalBasedFragment {
             commentsLoadRequest.getState().put("post-id", postId);
             commentsLoadRequest.getState().put("force", force);
             commentsLoadRequest.setFullStateChangeListener(new DirtyCommentsLoadRequestListener());
-            startRequest(commentsLoadRequest);
+            commentsLoadRequestId = startRequest(commentsLoadRequest);
+            showCommentsLoadingProgress();
         }
     }
-    
+
+    private void showCommentsLoadingProgress() {
+        if (postView != null && !postView.isReleased()) {
+            postView.showCommentsLoadingProgress();
+        }
+    }
+
+    private void hideCommentsLoadingProgress() {
+        if (postView != null && !postView.isReleased()) {
+            postView.hideCommentsLoadingProgress();
+        }
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);

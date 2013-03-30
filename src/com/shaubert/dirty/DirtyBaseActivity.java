@@ -16,7 +16,7 @@ import com.shaubert.util.Versions;
 public class DirtyBaseActivity extends JournalBasedFragmentActivity {
 
     private View petr;
-    private AnimationDrawable petrBackgroung;
+    private AnimationDrawable petrBackground;
     private Animation petrMovement;
     
     private Gertruda gertruda;
@@ -44,7 +44,7 @@ public class DirtyBaseActivity extends JournalBasedFragmentActivity {
     public void onContentChanged() {
     	super.onContentChanged();
         petr = findViewById(R.id.petr);
-        petrBackgroung = (AnimationDrawable)petr.getBackground();
+        petrBackground = (AnimationDrawable)petr.getBackground();
         
         dirtyTv = findViewById(R.id.empty_view_tv);
         dirtyTvAnimation = (AnimationDrawable) dirtyTv.getBackground();
@@ -60,9 +60,9 @@ public class DirtyBaseActivity extends JournalBasedFragmentActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         if (hasFocus) {
             if (dirtyPreferences.isPetrEnabled()) {
-                petrBackgroung.start();
-                petrBackgroung.stop();
-                petrBackgroung.start();
+                petrBackground.start();
+                petrBackground.stop();
+                petrBackground.start();
             }
             dirtyTvAnimation.start();
         }
@@ -114,7 +114,7 @@ public class DirtyBaseActivity extends JournalBasedFragmentActivity {
     protected void onPause() {
         super.onPause();
         
-        petrBackgroung.stop();
+        petrBackground.stop();
         dirtyTvAnimation.stop();
         
         getGertruda().onPause();

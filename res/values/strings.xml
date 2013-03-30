@@ -52,6 +52,8 @@
     <string name="main_page_show_all_title">Всё вместе</string>
     <string name="main_page_show_all_descr_on">Показывать на главной всё вместе</string>
     <string name="main_page_show_all_descr_off">Показывать главную</string>
+    <string name="use_serif_font_family_key">use_serif_font_family_pref</string>
+    <string name="use_serif_font_family_title">Шрифт с засечками</string>
 
     <string name="main_setting_header_title">Основные настройки</string>
     <string name="favorites_setting_header_title">Отмеченные посты</string>
