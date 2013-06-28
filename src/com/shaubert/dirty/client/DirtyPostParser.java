@@ -139,7 +139,20 @@ public class DirtyPostParser extends HtmlParser implements Parser {
             }
         }
         TagNode voteTag = info.findAll(new Rule("div").withAttributeWithValue("class", "vote")).get(0);
-    	dirtyPost.setVotesCount(Integer.parseInt(voteTag.getNotContentChilds().get(0).getChilds().get(0).getText()));
+        String votesString = voteTag.getNotContentChilds().isEmpty() ? "" : voteTag.getNotContentChilds().get(0).getChilds().get(0).getText();
+        if (voteTag.getNotContentChilds().size() > 1) {
+            votesString += voteTag.getNotContentChilds().get(1).getChilds().get(0).getText();
+        }
+        votesString = votesString.trim();
+        if (votesString.length() > 0 && votesString.charAt(0) == '+') {
+            votesString = votesString.substring(1);
+        }
+        try {
+            dirtyPost.setVotesCount(Integer.parseInt(votesString));
+        } catch (NumberFormatException ex) {
+            SHLOG.w("error parsing votes count", ex);
+            dirtyPost.setVotesCount(0);
+        }
         this.result.getResult().add(dirtyPost);
     }
 

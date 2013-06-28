@@ -143,4 +143,8 @@ public class DirtyMessagesProvider {
     public CharSequence getZeroFavoritesMessage() {
         return appContext.getText(R.string.favorites_export_zero);
     }
+
+    public CharSequence getZeroFavoritesMessageCompact() {
+        return appContext.getText(R.string.favorites_export_zero_compact);
+    }
 }

@@ -1,33 +1,33 @@
 package com.shaubert.dirty;
 
+import android.app.Activity;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.DatabaseUtils;
+import android.os.AsyncTask;
+import android.os.AsyncTask.Status;
+import android.preference.PreferenceManager;
 import com.shaubert.dirty.client.DirtyBlog;
 import com.shaubert.dirty.client.DirtyPost;
 import com.shaubert.dirty.db.DirtyContract.DirtyPostEntity;
 import com.shaubert.util.Files;
 import com.shaubert.util.Shlog;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.DatabaseUtils;
-import android.os.AsyncTask;
-import android.os.AsyncTask.Status;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.*;
 
 public class DirtyFavoritesExporter {
 
     private static final Shlog SHLOG = new Shlog(DirtyFavoritesExporter.class.getSimpleName());
     
-    private Context context;
+    private Activity activity;
     private AsyncTask<Void, Void, File> exportTask;
+    private DirtyPreferences dirtyPreferences;
 
-    public DirtyFavoritesExporter(Context context) {
-        this.context = context;
+    public DirtyFavoritesExporter(Activity activity) {
+        this.activity = activity;
+        this.dirtyPreferences = new DirtyPreferences(PreferenceManager.getDefaultSharedPreferences(activity), activity);
     }
     
     public void startExport() {
@@ -65,23 +65,38 @@ public class DirtyFavoritesExporter {
     }
     
     protected void showZeroFavoritesMessage() {
-        DirtyMessagesProvider provider = DirtyMessagesProvider.getInstance(context);
-        DirtyToast.show(context, provider.getRandomFaceImageId(), provider.getZeroFavoritesMessage());
+        DirtyMessagesProvider provider = DirtyMessagesProvider.getInstance(activity);
+        if (dirtyPreferences.isUseCrouton()) {
+            Crouton.clearCroutonsForActivity(activity);
+            Crouton.makeText(activity, provider.getZeroFavoritesMessageCompact(), Style.ALERT).show();
+        } else {
+            DirtyToast.show(activity, provider.getRandomFaceImageId(), provider.getZeroFavoritesMessage());
+        }
     }
 
     protected void showTaskFinishedMessage(File result) {
-        DirtyMessagesProvider provider = DirtyMessagesProvider.getInstance(context);
-        DirtyToast.show(context, provider.getRandomFaceImageId(), 
-                provider.getFavoritesExportFinishedMessage(result.getAbsolutePath()));
+        DirtyMessagesProvider provider = DirtyMessagesProvider.getInstance(activity);
+        CharSequence message = provider.getFavoritesExportFinishedMessage(result.getAbsolutePath());
+        if (dirtyPreferences.isUseCrouton()) {
+            Crouton.clearCroutonsForActivity(activity);
+            Crouton.makeText(activity, message, Style.CONFIRM).show();
+        }  else {
+            DirtyToast.show(activity, provider.getRandomFaceImageId(), message);
+        }
     }
 
     protected void showErrorMessage() {
-        DirtyMessagesProvider provider = DirtyMessagesProvider.getInstance(context);
-        DirtyToast.show(context, provider.getRandomFaceImageId(), provider.getErrorMessage());
+        DirtyMessagesProvider provider = DirtyMessagesProvider.getInstance(activity);
+        if (dirtyPreferences.isUseCrouton()) {
+            Crouton.clearCroutonsForActivity(activity);
+            Crouton.makeText(activity, provider.getSimpleErrorMessage(), Style.ALERT).show();
+        } else {
+            DirtyToast.show(activity, provider.getRandomFaceImageId(), provider.getErrorMessage());
+        }
     }
 
     private File saveFavoritesInBackground() throws IOException {
-        final Cursor cursor = context.getContentResolver().query(DirtyPostEntity.URI, 
+        final Cursor cursor = activity.getContentResolver().query(DirtyPostEntity.URI,
                 null, 
                 DirtyPostEntity.FAVORITE + "!= 0", null, 
                 DirtyPostEntity.SERVER_ID + " DESC");
@@ -97,7 +112,7 @@ public class DirtyFavoritesExporter {
                     @Override
                     protected void doWrite(OutputStreamWriter stream) throws IOException {
                         DirtyBlog blog = DirtyBlog.getInstance();
-                        SummaryFormatter formatter = new SummaryFormatter(context);
+                        SummaryFormatter formatter = new SummaryFormatter(activity);
                         boolean writeDivider = false;
                         do {
                             ContentValues values = new ContentValues();

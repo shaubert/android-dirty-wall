@@ -119,7 +119,21 @@ public class DirtyCommentParser extends HtmlParser implements Parser {
         }
         List<TagNode> voteTags = info.findAll(new Rule("div").withAttributeWithValue("class", "vote c_vote"));
         if (!voteTags.isEmpty()) {
-			comment.setVotesCount(Integer.parseInt(voteTags.get(0).getNotContentChilds().get(0).getChilds().get(0).getText()));
+            TagNode voteTag = voteTags.get(0);
+            String votesString = voteTag.getNotContentChilds().isEmpty() ? "" : voteTag.getNotContentChilds().get(0).getChilds().get(0).getText();
+            if (voteTag.getNotContentChilds().size() > 1) {
+                votesString += voteTag.getNotContentChilds().get(1).getChilds().get(0).getText();
+            }
+            votesString = votesString.trim();
+            if (votesString.length() > 0 && votesString.charAt(0) == '+') {
+                votesString = votesString.substring(1);
+            }
+            try {
+                comment.setVotesCount(Integer.parseInt(votesString));
+            } catch (NumberFormatException ex) {
+                SHLOG.w("error parsing votes count", ex);
+                comment.setVotesCount(0);
+            }
         } else {
         	comment.setVotesCount(0);
         }

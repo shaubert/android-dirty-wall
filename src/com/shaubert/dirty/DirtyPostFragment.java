@@ -6,24 +6,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.Browser;
 import android.text.TextUtils;
-import android.view.ActionMode;
-import android.view.ContextMenu;
+import android.view.*;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.ShareActionProvider;
-
 import com.shaubert.dirty.DirtyPostView.OnCommentLoadClickListener;
 import com.shaubert.dirty.client.DirtyBlog;
 import com.shaubert.dirty.client.DirtyPost;
@@ -37,6 +30,8 @@ import com.shaubert.util.AsyncTasks.Task;
 import com.shaubert.util.Shlog;
 import com.shaubert.util.Versions;
 import com.shaubert.util.Views;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class DirtyPostFragment extends JournalBasedFragment {
 
@@ -59,6 +54,8 @@ public class DirtyPostFragment extends JournalBasedFragment {
     private ShareActionProvider shareActionProvider;
     private int contextMenuInfoItemPosition;
 
+    private DirtyPreferences dirtyPreferences;
+
     private ActionMode postAndCommentActionMode;
 
     private class DirtyCommentsLoadRequestListener extends DefaultStatusListener {
@@ -75,7 +72,12 @@ public class DirtyPostFragment extends JournalBasedFragment {
             super.onError(request);
             if (getActivity() != null) {
                 DirtyMessagesProvider prov = DirtyMessagesProvider.getInstance(getActivity().getApplicationContext());
-                DirtyToast.show(getActivity(), prov.getRandomFaceImageId(), prov.getErrorMessage());
+                if (dirtyPreferences.isUseCrouton()) {
+                    Crouton.clearCroutonsForActivity(getActivity());
+                    Crouton.makeText(getActivity(), prov.getSimpleErrorMessage(), Style.ALERT).show();
+                } else {
+                    DirtyToast.show(getActivity(), prov.getRandomFaceImageId(), prov.getErrorMessage());
+                }
                 hideCommentsLoadingProgress();
             }
         }
@@ -93,6 +95,7 @@ public class DirtyPostFragment extends JournalBasedFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        dirtyPreferences = new DirtyPreferences(PreferenceManager.getDefaultSharedPreferences(getActivity()), getActivity());
         postId = getArguments().getLong(POST_ID);
     }
     
@@ -277,7 +280,7 @@ public class DirtyPostFragment extends JournalBasedFragment {
         super.onPause();
         postView.pause();
     }
-    
+
     @Override
     public void onDestroy() {
         super.onDestroy();

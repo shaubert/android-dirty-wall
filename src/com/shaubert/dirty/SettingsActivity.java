@@ -1,6 +1,7 @@
 package com.shaubert.dirty;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
@@ -11,6 +12,7 @@ import android.preference.PreferenceManager;
 import android.view.MenuItem;
 import com.shaubert.util.Shlog;
 import com.shaubert.util.Versions;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 import java.util.List;
 
@@ -50,7 +52,7 @@ public class SettingsActivity extends PreferenceActivity {
 			super.onCreate(savedInstanceState);
 			addPreferencesFromResource(R.xml.favorites_prefs);
 
-			setFavoritesPreferenceListener(findPreference(getString(R.string.export_favorites_pref_key)));
+			setFavoritesPreferenceListener(findPreference(getString(R.string.export_favorites_pref_key)), getActivity());
 		}
 	}
 
@@ -61,7 +63,7 @@ public class SettingsActivity extends PreferenceActivity {
 
 		if (!Versions.isApiLevelAvailable(11)) {
 			addPreferencesFromResource(R.xml.old_prefs);
-			setFavoritesPreferenceListener(findPreference(getString(R.string.export_favorites_pref_key)));
+			setFavoritesPreferenceListener(findPreference(getString(R.string.export_favorites_pref_key)), this);
 			setSyncIntervalPreferenceListener(findPreference(getString(R.string.background_sync_period_key)));
 		} else {
 			getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -73,7 +75,7 @@ public class SettingsActivity extends PreferenceActivity {
 		loadHeadersFromResource(R.xml.prefs_headers, target);
 	}
 
-	private static void setFavoritesPreferenceListener(Preference preference) {
+	private static void setFavoritesPreferenceListener(Preference preference, final Activity activity) {
 		preference
 				.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 					private DirtyFavoritesExporter favoritesExporter;
@@ -81,8 +83,7 @@ public class SettingsActivity extends PreferenceActivity {
 					@Override
 					public boolean onPreferenceClick(Preference preference) {
 						if (favoritesExporter == null) {
-							favoritesExporter = new DirtyFavoritesExporter(
-									preference.getContext());
+							favoritesExporter = new DirtyFavoritesExporter(activity);
 						}
 						favoritesExporter.startExport();
 						return true;
@@ -137,4 +138,9 @@ public class SettingsActivity extends PreferenceActivity {
 		}
 	}
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Crouton.cancelAllCroutons();
+    }
 }

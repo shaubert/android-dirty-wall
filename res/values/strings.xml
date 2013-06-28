@@ -27,6 +27,7 @@
     <string name="post_title_format" formatted="false">Пост %d из %d</string>
     
     <string name="favorites_export_zero">Так нет у тебя отмеченных постов. Сперва звезды кнопкой расставь</string>
+    <string name="favorites_export_zero_compact">Нет отмеченных постов</string>
     <string name="favorites_export_format">Ищи посты на флешке в папке <b>«Dirty»</b></string>
     <string name="export_favorites">Звездные — в файл</string>
     
