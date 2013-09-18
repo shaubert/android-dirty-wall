@@ -151,8 +151,11 @@ public class SummaryFormatter {
                 formatCreationDate(comment.getCreationDate()),
                 formatVotes(comment.getVotesCount()));
         SpannableStringBuilder builder = new SpannableStringBuilder(text);
-        int authorIndex = text.indexOf(author);
-        builder.setSpan(new URLSpan(comment.getAuthorLink()), authorIndex, authorIndex + author.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        int authorIndex = TextUtils.isEmpty(author) ? -1 : text.indexOf(author);
+        if (authorIndex >= 0) {
+            builder.setSpan(new URLSpan(comment.getAuthorLink()),
+                    authorIndex, authorIndex + author.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
         return builder;
     }
  

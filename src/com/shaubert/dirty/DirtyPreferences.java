@@ -87,10 +87,10 @@ public class DirtyPreferences {
     
     public int getFontSize() {
         try {
-            return Integer.parseInt(preferences.getString(fontSizePrefName, "14"));
+            return Integer.parseInt(preferences.getString(fontSizePrefName, "16"));
         } catch (NumberFormatException ex) {
             SHLOG.w(ex);
-            return 14;
+            return 16;
         }
     }
     

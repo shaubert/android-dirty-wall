@@ -13,6 +13,7 @@ import com.shaubert.util.Shlog;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class DirtyCommentParser extends HtmlParser implements Parser {
@@ -95,47 +96,55 @@ public class DirtyCommentParser extends HtmlParser implements Parser {
         comment.setServerId(commentId);
         String indentLevelStr = tag.getAttributes().getValue("", "class").split(" ")[1];
         comment.setIndentLevel(Integer.parseInt(indentLevelStr.substring(7)));
-        
-        TagNode body = tag.getNotContentChilds().get(0).getNotContentChilds().get(0);
-        helperParser.parseBody(body, comment);
 
-        TagNode info = tag.getNotContentChilds().get(0).getNotContentChilds().get(1);
-        List<TagNode> authorTags = info.findAll(new Rule("a").withAttributeWithValue("class", "c_user"));
-        if (authorTags.size() == 1) {
-            TagNode authorTag = authorTags.get(0);
-            comment.setAuthor(authorTag.getChilds().get(0).getText());
-            String href = authorTag.getAttributes().getValue("", "href");
-            if (href.startsWith("http")) {
-                comment.setAuthorLink(href);
+        List<TagNode> bodyNodes = tag.findAllRecursive(new Rule("div").withAttributeWithValue("class", "c_body"));
+        if (!bodyNodes.isEmpty()) {
+            helperParser.parseBody(bodyNodes.get(0), comment);
+        }
+
+        List<TagNode> footerNodes = tag.findAllRecursive(new Rule("div").withAttributeWithValue("class", "c_footer"));
+        if (!footerNodes.isEmpty()) {
+            TagNode info = footerNodes.get(0);
+            List<TagNode> authorTags = info.findAllRecursive(new Rule("a").withAttributeWithValue("class", "c_user"));
+            if (authorTags.size() == 1) {
+                TagNode authorTag = authorTags.get(0);
+                comment.setAuthor(authorTag.getChilds().get(0).getText());
+                String href = authorTag.getAttributes().getValue("", "href");
+                if (href.startsWith("http")) {
+                    comment.setAuthorLink(href);
+                } else {
+                    comment.setAuthorLink("http://d3.ru" + href);
+                }
+            }
+            List<TagNode> dateSpans = info.findAllRecursive(new Rule("span").withAttribute("data-epoch_date"));
+            if (dateSpans.size() == 1) {
+                TagNode dateSpan = dateSpans.get(0);
+                String postDate = dateSpan.getAttributes().getValue("data-epoch_date");
+                comment.setCreationDate(helperParser.parseEpochDate(postDate));
+            }
+            List<TagNode> voteTags = info.findAllRecursive(new Rule("div").withAttributeWithValue("class", "vote c_vote"));
+            if (!voteTags.isEmpty()) {
+                TagNode voteTag = voteTags.get(0);
+                String votesString = voteTag.getNotContentChildren().isEmpty() ? "" : voteTag.getNotContentChildren().get(0).getChilds().get(0).getText();
+                if (voteTag.getNotContentChildren().size() > 1) {
+                    votesString += voteTag.getNotContentChildren().get(1).getChilds().get(0).getText();
+                }
+                votesString = votesString.trim();
+                if (votesString.length() > 0 && votesString.charAt(0) == '+') {
+                    votesString = votesString.substring(1);
+                }
+                try {
+                    comment.setVotesCount(Integer.parseInt(votesString));
+                } catch (NumberFormatException ex) {
+                    SHLOG.w("error parsing votes count", ex);
+                    comment.setVotesCount(0);
+                }
             } else {
-                comment.setAuthorLink("http://d3.ru" + href);
-            }
-        }
-        List<TagNode> dateSpans = info.findAll(new Rule("span").withAttribute("data-epoch_date"));
-        if (dateSpans.size() == 1) {
-            TagNode dateSpan = dateSpans.get(0);
-            String postDate = dateSpan.getAttributes().getValue("data-epoch_date");
-            comment.setCreationDate(helperParser.parseEpochDate(postDate));
-        }
-        List<TagNode> voteTags = info.findAll(new Rule("div").withAttributeWithValue("class", "vote c_vote"));
-        if (!voteTags.isEmpty()) {
-            TagNode voteTag = voteTags.get(0);
-            String votesString = voteTag.getNotContentChilds().isEmpty() ? "" : voteTag.getNotContentChilds().get(0).getChilds().get(0).getText();
-            if (voteTag.getNotContentChilds().size() > 1) {
-                votesString += voteTag.getNotContentChilds().get(1).getChilds().get(0).getText();
-            }
-            votesString = votesString.trim();
-            if (votesString.length() > 0 && votesString.charAt(0) == '+') {
-                votesString = votesString.substring(1);
-            }
-            try {
-                comment.setVotesCount(Integer.parseInt(votesString));
-            } catch (NumberFormatException ex) {
-                SHLOG.w("error parsing votes count", ex);
                 comment.setVotesCount(0);
             }
         } else {
-        	comment.setVotesCount(0);
+            comment.setVotesCount(0);
+            comment.setCreationDate(new Date());
         }
         comment.setOrder(result.getResult().size());
         result.getResult().add(comment);

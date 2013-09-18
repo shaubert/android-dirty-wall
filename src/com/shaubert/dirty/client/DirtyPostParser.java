@@ -101,7 +101,7 @@ public class DirtyPostParser extends HtmlParser implements Parser {
         boolean isGolden = post.getAttributes().getValue("", "class").contains(POST_GOLDEN_DIV_CLASS_PART);
 		dirtyPost.setGolden(isGolden);
         
-        List<HtmlTagFinder.TagNode> childTags = post.getNotContentChilds();
+        List<HtmlTagFinder.TagNode> childTags = post.getNotContentChildren();
         HtmlTagFinder.TagNode body = childTags.get(0);
         helperParser.parseBody(body, dirtyPost);
 
@@ -139,9 +139,9 @@ public class DirtyPostParser extends HtmlParser implements Parser {
             }
         }
         TagNode voteTag = info.findAll(new Rule("div").withAttributeWithValue("class", "vote")).get(0);
-        String votesString = voteTag.getNotContentChilds().isEmpty() ? "" : voteTag.getNotContentChilds().get(0).getChilds().get(0).getText();
-        if (voteTag.getNotContentChilds().size() > 1) {
-            votesString += voteTag.getNotContentChilds().get(1).getChilds().get(0).getText();
+        String votesString = voteTag.getNotContentChildren().isEmpty() ? "" : voteTag.getNotContentChildren().get(0).getChilds().get(0).getText();
+        if (voteTag.getNotContentChildren().size() > 1) {
+            votesString += voteTag.getNotContentChildren().get(1).getChilds().get(0).getText();
         }
         votesString = votesString.trim();
         if (votesString.length() > 0 && votesString.charAt(0) == '+') {
@@ -172,7 +172,7 @@ public class DirtyPostParser extends HtmlParser implements Parser {
     }
 
     private void parseNextPageLink(HtmlTagFinder.TagNode tag) {
-        int totalPages = Integer.parseInt(tag.getNotContentChilds().get(0).getChilds().get(0).getText());
+        int totalPages = Integer.parseInt(tag.getNotContentChildren().get(0).getChilds().get(0).getText());
         SHLOG.d("parsed total pages = " + totalPages);
         String curUrl = ((HttpDataLoaderRequest) request).getUrl();
         int currentPage = curUrl.contains("all/last") ? 1 : Integer.parseInt(curUrl.substring(curUrl.lastIndexOf('/') + 1));

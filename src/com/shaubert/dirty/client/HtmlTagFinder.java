@@ -94,8 +94,8 @@ public class HtmlTagFinder {
         private String text;
         
         private TagNode parent;
-        private List<TagNode> childs = new ArrayList<HtmlTagFinder.TagNode>();
-        private List<TagNode> notContentChilds = new ArrayList<HtmlTagFinder.TagNode>();
+        private List<TagNode> children = new ArrayList<HtmlTagFinder.TagNode>();
+        private List<TagNode> notContentChildren = new ArrayList<HtmlTagFinder.TagNode>();
         
         public TagNode(String name, Attributes attributes) {
             this.name = name;
@@ -128,23 +128,31 @@ public class HtmlTagFinder {
         
         public void addChild(TagNode node) {
             node.parent = this;
-            childs.add(node);
+            children.add(node);
             if (!node.isContentNode()) {
-                notContentChilds.add(node);
+                notContentChildren.add(node);
             }
         }
         
         public List<TagNode> getChilds() {
-            return childs;
+            return children;
         }
         
-        public List<TagNode> getNotContentChilds() {
-            return notContentChilds;
+        public List<TagNode> getNotContentChildren() {
+            return notContentChildren;
         }
-        
+
+        public List<TagNode> findAllRecursive(Rule rule) {
+            List<TagNode> result = findAll(rule);
+            for (TagNode child : notContentChildren) {
+                result.addAll(child.findAllRecursive(rule));
+            }
+            return result;
+        }
+
         public List<TagNode> findAll(Rule rule) {
             List<TagNode> result = new ArrayList<HtmlTagFinder.TagNode>();
-            for (TagNode child : notContentChilds) {
+            for (TagNode child : notContentChildren) {
                 if (rule.applies(child.name, child.attributes)) {
                     result.add(child);
                     result.addAll(child.findAll(rule));
@@ -159,7 +167,7 @@ public class HtmlTagFinder {
         
         private List<TagNode> findPath(int level, String ... pathSegments) {
             List<TagNode> result = new ArrayList<HtmlTagFinder.TagNode>();
-            for (TagNode child : notContentChilds) {
+            for (TagNode child : notContentChildren) {
                 if (child.name.equalsIgnoreCase(pathSegments[level])) {
                     if (level == pathSegments.length - 1) {
                         result.add(child);

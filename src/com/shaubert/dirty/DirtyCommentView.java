@@ -1,6 +1,7 @@
 package com.shaubert.dirty;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +19,7 @@ import android.support.v4.util.LruCache;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.URLSpan;
 import android.view.*;
 import android.widget.Checkable;
 import android.widget.ImageView;
@@ -89,10 +91,23 @@ public class DirtyCommentView extends LinearLayout implements Checkable {
             @Override
             public void onClick(View v) {
                 if (!TextUtils.isEmpty(imageUrl)) {
-                    Uri uri = Uri.parse(videoUrl != null ? videoUrl : imageUrl);
-                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                    intent.putExtra(Browser.EXTRA_APPLICATION_ID, getContext().getPackageName());
-                    getContext().startActivity(intent);
+                    final Intent intent;
+                    File file = Files.getCommentImageCache(getContext(), commentServerId, imageUrl);
+                    if (videoUrl == null && gifDescription.getVisibility() != VISIBLE && file.exists()) {
+                        Uri uri = Uri.fromFile(file);
+                        intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setDataAndType(uri, "image/*");
+                    } else {
+                        Uri uri = Uri.parse(videoUrl != null ? videoUrl : imageUrl);
+                        intent = new Intent(Intent.ACTION_VIEW, uri);
+                        intent.putExtra(Browser.EXTRA_APPLICATION_ID, getContext().getPackageName());
+                    }
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    try {
+                        getContext().startActivity(intent);
+                    } catch (ActivityNotFoundException ignored) {
+                        new URLSpan(videoUrl == null ? imageUrl : videoUrl).onClick(v);
+                    }
                 }
             }
         });
@@ -149,7 +164,7 @@ public class DirtyCommentView extends LinearLayout implements Checkable {
             frameBody.removeViewAt(3);
         }
         Spanned messageText = spanCache.get(commentServerId);
-        if (messageText == null) {
+        if (messageText == null && !TextUtils.isEmpty(cursor.getFormattedMessage())) {
             messageText = Html.fromHtml(cursor.getFormattedMessage());
             spanCache.put(commentServerId, messageText);
         }

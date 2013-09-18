@@ -1,12 +1,11 @@
 package com.shaubert.dirty;
 
-import android.content.ContentUris;
-import android.content.ContentValues;
-import android.content.Context;
+import android.content.*;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.graphics.drawable.StateListDrawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.util.LruCache;
@@ -376,7 +375,29 @@ public class DirtyPostView extends FrameLayout implements Checkable {
                 if (!TextUtils.isEmpty(dirtyPost.getVideoUrl())) {
                     linkSpan = new URLSpan(dirtyPost.getVideoUrl());
                 } else {
-                    linkSpan = new URLSpan(dirtyPost.getImages()[0].src);
+                    final String imageUrl = dirtyPost.getImages()[0].src;
+                    linkSpan = new URLSpan(imageUrl) {
+                        @Override
+                        public void onClick(View widget) {
+                            if (!TextUtils.isEmpty(imageUrl)) {
+                                if (imageUrl.toLowerCase().endsWith(".gif")) {
+                                    super.onClick(widget);
+                                } else {
+                                    final Intent intent;
+                                    File file = Files.getPostImageCache(getContext(), dirtyPost, imageUrl);
+                                    Uri uri = Uri.fromFile(file);
+                                    intent = new Intent(Intent.ACTION_VIEW);
+                                    intent.setDataAndType(uri, "image/*");
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    try {
+                                        getContext().startActivity(intent);
+                                    } catch (ActivityNotFoundException ignored) {
+                                        super.onClick(widget);
+                                    }
+                                }
+                            }
+                        }
+                    };
                 }
                         
                 RelativeSizeSpan[] spans = builder.getSpans(0, 1, RelativeSizeSpan.class);
