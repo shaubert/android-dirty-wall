@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory android:title="@string/main_setting_header_title" >
+    <PreferenceCategory android:title="@string/account_setting_header_title">
+
+        <Preference
+            android:key="@string/login_preference_key"
+            android:title="@string/login_preference_title"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/main_setting_header_title">
 
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="@string/use_serif_font_family_key"
-            android:title="@string/use_serif_font_family_title" />
+            android:title="@string/use_serif_font_family_title"/>
 
         <com.shaubert.widget.ListPreferenceWithAutoSummary
             android:defaultValue="14"
@@ -15,43 +23,43 @@
             android:entryValues="@array/font_size_values"
             android:key="@string/font_size_pref_key"
             android:summary="%s"
-            android:title="@string/font_size_pref_title" />
+            android:title="@string/font_size_pref_title"/>
 
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="@string/main_page_show_all_key"
             android:summaryOn="@string/main_page_show_all_descr_on"
             android:summaryOff="@string/main_page_show_all_descr_off"
-            android:title="@string/main_page_show_all_title" />
+            android:title="@string/main_page_show_all_title"/>
 
 
-	    <CheckBoxPreference
-	        android:defaultValue="true"
-	        android:key="@string/load_images_only_with_wifi_key"
-	        android:summaryOff="@string/load_images_only_with_wifi_off_summary"
-	        android:summaryOn="@string/load_images_only_with_wifi_on_summary"
-	        android:title="@string/load_images_only_with_wifi_title" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/load_images_only_with_wifi_key"
+            android:summaryOff="@string/load_images_only_with_wifi_off_summary"
+            android:summaryOn="@string/load_images_only_with_wifi_on_summary"
+            android:title="@string/load_images_only_with_wifi_title"/>
 
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="@string/use_crouron_key"
             android:summaryOff="@string/use_crouron_off_summary"
             android:summaryOn="@string/use_crouron_on_summary"
-            android:title="@string/use_crouron_title" />
+            android:title="@string/use_crouron_title"/>
 
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="@string/petr_pref_key"
             android:summaryOff="@string/petr_turned_off"
             android:summaryOn="@string/petr_turned_on"
-            android:title="@string/petr_pref_title" />
+            android:title="@string/petr_pref_title"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/background_sync_setting_header_title">
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="@string/posts_background_sync_key"
-            android:title="@string/posts_background_sync_title" />
+            android:title="@string/posts_background_sync_title"/>
 
         <com.shaubert.widget.ListPreferenceWithAutoSummary
             android:defaultValue="86400000"
@@ -61,14 +69,14 @@
             android:entryValues="@array/sync_time_values"
             android:key="@string/background_sync_period_key"
             android:summary="%s"
-            android:title="@string/background_sync_period_title" />
+            android:title="@string/background_sync_period_title"/>
     </PreferenceCategory>
-    
-    <PreferenceCategory android:title="@string/favorites_setting_header_title" >
+
+    <PreferenceCategory android:title="@string/favorites_setting_header_title">
         <Preference
             android:key="@string/export_favorites_pref_key"
             android:summary="@string/export_favorites_summary"
-            android:title="@string/export_favorites" />
+            android:title="@string/export_favorites"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

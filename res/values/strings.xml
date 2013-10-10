@@ -56,10 +56,14 @@
     <string name="use_serif_font_family_key">use_serif_font_family_pref</string>
     <string name="use_serif_font_family_title">Шрифт с засечками</string>
 
+    <string name="account_setting_header_title">Аккаунт</string>
     <string name="main_setting_header_title">Основные настройки</string>
     <string name="favorites_setting_header_title">Отмеченные посты</string>
     <string name="background_sync_setting_header_title">Фоновая загрузка</string>
-    
+
+    <string name="login_preference_title">Войти</string>
+    <string name="login_preference_key">login_pref_key</string>
+
     <string name="export_favorites_pref_key">export_favorites_pref</string>
     <string name="export_favorites_summary">Экспортировать отмеченные звездой посты в файл</string>
     
@@ -102,5 +106,13 @@
     <string name="animated_gif_description">gif</string>
     <string name="blogs_search_hint">Поиск</string>
     <string name="search_menu_title">Поиск</string>
+
+    <string name="login_activity_label">Вход</string>
+    <string name="login_button_label">Войти</string>
+    <string name="login_field_hint">Логин</string>
+    <string name="password_field_hint">Пароль</string>
+    <string name="captcha_field_hint">Введите слова с картинки</string>
+    <string name="captcha_image_content_description">Проверка по слову reCAPTCHA</string>
+    <string name="logged_in_toast_message">Вход выполнен</string>
 
 </resources>

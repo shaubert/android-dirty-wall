@@ -69,12 +69,18 @@ public class Files {
         return dir;
     }
     
+    public static File getCaptchaFile(Context context, String url) {
+        File dir = new File(getHomeDir(context), "/captcha/");
+        dir.mkdirs();
+        return new File(dir, url.hashCode() + ".png");
+    }
+
     public static File getFavoritesExportFile() {
         File dir = new File(Environment.getExternalStorageDirectory(), "Dirty");
         dir.mkdirs();
         return new File(dir, "favorites.txt");
     }
- 
+
     public static void startCleanUpCacheIfNeeded(final Context context, final long maxCacheSize) {
         new Thread() {
             @Override
