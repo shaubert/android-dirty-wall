@@ -1,16 +1,22 @@
 package com.shaubert.dirty;
 
-import com.shaubert.util.Shlog;
-
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
+import com.shaubert.util.Shlog;
+import org.apache.http.cookie.Cookie;
+import org.apache.http.impl.cookie.BasicClientCookie;
+
+import java.util.Date;
 
 public class DirtyPreferences {
     
     private static final Shlog SHLOG = new Shlog(DirtyPreferences.class.getSimpleName());
     
     private final SharedPreferences preferences;
-    
+
+    private static final String SESSION_COOKIE_PREF = "session_cookie_pref";
+
     private String petrPrefName;
     private String fontSizePrefName;
     private String imageLoadingAlwaysPrefName;
@@ -149,5 +155,38 @@ public class DirtyPreferences {
 
     public void setUseSerifFontFamily(boolean serif) {
         preferences.edit().putBoolean(useSerifFontFamilyPrefName, serif).commit();
+    }
+
+    public void clearSession() {
+        preferences.edit().remove(SESSION_COOKIE_PREF).commit();
+    }
+
+    public void saveSession(Cookie sessionCookie) {
+        String value = sessionCookie.getName() + ";"
+                + sessionCookie.getValue() + ";"
+                + sessionCookie.getDomain() + ";"
+                + sessionCookie.getExpiryDate().getTime() + ";"
+                + sessionCookie.getPath();
+        preferences.edit().putString(SESSION_COOKIE_PREF, value).commit();
+    }
+
+    public Cookie loadSessionCookie() {
+        String string = preferences.getString(SESSION_COOKIE_PREF, "");
+        if (!TextUtils.isEmpty(string)) {
+            String[] values = string.split(";");
+            BasicClientCookie cookie = new BasicClientCookie(values[0], values[1]);
+            cookie.setDomain(values[2]);
+            cookie.setExpiryDate(new Date(Long.parseLong(values[3])));
+            cookie.setPath(values[4]);
+
+            if (cookie.getExpiryDate().getTime() < System.currentTimeMillis()) {
+                clearSession();
+                return null;
+            }
+
+            return cookie;
+        } else {
+            return null;
+        }
     }
 }

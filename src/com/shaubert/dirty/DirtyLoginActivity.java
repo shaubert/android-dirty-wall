@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.webkit.JavascriptInterface;
@@ -15,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+import com.shaubert.dirty.client.DirtyBlog;
 import com.shaubert.dirty.net.DataLoadRequest;
 import com.shaubert.dirty.net.DirtyLoginParser;
 import com.shaubert.dirty.net.DirtyLoginRequest;
@@ -25,6 +27,7 @@ import com.shaubert.util.Shlog;
 import com.shaubert.util.Versions;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
+import org.apache.http.cookie.Cookie;
 
 import java.io.File;
 
@@ -38,17 +41,18 @@ public class DirtyLoginActivity extends JournalBasedFragmentActivity {
     private EditText captchaField;
     private View progress;
     private Button loginButton;
-
     private WebView webView;
 
     private AsyncTask<Void, Void, Void> imageLoadTask;
-
     private String captchaImageUrl;
+    private DirtyPreferences dirtyPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
+
+        dirtyPreferences = new DirtyPreferences(PreferenceManager.getDefaultSharedPreferences(this), this);
 
         loginField = (EditText) findViewById(R.id.login_field);
         passwordField = (EditText) findViewById(R.id.password_field);
@@ -103,8 +107,7 @@ public class DirtyLoginActivity extends JournalBasedFragmentActivity {
 
             @Override
             public void onSuccess() {
-                Toast.makeText(DirtyLoginActivity.this, R.string.logged_in_toast_message, Toast.LENGTH_SHORT).show();
-                finish();
+                onSuccessfulLogin();
             }
 
             @Override
@@ -128,6 +131,17 @@ public class DirtyLoginActivity extends JournalBasedFragmentActivity {
                 }
             }
         });
+    }
+
+    private void onSuccessfulLogin() {
+        Cookie sessionCookie = DirtyBlog.getInstance().getSessionCookie();
+        if (sessionCookie != null) {
+            dirtyPreferences.saveSession(sessionCookie);
+        }
+
+        Toast.makeText(DirtyLoginActivity.this, R.string.logged_in_toast_message, Toast.LENGTH_SHORT).show();
+        setResult(sessionCookie != null ? RESULT_OK : RESULT_CANCELED);
+        finish();
     }
 
     private void login(String login, String password, String captchaWords) {
@@ -168,6 +182,10 @@ public class DirtyLoginActivity extends JournalBasedFragmentActivity {
     }
 
     private void startImageLoading(final String url) {
+        if (imageLoadTask != null) {
+            imageLoadTask.cancel(true);
+        }
+
         imageLoadTask = new AsyncTask<Void, Void, Void>() {
             private Bitmap bitmap;
             private File cache;
