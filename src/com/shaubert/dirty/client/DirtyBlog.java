@@ -3,7 +3,6 @@ package com.shaubert.dirty.client;
 import com.shaubert.blogadapter.client.*;
 import com.shaubert.dirty.DirtyPreferences;
 import org.apache.http.client.CookieStore;
-import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.BasicCookieStore;
 
 import java.io.IOException;
@@ -54,15 +53,6 @@ public class DirtyBlog extends Blog {
 
     public void clearSession() {
         cookieStore.clear();
-    }
-
-    public Cookie getSessionCookie() {
-        for (Cookie cookie : cookieStore.getCookies()) {
-            if (cookie.getName().equalsIgnoreCase("sid")) {
-                return cookie;
-            }
-        }
-        return null;
     }
 
     public String getPostLink(DirtyPost post) {
