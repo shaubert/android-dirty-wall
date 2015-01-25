@@ -2,7 +2,6 @@ package com.shaubert.dirty;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
@@ -31,17 +30,6 @@ public class SettingsActivity extends PreferenceActivity {
 		}
 
 	}
-
-    public static class DirtyAccountPreferencesFragment extends PreferenceFragment {
-
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.account_prefs);
-            setLoginPreferenceListener(findPreference(getString(R.string.login_preference_key)), getActivity());
-        }
-
-    }
 
 	public static class DirtySyncPreferencesFragment extends PreferenceFragment {
 
@@ -77,28 +65,15 @@ public class SettingsActivity extends PreferenceActivity {
 			addPreferencesFromResource(R.xml.old_prefs);
 			setFavoritesPreferenceListener(findPreference(getString(R.string.export_favorites_pref_key)), this);
 			setSyncIntervalPreferenceListener(findPreference(getString(R.string.background_sync_period_key)));
-			setLoginPreferenceListener(findPreference(getString(R.string.login_preference_key)), this);
 		} else {
 			getActionBar().setDisplayHomeAsUpEnabled(true);
 		}
 	}
 
-
-    @Override
+	@Override
 	public void onBuildHeaders(List<Header> target) {
 		loadHeadersFromResource(R.xml.prefs_headers, target);
 	}
-
-    private static void setLoginPreferenceListener(Preference preference, final Activity activity) {
-        preference.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                Intent intent = new Intent(activity, DirtyLoginActivity.class);
-                activity.startActivity(intent);
-                return true;
-            }
-        });
-    }
 
 	private static void setFavoritesPreferenceListener(Preference preference, final Activity activity) {
 		preference
