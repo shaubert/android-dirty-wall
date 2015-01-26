@@ -79,6 +79,9 @@ public class DirtyBlogsParser implements Parser {
 		long id = obj.getLong("id");
 		SHLOG.d("parsing blog " + id + ", " + title);
 		String url = obj.getString("url");
+		if (url != null && url.contains(".d3.ru")) {
+			url = url.replace(".d3.ru", "");
+		}
 		int readersCount = obj.getInt("readers_count");
 		
 		JSONObject owner = obj.getJSONObject("owner");
@@ -90,7 +93,7 @@ public class DirtyBlogsParser implements Parser {
 		blog.setAuthorId(userId);
 		blog.setBlogId(id);
 		blog.setDescription(desrc);
-		blog.setDescriptionLower(desrc != null ? desrc.toLowerCase() : desrc);
+		blog.setDescriptionLower(desrc != null ? desrc.toLowerCase() : null);
 		blog.setName(name);
 		blog.setNameLower(name != null ? name.toLowerCase() : null);
 		blog.setReadersCount(readersCount);

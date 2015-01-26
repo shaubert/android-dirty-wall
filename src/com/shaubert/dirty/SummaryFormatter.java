@@ -96,7 +96,7 @@ public class SummaryFormatter {
         builder.setSpan(new URLSpan(dirtyPost.getAuthorLink()), authorIndex, authorIndex + author.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         if (!TextUtils.isEmpty(dirtyPost.getSubBlogName())) {
         	int subBlogIndex = text.indexOf(subBlogUrl);
-        	builder.setSpan(new URLSpan("http://" + subBlogUrl), subBlogIndex, subBlogIndex + subBlogUrl.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        	builder.setSpan(new URLSpan("http://" + dirtyPost.getSubBlogHost()), subBlogIndex, subBlogIndex + subBlogUrl.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         if (dirtyPost.isGolden()) {
             builder.append("\u00A0\u00A0");

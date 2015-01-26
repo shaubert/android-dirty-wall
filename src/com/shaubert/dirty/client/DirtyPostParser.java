@@ -125,8 +125,14 @@ public class DirtyPostParser extends HtmlParser implements Parser {
         }
         if (commentsHref != null) {
             String commentsHrefUrl = commentsHref.getAttributes().getValue("href");
-            String d3BlogRef = commentsHrefUrl.startsWith("http")
-                    ? commentsHrefUrl.split("/")[2] : commentsHrefUrl.split("/")[1];
+            String d3BlogRef = "";
+            if (commentsHrefUrl.contains(".d3.ru")) {
+                d3BlogRef = commentsHrefUrl.split("\\.d3\\.ru")[0].replaceAll("\\\\", "\\/");
+                int startIndex = d3BlogRef.lastIndexOf('/');
+                if (startIndex > 0) {
+                    d3BlogRef = d3BlogRef.substring(startIndex + 1);
+                }
+            }
             dirtyPost.setSubBlogName(d3BlogRef);
             String commentsString = commentsHref.getChilds().get(0).getText();
             Matcher commentsCountMatcher = DIGITS.matcher(commentsString);

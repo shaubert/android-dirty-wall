@@ -22,7 +22,7 @@ public class DirtyCommentParser extends HtmlParser implements Parser {
     
     private static final String COMMENT_DIV_CLASS = "comment indent_";
     private static final String POST_BODY_CLASS_HEADER = "b-post_comments_page_header";
-    private static final String POST_BODY_CLASS_FOOTER = "dt";
+    private static final String POST_BODY_CLASS_FOOTER = "post_body";
 
     private static final Shlog SHLOG = new Shlog(DirtyPostParser.class.getSimpleName());
 

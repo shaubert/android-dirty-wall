@@ -133,7 +133,9 @@ public class HtmlHelper {
             return collect(new TypefaceSpan("monospace"));
         } else if (tag.equalsIgnoreCase("a")) {
             String url = node.getAttributes().getValue("", "href");
-            if (url.startsWith("/")) {
+            if (url.startsWith("//")) {
+                url = "http:" + url;
+            } else if (url.startsWith("/")) {
                 url = "http://www.d3.ru" + url;
             } else if (!url.startsWith("http")) {
                 url = "http://" + url;

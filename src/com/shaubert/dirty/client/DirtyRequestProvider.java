@@ -19,16 +19,19 @@ public class DirtyRequestProvider implements RequestProvider {
     public DataLoaderRequest createRequestForPosts() {
         HttpDataLoaderRequest request = new HttpDataLoaderRequest();
         if (dirtyPreferences.isShowAllOnMainPage()) {
-            request.setUrl("http://www.d3.ru/all/new");
+            request.setUrl("https://www.d3.ru/all/new");
         } else {
-            request.setUrl("http://www.d3.ru/new");
+            request.setUrl("https://www.d3.ru/new");
         }
         return request;
     }
 
     public DataLoaderRequest createRequestForPosts(String subBlogUrl) {
         HttpDataLoaderRequest request = new HttpDataLoaderRequest();
-        request.setUrl("http://" + subBlogUrl + "/new");
+        if (!subBlogUrl.contains(".d3.ru")) {
+            subBlogUrl = subBlogUrl + ".d3.ru";
+        }
+        request.setUrl("https://" + subBlogUrl + "/new");
         return request;
     }
 
@@ -37,7 +40,7 @@ public class DirtyRequestProvider implements RequestProvider {
         DirtyPost dirtyPost = (DirtyPost)post;
         HttpDataLoaderRequest request = new HttpDataLoaderRequest();
         String subBlogUrl = getSubBlogUrl(dirtyPost);
-        request.setUrl("http://" + subBlogUrl + "/comments/" + dirtyPost.getServerId());
+        request.setUrl("https://" + subBlogUrl + "/comments/" + dirtyPost.getServerId());
         return request;
     }
 
@@ -45,7 +48,7 @@ public class DirtyRequestProvider implements RequestProvider {
         HttpDataLoaderRequest request = new HttpDataLoaderRequest();
         request.setHttpMethod(HttpMethod.POST);
         request.setEntityMimeType("application/x-www-form-urlencoded");
-        request.setUrl("http://d3.ru/ajax/blogs/top/");
+        request.setUrl("https://d3.ru/ajax/blogs/top/");
 //        request.addCookie(new BasicClientCookie("domains_sort", "top"));
 //        request.addCookie(new BasicClientCookie("main_index_sort_mode", "top"));
         String params = "offset=" + offset;
@@ -54,16 +57,12 @@ public class DirtyRequestProvider implements RequestProvider {
     }
     
 	private String getSubBlogUrl(DirtyPost dirtyPost) {
-		String subBlogUrl = dirtyPost.getSubBlogName();
-        if (subBlogUrl == null) {
-        	subBlogUrl = "d3.ru";
-        }
-		return subBlogUrl;
+		return dirtyPost.getSubBlogHost();
 	}
 
     public DataLoaderRequest createRequestForComment(DirtyPost post, long commentServerId) {
         HttpDataLoaderRequest request = new HttpDataLoaderRequest();
-        request.setUrl("http://" + getSubBlogUrl(post) + "/comments/" + post.getServerId() + "/#" + commentServerId);
+        request.setUrl("https://" + getSubBlogUrl(post) + "/comments/" + post.getServerId() + "/#" + commentServerId);
         return request;
     }
 

@@ -1,5 +1,6 @@
 package com.shaubert.dirty.client;
 
+import android.text.TextUtils;
 import com.shaubert.dirty.db.ContentValuesState;
 import com.shaubert.dirty.db.DirtyContract.DirtyPostEntity;
 
@@ -54,4 +55,13 @@ public class DirtyPost extends DirtyRecord {
     public String getSubBlogName() {
         return this.values.getAsString(DirtyPostEntity.SUB_BLOG_NAME, null);
     }
-} 
+
+    public String getSubBlogHost() {
+        String subBlogName = getSubBlogName();
+        if (TextUtils.isEmpty(subBlogName)) {
+            return "d3.ru";
+        } else {
+            return subBlogName + ".d3.ru";
+        }
+    }
+}

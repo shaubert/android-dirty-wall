@@ -100,6 +100,8 @@ public class BlogsListActivity extends DirtyBaseActivity {
                     BlogsCursor blog = (BlogsCursor) blogList.getAdapter().getItem(position);
                     if (blog != null) {
                         setResultAndFinish(blog.getUrl());
+                    } else if (blogsEndlessAdapter.isHasError()) {
+                        blogsEndlessAdapter.retry();
                     }
                 }
             }

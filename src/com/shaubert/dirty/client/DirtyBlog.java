@@ -11,7 +11,7 @@ public class DirtyBlog extends Blog {
 
     public static void init(DirtyPreferences dirtyPreferences) {
         if (instance == null) {
-            DataLoader dataLoader = new HttpDataLoader(new HttpClientGateway());
+            DataLoader dataLoader = new HttpDataLoader(new HttpClientGateway(null));
             DirtyRequestProvider requestProvider = new DirtyRequestProvider(dirtyPreferences);
             instance = new DirtyBlog(dataLoader, new DirtyParserFactory(), requestProvider);
         }

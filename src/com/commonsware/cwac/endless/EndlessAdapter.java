@@ -111,6 +111,10 @@ public abstract class EndlessAdapter extends AdapterWrapper {
         return (super.getCount());
     }
 
+    public boolean isHasError() {
+        return hasError;
+    }
+
     /**
      * Masks ViewType so the AdapterView replaces the "Pending" row when new data is loaded.
      */
